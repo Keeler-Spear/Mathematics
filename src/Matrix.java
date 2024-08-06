@@ -1,0 +1,186 @@
+public class Matrix {
+    private double matrix[][];
+    private int rows;
+    private int cols;
+    private boolean square = false;
+
+    public Matrix(double[][] vals) {
+        this.matrix = vals;
+        this.rows = vals.length;
+        this.cols = vals[0].length;
+        if (rows == cols){
+            square = true;
+        }
+    }
+
+    private Matrix createSubMatrix(Matrix baseMatrix, int col) {
+        double[][] tempMatrix1 = new double[baseMatrix.getRows() - 1][baseMatrix.getCols()];
+        tempMatrix1[0] = baseMatrix.getMatrix()[1];
+        for (int i = 1; i < baseMatrix.getRows() - 1; i++) {
+            tempMatrix1[i] = baseMatrix.getMatrix()[i + 1];
+        }
+        double[][] tempMatrix2 = new double[baseMatrix.getRows() - 1][baseMatrix.getCols() - 1];
+        for (int i = 0; i < baseMatrix.getRows() - 1; i++) {
+            for (int j = 0; j < col; j++) {
+                tempMatrix2[i][j] = tempMatrix1[i][j];
+            }
+        }
+        for (int i = 0; i < baseMatrix.getRows() - 1; i++) {
+            for (int j = col; j < baseMatrix.getCols() - 1; j++) {
+                tempMatrix2[i][j] = tempMatrix1[i][j+1];
+            }
+        }
+        return new Matrix(tempMatrix2);
+    }
+
+    public double[][] getMatrix() {
+        return matrix;
+    }
+
+    private double getValue(int row, int col) {
+        return matrix[row][col];
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void addRow(double[] vals) {
+        if (vals.length != cols) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        rows++;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = 0; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < cols; i++) {
+            tempMatrix[rows - 1][i] = vals[i];
+        }
+        matrix = tempMatrix;
+    }
+
+    private void addCol(double[] vals) {
+        if (vals.length != rows) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        cols++;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols - 1; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < rows; i++) {
+            tempMatrix[i][cols - 1] = vals[i];
+        }
+        matrix = tempMatrix;
+    }
+
+    private void removeRow(int index) {
+        index = index - 1;
+        if (matrix.length < index) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        rows--;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < index; i++) {
+            tempMatrix[i] = matrix[i];
+        }
+        for (int i = index; i < rows; i++) {
+            tempMatrix[i] = matrix[i+1];
+        }
+        matrix = tempMatrix;
+    }
+
+    private void removeCol(int index) {
+        index = index - 1;
+        if (matrix[0].length <= index) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        cols--;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < index; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = index; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i][j+1];
+            }
+        }
+        matrix = tempMatrix;
+    }
+
+    private void addRows(int R1, int R2, double scalar) { // R1 = R1 + R2 * Scalar
+        for (int i = 0; i < cols; i++) {
+            matrix[R1][i] += matrix[R2][i] * scalar;
+        }
+    }
+
+    private void swapRows(int R1, int R2) {
+        double[] temRow = matrix[R1];
+        matrix[R1] = matrix[R2];
+        matrix[R2] = temRow;
+
+    }
+
+    private void scaleRow(int R, double scalar) {
+        for (int i = 0; i < cols; i++) {
+            matrix[R][i] = matrix[R][i] * scalar;
+        }
+    }
+
+    private double largestColVal(int col) {
+        double maxVal = 0;
+        for (int i = 0; i < rows; i++) {
+            if (maxVal < matrix[i][col]) {
+                maxVal = matrix[i][col];
+            }
+        }
+        return maxVal;
+    }
+
+    public double determinant(Matrix subMatrix) {
+        if (!square || (subMatrix.getRows() == subMatrix.getCols() && subMatrix.getRows() < 2)) {
+            throw new IllegalStateException("Matrix is not square");
+        }
+        double determinant = 0.0;
+        //Base case
+        if (subMatrix.getRows() == 2) {
+            determinant += subMatrix.getValue(0,0) * subMatrix.getValue(1,1) - subMatrix.getValue(0,1) * subMatrix.getValue(1,0);
+            return determinant;
+        }
+        for (int i = 0; i < subMatrix.getRows(); i++) {
+            determinant += subMatrix.getValue(0, i)  * Math.pow(-1, i) * determinant(createSubMatrix(subMatrix, i));
+        }
+        return determinant;
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (j == 0) {
+                    s += "[";
+                }
+                s += matrix[i][j];
+                if (j == cols - 1) {
+                    s += "]\n";
+                }
+                else {
+                    s += " ";
+                }
+            }
+        }
+        return s;
+    }
+}
