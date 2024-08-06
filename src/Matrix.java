@@ -3,8 +3,13 @@ public class Matrix {
     private int rows;
     private int cols;
     private boolean square = false;
+    private static final int MIN_SIZE = 2;
 
     public Matrix(double[][] vals) {
+        if (vals.length < MIN_SIZE) {
+            throw new IllegalArgumentException("Your matrix must have at least " + MIN_SIZE + " rows and " + MIN_SIZE + " columns");
+
+        }
         this.matrix = vals;
         this.rows = vals.length;
         this.cols = vals[0].length;
@@ -148,9 +153,30 @@ public class Matrix {
         return maxVal;
     }
 
+    private double[][] vectorFromColumn (Matrix tempMatrix, int col) {
+        double[][] vector = new double[tempMatrix.getRows()][1];
+        for (int i = 0; i < tempMatrix.getRows(); i++) {
+            vector[i][0] = tempMatrix.getValue(i, col - 1);
+        }
+        return vector;
+    }
+
+    //Todo Finish matrix-vector multiplication method
+    private Matrix matrixVectorMultiplication (Matrix matrix1, Matrix matrix2) {
+
+    }
+
+    //ToDo Finish multiplication method
+    //Calle * Peram Matrices
+    public Matrix multiplyMatrices(Matrix matrix2) {
+        if (cols != matrix2.getRows()) {
+            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + cols + " != " +  matrix2.getRows() + "!");
+        }
+    }
+
     public double determinant(Matrix subMatrix) {
         if (!square || (subMatrix.getRows() == subMatrix.getCols() && subMatrix.getRows() < 2)) {
-            throw new IllegalStateException("Matrix is not square");
+            throw new IllegalArgumentException("Matrix is not square");
         }
         double determinant = 0.0;
         //Base case
