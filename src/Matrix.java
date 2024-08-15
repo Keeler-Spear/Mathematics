@@ -6,13 +6,26 @@ public class Matrix {
     private static final int MIN_SIZE = 2;
 
     public Matrix(double[][] vals) {
-        if (vals.length < MIN_SIZE) {
+        if (vals.length < MIN_SIZE || vals[0].length < MIN_SIZE) {
             throw new IllegalArgumentException("Your matrix must have at least " + MIN_SIZE + " rows and " + MIN_SIZE + " columns");
 
         }
         this.matrix = vals;
         this.rows = vals.length;
         this.cols = vals[0].length;
+        if (rows == cols){
+            square = true;
+        }
+    }
+
+    public Matrix(int rows, int cols) {
+        if (rows < MIN_SIZE || cols < MIN_SIZE) {
+            throw new IllegalArgumentException("Your matrix must have at least " + MIN_SIZE + " rows and " + MIN_SIZE + " columns");
+
+        }
+        matrix = new double[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
         if (rows == cols){
             square = true;
         }
@@ -38,12 +51,22 @@ public class Matrix {
         return new Matrix(tempMatrix2);
     }
 
+    public void setValue (int row, int col, double value) {
+        if (row < 0 || row > rows || col < 0 || col > cols) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        matrix[row-1][col-1] = value;
+    }
+
     public double[][] getMatrix() {
         return matrix;
     }
 
-    private double getValue(int row, int col) {
-        return matrix[row][col];
+    public double getValue(int row, int col) {
+        if (row < 0 || row > rows || col < 0 || col > cols) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return matrix[row - 1][col - 1];
     }
 
     public int getRows() {
@@ -54,45 +77,45 @@ public class Matrix {
         return cols;
     }
 
-    public void addRow(double[] vals) {
-        if (vals.length != cols) {
+//    public void addRow(double[] vals) {
+//        if (vals.length != cols) {
+//            throw new ArrayIndexOutOfBoundsException();
+//        }
+//        rows++;
+//        double[][] tempMatrix = new double[rows][cols];
+//        for (int i = 0; i < rows - 1; i++) {
+//            for (int j = 0; j < cols; j++) {
+//                tempMatrix[i][j] = matrix[i][j];
+//            }
+//        }
+//        for (int i = 0; i < cols; i++) {
+//            tempMatrix[rows - 1][i] = vals[i];
+//        }
+//        matrix = tempMatrix;
+//    }
+//
+//    public void addCol(double[] vals) {
+//        if (vals.length != rows) {
+//            throw new ArrayIndexOutOfBoundsException();
+//        }
+//        cols++;
+//        double[][] tempMatrix = new double[rows][cols];
+//        for (int i = 0; i < rows; i++) {
+//            for (int j = 0; j < cols - 1; j++) {
+//                tempMatrix[i][j] = matrix[i][j];
+//            }
+//        }
+//        for (int i = 0; i < rows; i++) {
+//            tempMatrix[i][cols - 1] = vals[i];
+//        }
+//        matrix = tempMatrix;
+//    }
+
+    public void removeRow(int index) {
+        if (rows < index || index <= 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        rows++;
-        double[][] tempMatrix = new double[rows][cols];
-        for (int i = 0; i < rows - 1; i++) {
-            for (int j = 0; j < cols; j++) {
-                tempMatrix[i][j] = matrix[i][j];
-            }
-        }
-        for (int i = 0; i < cols; i++) {
-            tempMatrix[rows - 1][i] = vals[i];
-        }
-        matrix = tempMatrix;
-    }
-
-    private void addCol(double[] vals) {
-        if (vals.length != rows) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        cols++;
-        double[][] tempMatrix = new double[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols - 1; j++) {
-                tempMatrix[i][j] = matrix[i][j];
-            }
-        }
-        for (int i = 0; i < rows; i++) {
-            tempMatrix[i][cols - 1] = vals[i];
-        }
-        matrix = tempMatrix;
-    }
-
-    private void removeRow(int index) {
         index = index - 1;
-        if (matrix.length < index) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
         rows--;
         double[][] tempMatrix = new double[rows][cols];
         for (int i = 0; i < index; i++) {
@@ -104,11 +127,11 @@ public class Matrix {
         matrix = tempMatrix;
     }
 
-    private void removeCol(int index) {
-        index = index - 1;
-        if (matrix[0].length <= index) {
+    public void removeCol(int index) {
+        if (cols < index || index <= 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
+        index = index - 1;
         cols--;
         double[][] tempMatrix = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
@@ -162,17 +185,17 @@ public class Matrix {
     }
 
     //Todo Finish matrix-vector multiplication method
-    private Matrix matrixVectorMultiplication (Matrix matrix1, Matrix matrix2) {
-
-    }
+//    private Matrix matrixVectorMultiplication (Matrix matrix1, Matrix matrix2) {
+//
+//    }
 
     //ToDo Finish multiplication method
     //Calle * Peram Matrices
-    public Matrix multiplyMatrices(Matrix matrix2) {
-        if (cols != matrix2.getRows()) {
-            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + cols + " != " +  matrix2.getRows() + "!");
-        }
-    }
+//    public Matrix multiplyMatrices(Matrix matrix2) {
+//        if (cols != matrix2.getRows()) {
+//            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + cols + " != " +  matrix2.getRows() + "!");
+//        }
+//    }
 
     public double determinant(Matrix subMatrix) {
         if (!square || (subMatrix.getRows() == subMatrix.getCols() && subMatrix.getRows() < 2)) {
