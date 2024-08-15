@@ -32,25 +32,42 @@ public class LinearAlgebraCalculator {
         return subMatrix;
     }
 
-    //ToDo: Fix
-//    private static Matrix vectorFromColumn (Matrix tempMatrix, int col) {
-//        double[][] vector = new double[tempMatrix.getRows()][1];
-//        for (int i = 0; i < tempMatrix.getRows(); i++) {
-//            vector[i][0] = tempMatrix.getValue(i, col - 1);
-//        }
-//        return vector;
-//    }
+    private static Matrix vectorFromColumn (Matrix tempMatrix, int col) {
+        Matrix vector = new Matrix(tempMatrix.getRows(), 1);
+        for (int i = 1; i <= tempMatrix.getRows(); i++) {
+            vector.setValue(i, 1, tempMatrix.getValue(i, col));
+        }
+        return vector;
+    }
 
-    //ToDo Finish multiplication method
-    //Calle * Peram Matrices
-//    public Matrix multiplyMatrices(Matrix matrix2) {
-//        if (cols != matrix2.getRows()) {
-//            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + cols + " != " +  matrix2.getRows() + "!");
-//        }
-//    }
+    public static Matrix multiplyMatrices(Matrix matrix1, Matrix matrix2) {
+        if (matrix1.getCols() != matrix2.getRows()) {
+            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + matrix1.getRows() + " != " +  matrix2.getRows() + "!");
+        }
+        Matrix product = new Matrix(matrix1.getRows(), matrix2.getCols());
+        for (int i = 1; i <= matrix2.getCols(); i++) {
+            Matrix tempVector = vectorFromColumn(matrix2, i);
+            Matrix tempCol = matrixVectorMultiplication(matrix1, tempVector);
+            for (int j = 1; j <= product.getRows(); j++) {
+                product.setValue(j, i, tempCol.getValue(j, 1));
+            }
+        }
+        return product;
+    }
 
-    //Todo Finish matrix-vector multiplication method
-//    private Matrix matrixVectorMultiplication (Matrix matrix1, Matrix matrix2) {
-//
-//    }
+    private static Matrix matrixVectorMultiplication (Matrix matrix, Matrix vector) {
+        if (vector.getCols() != 1 || matrix.getCols() != vector.getRows()) {
+            throw new IllegalArgumentException();
+        }
+        Matrix newMatrix = new Matrix(matrix.getRows(), 1);
+        for (int i = 1; i <= matrix.getRows(); i++) {
+            double val = 0.0;
+            for (int j = 1; j <= vector.getRows(); j++) {
+                val += matrix.getValue(i, j) * vector.getValue(j, 1);
+            }
+            newMatrix.setValue(i, 1, val);
+            val = 0.0;
+        }
+        return newMatrix;
+    }
 }

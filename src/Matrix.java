@@ -3,12 +3,13 @@ public class Matrix {
     private int rows;
     private int cols;
     private boolean square = false;
-    private static final int MIN_SIZE = 2;
+    private static final int MIN_ROWS = 2;
+    private static final int MIN_COLS = 1;
+
 
     public Matrix(double[][] vals) {
-        if (vals.length < MIN_SIZE || vals[0].length < MIN_SIZE) {
-            throw new IllegalArgumentException("Your matrix must have at least " + MIN_SIZE + " rows and " + MIN_SIZE + " columns");
-
+        if (vals.length < MIN_ROWS || vals[0].length < MIN_COLS) {
+            throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
         this.matrix = vals;
         this.rows = vals.length;
@@ -19,9 +20,8 @@ public class Matrix {
     }
 
     public Matrix(int rows, int cols) {
-        if (rows < MIN_SIZE || cols < MIN_SIZE) {
-            throw new IllegalArgumentException("Your matrix must have at least " + MIN_SIZE + " rows and " + MIN_SIZE + " columns");
-
+        if (rows < MIN_ROWS || cols < MIN_COLS) {
+            throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
         matrix = new double[rows][cols];
         this.rows = rows;
@@ -158,14 +158,6 @@ public class Matrix {
             }
         }
         return maxVal;
-    }
-
-    private double[][] vectorFromColumn (Matrix tempMatrix, int col) {
-        double[][] vector = new double[tempMatrix.getRows()][1];
-        for (int i = 0; i < tempMatrix.getRows(); i++) {
-            vector[i][0] = tempMatrix.getValue(i, col - 1);
-        }
-        return vector;
     }
 
     @Override
