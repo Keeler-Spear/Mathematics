@@ -31,26 +31,6 @@ public class Matrix {
         }
     }
 
-    private Matrix createSubMatrix(Matrix baseMatrix, int col) {
-        double[][] tempMatrix1 = new double[baseMatrix.getRows() - 1][baseMatrix.getCols()];
-        tempMatrix1[0] = baseMatrix.getMatrix()[1];
-        for (int i = 1; i < baseMatrix.getRows() - 1; i++) {
-            tempMatrix1[i] = baseMatrix.getMatrix()[i + 1];
-        }
-        double[][] tempMatrix2 = new double[baseMatrix.getRows() - 1][baseMatrix.getCols() - 1];
-        for (int i = 0; i < baseMatrix.getRows() - 1; i++) {
-            for (int j = 0; j < col; j++) {
-                tempMatrix2[i][j] = tempMatrix1[i][j];
-            }
-        }
-        for (int i = 0; i < baseMatrix.getRows() - 1; i++) {
-            for (int j = col; j < baseMatrix.getCols() - 1; j++) {
-                tempMatrix2[i][j] = tempMatrix1[i][j+1];
-            }
-        }
-        return new Matrix(tempMatrix2);
-    }
-
     public void setValue (int row, int col, double value) {
         if (row < 0 || row > rows || col < 0 || col > cols) {
             throw new ArrayIndexOutOfBoundsException();
@@ -77,7 +57,11 @@ public class Matrix {
         return cols;
     }
 
-//    public void addRow(double[] vals) {
+    public boolean isSquare() {
+        return square;
+    }
+
+    //    public void addRow(double[] vals) {
 //        if (vals.length != cols) {
 //            throw new ArrayIndexOutOfBoundsException();
 //        }
@@ -184,35 +168,6 @@ public class Matrix {
         return vector;
     }
 
-    //Todo Finish matrix-vector multiplication method
-//    private Matrix matrixVectorMultiplication (Matrix matrix1, Matrix matrix2) {
-//
-//    }
-
-    //ToDo Finish multiplication method
-    //Calle * Peram Matrices
-//    public Matrix multiplyMatrices(Matrix matrix2) {
-//        if (cols != matrix2.getRows()) {
-//            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + cols + " != " +  matrix2.getRows() + "!");
-//        }
-//    }
-
-    public double determinant(Matrix subMatrix) {
-        if (!square || (subMatrix.getRows() == subMatrix.getCols() && subMatrix.getRows() < 2)) {
-            throw new IllegalArgumentException("Matrix is not square");
-        }
-        double determinant = 0.0;
-        //Base case
-        if (subMatrix.getRows() == 2) {
-            determinant += subMatrix.getValue(0,0) * subMatrix.getValue(1,1) - subMatrix.getValue(0,1) * subMatrix.getValue(1,0);
-            return determinant;
-        }
-        for (int i = 0; i < subMatrix.getRows(); i++) {
-            determinant += subMatrix.getValue(0, i)  * Math.pow(-1, i) * determinant(createSubMatrix(subMatrix, i));
-        }
-        return determinant;
-    }
-
     @Override
     public String toString() {
         String s = "";
@@ -231,5 +186,11 @@ public class Matrix {
             }
         }
         return s;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Matrix newMatrix = new Matrix(matrix);
+        return newMatrix;
     }
 }
