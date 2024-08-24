@@ -44,7 +44,7 @@ public class Matrix {
 
     public double getValue(int row, int col) {
         if (row < 0 || row > rows || col < 0 || col > cols) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
         return matrix[row - 1][col - 1];
     }
@@ -131,26 +131,26 @@ public class Matrix {
         matrix = tempMatrix;
     }
 
-    private void addRows(int R1, int R2, double scalar) { // R1 = R1 + R2 * Scalar
+    public void addRows(int R1, int R2, double scalar) { // R1 = R1 + R2 * Scalar
         for (int i = 0; i < cols; i++) {
-            matrix[R1][i] += matrix[R2][i] * scalar;
+            matrix[R1 - 1][i] += matrix[R2 - 1][i] * scalar;
         }
     }
 
-    private void swapRows(int R1, int R2) {
-        double[] temRow = matrix[R1];
-        matrix[R1] = matrix[R2];
-        matrix[R2] = temRow;
+    public void swapRows(int R1, int R2) {
+        double[] temRow = matrix[R1 - 1];
+        matrix[R1 - 1] = matrix[R2 - 1];
+        matrix[R2 - 1] = temRow;
 
     }
 
-    private void scaleRow(int R, double scalar) {
+    public void scaleRow(int R, double scalar) {
         for (int i = 0; i < cols; i++) {
-            matrix[R][i] = matrix[R][i] * scalar;
+            matrix[R - 1][i] = matrix[R - 1][i] * scalar;
         }
     }
 
-    private double largestColVal(int col) {
+    public double largestColVal(int col) {
         double maxVal = 0;
         for (int i = 0; i < rows; i++) {
             if (maxVal < matrix[i][col]) {
@@ -158,6 +158,21 @@ public class Matrix {
             }
         }
         return maxVal;
+    }
+
+    public int compareRows(int R1, int R2, int col) {
+        int result = 0;
+
+        if (Math.abs(matrix[R1 - 1][col - 1]) > Math.abs(matrix[R2 - 1][col - 1]) ){
+            result = 1;
+        }
+        else if (Math.abs(matrix[R1 - 1][col - 1])  < Math.abs(matrix[R2 - 1][col -1]) ){
+            result = -1;
+        }
+        else if (Math.abs(matrix[R1 - 1][col - 1])  == Math.abs(matrix[R2 - 1][col - 1])  && col != cols){ //Base case
+            result = compareRows(R1, R2, col + 1);
+        }
+        return result;
     }
 
     @Override
@@ -168,7 +183,7 @@ public class Matrix {
                 if (j == 0) {
                     s += "[";
                 }
-                s += matrix[i][j];
+                s += String.format("%.3f", matrix[i][j]);
                 if (j == cols - 1) {
                     s += "]\n";
                 }

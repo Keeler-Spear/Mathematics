@@ -70,4 +70,68 @@ public class LinearAlgebraCalculator {
         }
         return newMatrix;
     }
+
+
+    private static void sortMatrix (Matrix matrix) {//Can optimize further if I use quick sort
+        //Base Case
+        for ( int i = 0; i < matrix.getRows(); i++ ) {
+            for (int j = 1; j < matrix.getRows(); j++) {
+                if (matrix.compareRows(j, j+1, 1) < 0) {
+                    matrix.swapRows(j, j+1);
+                }
+            }
+        }
+    }
+
+    private static double findPivot (Matrix matrix, int row) {
+        double pivot = matrix.getValue(row, 1);
+        int i = 2;
+        while (pivot == 0 && i <= matrix.getCols()) {
+            pivot = matrix.getValue(row, i);
+            i++;
+        }
+        return pivot;
+    }
+
+    private static int findPivotCol (Matrix matrix, int row) {
+        double pivot = matrix.getValue(row, 1);
+        int i = 1;
+        while (pivot == 0 && i < matrix.getCols()) {
+            pivot = matrix.getValue(row, i);
+            if (pivot == 0 && i <= matrix.getCols()) {
+                i++;
+            }
+        }
+        return i;
+    }
+
+    public static Matrix RREF(Matrix matrixOrg) {
+        Matrix matrix;
+        try {
+            matrix = (Matrix) matrixOrg.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Forward Phase
+        for (int i = 1; i <= matrix.getRows(); i++) { //i = current row
+            sortMatrix(matrix);
+            if (findPivot(matrix, i) != 0) {
+                matrix.scaleRow(i, 1 / findPivot(matrix, i)); //Scales the current row so the pivot = 1.0.
+            }
+            for (int j = i; j < matrix.getRows(); j++) {//Getting 0's bellow the pivot
+                matrix.addRows(j + 1, i, -matrix.getValue(j + 1, findPivotCol(matrix, i)));
+            }
+            System.out.println(matrix);
+        }
+
+        //Backward Phase
+        for (int i = matrix.getRows(); i >= 1; i--) {// = current row
+            for (int j = i; j > 1; j--) {
+                matrix.addRows(j - 1, i, -matrix.getValue(j - 1, findPivotCol(matrix, i)));
+            }
+        }
+
+        return matrix;
+    }
 }
