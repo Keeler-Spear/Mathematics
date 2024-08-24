@@ -4,7 +4,6 @@ All the linear algebra calculations contained in this project are based on the f
 Judi J. McDonald. A free version of the text can be found at: https://www.pearson.wolframcloud.com/obj/eTexts/LA6Cloud/6616c834174039112795079e2b5b34c3.nb.
 
 Current ToDos:
-1. Row-reduced echelon form calculator
 2. Inverse of a square matrix
 3. Eigenvalue and eigenvector approximators
 4. Vector operations
