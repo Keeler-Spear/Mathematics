@@ -122,7 +122,6 @@ public class LinearAlgebraCalculator {
             for (int j = i; j < matrix.getRows(); j++) {//Getting 0's bellow the pivot
                 matrix.addRows(j + 1, i, -matrix.getValue(j + 1, findPivotCol(matrix, i)));
             }
-            System.out.println(matrix);
         }
 
         //Backward Phase
