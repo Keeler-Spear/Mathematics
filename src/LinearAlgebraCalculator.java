@@ -152,7 +152,7 @@ public class LinearAlgebraCalculator {
             throw new IllegalArgumentException("The matrix must be square!");
         }
 
-        if (determinant(matrixOrg) == 0) { //Is A ~ I? via Invertible Matrix Theorem.
+        if (determinant(matrixOrg) == 0) { //Is A ~ I? via Invertible Matrix Theorem
             throw new IllegalArgumentException("The matrix is singular!");
         }
 

@@ -196,7 +196,7 @@ public class Matrix {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() throws CloneNotSupportedException { //Copies the array and then makes a new matrix with the copy
         double[][] vals = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

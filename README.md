@@ -7,3 +7,4 @@ Current ToDos:
 1. Eigenvalue and eigenvector approximators
 2. Vector operations
 3. Vector subspaces
+4. LU Factorization
