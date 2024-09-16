@@ -105,6 +105,19 @@ public class LinearAlgebraCalculator {
         return i;
     }
 
+    private static Matrix identityMatrix(int n) {
+        double[][] matrix = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = 0.0;
+                if (i == j) {
+                    matrix[i][j] = 1;
+                }
+            }
+        }
+        return new Matrix(matrix);
+    }
+
     public static Matrix RREF(Matrix matrixOrg) {
         Matrix matrix;
         try {
@@ -129,6 +142,43 @@ public class LinearAlgebraCalculator {
             for (int j = i; j > 1; j--) {
                 matrix.addRows(j - 1, i, -matrix.getValue(j - 1, findPivotCol(matrix, i)));
             }
+        }
+
+        return matrix;
+    }
+
+    public static Matrix matrixInverse (Matrix matrixOrg) { //Row Reduce {A, I}
+        if (!matrixOrg.isSquare()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+
+        if (determinant(matrixOrg) == 0) { //Is A ~ I? via Invertible Matrix Theorem.
+            throw new IllegalArgumentException("The matrix is singular!");
+        }
+
+        Matrix matrix;
+
+        try {
+            matrix = (Matrix) matrixOrg.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 0; i < matrix.getRows(); i++) { //Making [A I]
+            double[] e = new double [matrix.getRows()];
+            for (int j = 0; j < matrix.getRows(); j++) {
+                e[j] = 0.0;
+                if (i == j) {
+                    e[j] = 1.0;
+                }
+            }
+            matrix.addCol(e);
+        }
+
+        matrix = RREF(matrix); //[A I] ~ [I A^-1]
+
+        for (int i = 1; i <= matrix.getRows(); i++) {//Making [I A^-1] into [A^-1]
+            matrix.removeCol(1);
         }
 
         return matrix;

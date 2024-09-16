@@ -61,39 +61,39 @@ public class Matrix {
         return square;
     }
 
-    //    public void addRow(double[] vals) {
-//        if (vals.length != cols) {
-//            throw new ArrayIndexOutOfBoundsException();
-//        }
-//        rows++;
-//        double[][] tempMatrix = new double[rows][cols];
-//        for (int i = 0; i < rows - 1; i++) {
-//            for (int j = 0; j < cols; j++) {
-//                tempMatrix[i][j] = matrix[i][j];
-//            }
-//        }
-//        for (int i = 0; i < cols; i++) {
-//            tempMatrix[rows - 1][i] = vals[i];
-//        }
-//        matrix = tempMatrix;
-//    }
-//
-//    public void addCol(double[] vals) {
-//        if (vals.length != rows) {
-//            throw new ArrayIndexOutOfBoundsException();
-//        }
-//        cols++;
-//        double[][] tempMatrix = new double[rows][cols];
-//        for (int i = 0; i < rows; i++) {
-//            for (int j = 0; j < cols - 1; j++) {
-//                tempMatrix[i][j] = matrix[i][j];
-//            }
-//        }
-//        for (int i = 0; i < rows; i++) {
-//            tempMatrix[i][cols - 1] = vals[i];
-//        }
-//        matrix = tempMatrix;
-//    }
+    public void addRow(double[] vals) {
+        if (vals.length != cols) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        rows++;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = 0; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < cols; i++) {
+            tempMatrix[rows - 1][i] = vals[i];
+        }
+        matrix = tempMatrix;
+    }
+
+    public void addCol(double[] vals) {
+        if (vals.length != rows) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        cols++;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols - 1; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < rows; i++) {
+            tempMatrix[i][cols - 1] = vals[i];
+        }
+        matrix = tempMatrix;
+    }
 
     public void removeRow(int index) {
         if (rows < index || index <= 0) {
@@ -197,7 +197,30 @@ public class Matrix {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        Matrix newMatrix = new Matrix(matrix);
+        double[][] vals = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                vals[i][j] = matrix[i][j];
+            }
+        }
+        Matrix newMatrix = new Matrix(vals);
+
         return newMatrix;
+    }
+    public boolean equals(Matrix matrix2) { //0 if equal
+        boolean equal = true;
+        if (rows == matrix2.rows && cols == matrix2.cols) {
+            for (int i = 1; i <= rows; i++) {
+                for (int j = 1; j <= cols; j++) {
+                    if (getValue(i, j) != matrix2.getValue(i, j)) {
+                        equal = false;
+                    }
+                }
+            }
+        }
+        else {
+            equal = false;
+        }
+        return equal;
     }
 }
