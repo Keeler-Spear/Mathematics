@@ -1,10 +1,11 @@
 public class Matrix {
-    private double matrix[][];
+    private double[][] matrix;
     private int rows;
     private int cols;
     private boolean square = false;
     private static final int MIN_ROWS = 2;
     private static final int MIN_COLS = 1;
+    private static final double h = 0.00000000001;
 
 
     public Matrix(double[][] vals) {
@@ -137,7 +138,7 @@ public class Matrix {
         }
     }
 
-    public void swapRows(int R1, int R2) {
+    public void swapRows(int R1, int R2) { //Maybe use permutation matrix and left multiply it by the current matrix
         double[] temRow = matrix[R1 - 1];
         matrix[R1 - 1] = matrix[R2 - 1];
         matrix[R2 - 1] = temRow;
@@ -162,16 +163,19 @@ public class Matrix {
 
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
+        double val1 = Math.abs(matrix[R1 - 1][col - 1]);
+        double val2 = Math.abs(matrix[R2 - 1][col]);
 
-        if (Math.abs(matrix[R1 - 1][col - 1]) > Math.abs(matrix[R2 - 1][col - 1]) ){
-            result = 1;
-        }
-        else if (Math.abs(matrix[R1 - 1][col - 1])  < Math.abs(matrix[R2 - 1][col -1]) ){
-            result = -1;
-        }
-        else if (Math.abs(matrix[R1 - 1][col - 1])  == Math.abs(matrix[R2 - 1][col - 1])  && col != cols){ //Base case
+        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
             result = compareRows(R1, R2, col + 1);
         }
+        else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
+            result = 1;
+        }
+        else if (val1 - val2 < -1.0 * h){
+            result = -1;
+        }
+
         return result;
     }
 
@@ -207,7 +211,7 @@ public class Matrix {
 
         return newMatrix;
     }
-    public boolean equals(Matrix matrix2) { //0 if equal
+    public boolean equals(Matrix matrix2) {
         boolean equal = true;
         if (rows == matrix2.rows && cols == matrix2.cols) {
             for (int i = 1; i <= rows; i++) {
