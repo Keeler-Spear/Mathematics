@@ -33,6 +33,17 @@ public class LinearAlgebraCalculator {
         return subMatrix;
     }
 
+    private static Matrix createSubMatrix(Matrix matrix, int col) {
+        Matrix subMatrix;
+        try {
+            subMatrix = (Matrix) matrix.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        subMatrix.removeCol(col);
+        return subMatrix;
+    }
+
     private static Matrix identityMatrix(int n) {
         double[][] matrix = new double[n][n];
         for (int i = 0; i < n; i++) {
@@ -86,8 +97,6 @@ public class LinearAlgebraCalculator {
         return newMatrix;
     }
 
-
-
     //Gaussian Elimination, LU decomposition, and helper methods
     public static Matrix augmentMatrix(Matrix matrix1, Matrix matrix2) {
         if (matrix1.getRows() != matrix2.getRows()) {
@@ -109,7 +118,7 @@ public class LinearAlgebraCalculator {
 
     private static void partialPivoting(Matrix matrix, int row) {//Can optimize further if I use quick sort
         for ( int i = row - 1; i < matrix.getRows(); i++ ) {
-            for (int j = row; j < matrix.getRows(); j++) {
+            for (int j = row; j < matrix.getRows() - i; j++) {
                 if (matrix.compareRows(j, j+1, 1) < 0) {
                     matrix.swapRows(j, j+1);
                 }
@@ -148,7 +157,7 @@ public class LinearAlgebraCalculator {
         }
 
         for (int i = 1; i <= matrix.getRows(); i++) { //i = current row
-            partialPivoting(matrix, i); //Partially pivots the matrix. While it includes prior rows, the 0's in the columns below the pivot positions prevents any jankyness.
+            partialPivoting(matrix, i); //Partially pivots the matrix.
             double[] vals = findPivot(matrix, i);
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
@@ -180,7 +189,6 @@ public class LinearAlgebraCalculator {
                 matrix.addRows(j - 1, i, -matrix.getValue(j - 1, pivotCol));
             }
         }
-        partialPivoting(matrix, 1);
         return matrix;
     }
 
@@ -205,10 +213,18 @@ public class LinearAlgebraCalculator {
         return matrix;
     }
 
-    public static Matrix RREF(Matrix matrixOrg) {
+    public static Matrix RREF(Matrix matrixOrg) { //Returns RREF(A)
         Matrix matrix;
         matrix = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
-        System.out.println(matrix);
+        partialPivoting(matrix, 1); //Pivots to ensure we can backsolve
+        matrix = backSolve(matrix); // backsolves for the solution.
+        return matrix;
+    }
+
+    public static Matrix RREFSolve(Matrix matrixOrg) { //Returns X
+        Matrix matrix;
+        matrix = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
+        partialPivoting(matrix, 1); //Pivots to ensure we can backsolve
         matrix = backSolve(matrix); // backsolves for the solution.
         Matrix x = vectorFromColumn(matrix, matrix.getCols());
         return x;
@@ -231,20 +247,15 @@ public class LinearAlgebraCalculator {
             throw new RuntimeException(e);
         }
 
-        for (int i = 0; i < matrix.getRows(); i++) { //Making [A I]
-            double[] e = new double [matrix.getRows()];
-            for (int j = 0; j < matrix.getRows(); j++) {
-                e[j] = 0.0;
-                if (i == j) {
-                    e[j] = 1.0;
-                }
-            }
-            matrix.addCol(e);
-        }
+        int cols = matrix.getCols();
+
+
+        Matrix I = identityMatrix(matrix.getRows());
+        matrix = augmentMatrix(matrix, I);
 
         matrix = RREF(matrix); //[A I] ~ [I A^-1]
 
-        for (int i = 1; i <= matrix.getRows(); i++) {//Making [I A^-1] into [A^-1]
+        for (int i = 1; i <= cols; i++) {//Making [I A^-1] into [A^-1]
             matrix.removeCol(1);
         }
 
@@ -253,6 +264,9 @@ public class LinearAlgebraCalculator {
 
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
         Matrix U; //U will be an mxn matrix
+        Matrix P; //Permutation Matrix
+        int h = 1;
+        int cols = matrixOrg.getCols();
 
         try { //Needs to be used so the code in not altering the original matrix A
             U = (Matrix) matrixOrg.clone();
@@ -261,7 +275,22 @@ public class LinearAlgebraCalculator {
         }
 
         Matrix L = identityMatrix(U.getRows()); //L will be an mxm matrix
+        U = augmentMatrix(U, identityMatrix(U.getRows())); //Setup to get P
+        partialPivoting(U, 1); //Partially pivoting U for clean Gaussian Elimination
 
+        try { //Needs to be used so the code in not altering the original matrix
+            P = (Matrix) U.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = cols + 1; i <= 2 * cols; i++) { //Removing P from UP
+            U = createSubMatrix(U, cols + 1);
+        }
+
+        for (int j = cols; j >= 1; j--) {//Removing U from UP
+            P = createSubMatrix(P, 1);
+        }
 
         //Gaussian Elimination but L is created alongside U
         for (int i = 1; i <= U.getRows(); i++) { //i = current row
@@ -269,30 +298,32 @@ public class LinearAlgebraCalculator {
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
 
-            for (int k = pivotCol; k <= U.getRows(); k++) { //The columns of L will be the scaled pivot columns of U
+            for (int k = h; k <= U.getRows(); k++) { //The columns of L will be the scaled pivot columns of U. h is used to ensure L is lower-triangular.
                 L.setValue(k, i, U.getValue(k, pivotCol)/pivot); //L[k,i] = U[k,i] / pivot
             }
-
+            h++;
 
             for (int j = i; j < U.getRows(); j++) {//Getting 0's bellow the pivot
                 double ratio = -U.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
                 U.addRows(j + 1, i, ratio); //R1 = R1 + SR2
             }
         }
-
-        return new Matrix[]{L,U}; //Returns a list of L and U
+        return new Matrix[]{L,U, P}; //Returns a list of L, U, and P
     } //Returns L and U
 
-    public static Matrix LUSolve(Matrix matrixOrg, Matrix b) {
+    public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
         Matrix[] LU = LUDecomp(matrixOrg);
         Matrix L = LU[0];
         Matrix U = LU[1];
-        System.out.println("U");
-        System.out.println(U);
-        Matrix Ly = forwardSolve(augmentMatrix(L, b)); //Ly=b
+        Matrix P = LU[2];
+        P = matrixInverse(P);
+        L = multiplyMatrices(P, L); //L = P^-1 L
+        Matrix Ly = RREF(augmentMatrix(L,b)); //Ly = b; Needed because P^-1 L is not triangular
         Matrix y = vectorFromColumn(Ly, Ly.getCols()); //Separates the solution from the matrix
 
         Matrix Ux = backSolve(augmentMatrix(U, y)); //Ux=y
-        return vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
+        partialPivoting(Ux, 1); //Gets the vector in order
+        y = vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
+        return  y;
     }
 }

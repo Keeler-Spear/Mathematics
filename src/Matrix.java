@@ -59,7 +59,7 @@ public class Matrix {
     }
 
     public boolean isSquare() {
-        return square;
+        return rows == cols;
     }
 
     public void addRow(double[] vals) {
@@ -164,7 +164,7 @@ public class Matrix {
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
         double val1 = Math.abs(matrix[R1 - 1][col - 1]);
-        double val2 = Math.abs(matrix[R2 - 1][col]);
+        double val2 = Math.abs(matrix[R2 - 1][col - 1]);
 
         if (Math.abs(val1  - val2) < h && col != cols){ //Base case
             result = compareRows(R1, R2, col + 1);
@@ -187,7 +187,7 @@ public class Matrix {
                 if (j == 0) {
                     s += "[";
                 }
-                s += String.format("%.3f", matrix[i][j]);
+                s += String.format("%.4f", matrix[i][j]);
                 if (j == cols - 1) {
                     s += "]\n";
                 }
