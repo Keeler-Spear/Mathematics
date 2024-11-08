@@ -419,6 +419,18 @@ public class LinearAlgebraCalculator {
         return l2Norm(addMatrices(x, b, -1));
     }
 
+    private static double nonDiagSum(Matrix A) {
+        double sum = 0.0;
+        for (int i = 1; i <= A.getCols(); i++) {
+            for (int j = 1; j <= A.getRows(); j++) {
+                if (i != j) {
+                    sum += Math.abs(A.getValue(i, j));
+                }
+            }
+        }
+        return sum;
+    }
+
     public static Matrix normalize(Matrix x) {
         Matrix x1;
         for (int i = 1; i <= x.getCols(); i++) {
@@ -554,39 +566,41 @@ public class LinearAlgebraCalculator {
     }
 
     public static Matrix QREig (Matrix A, double t) {
-        Matrix eig0 = A;
+        if (A.getRows() != A.getCols()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
         Matrix[] QR = QRFactorization(A);
         Matrix Q = QR[0];
         Matrix R = QR[1];
-        Matrix eig1 = multiplyMatrices(R, Q); //E1 = RQ
-        while (xError1(eig1, eig0) > t) { //Runs while ||E1 - E0||1 > tolerance
-            QR = QRFactorization(eig1);
+        Matrix eig = multiplyMatrices(R, Q); //E1 = RQ
+        while (nonDiagSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+            QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
-            eig0 = eig1;
-            eig1 = multiplyMatrices(R, Q); //E1(k) = R(k)Q(k)
+            eig = multiplyMatrices(R, Q); //E1(k) = R(k)Q(k)
         }
-        return eig1;
+        return eig;
     }
 
     public static Matrix QREigShift (Matrix A, int  i,int j,double t) { //Shifting is based on element at (i, j)
-        Matrix eig0 = A;
+        if (A.getRows() != A.getCols()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
         double shift = A.getValue(i, j);
         A = addMatrices(A, constantIdentityMatrix(A.getRows(), shift), -1); //~A(k) = A(k) - shift*I
         Matrix[] QR = QRFactorization(A);
         Matrix Q = QR[0];
         Matrix R = QR[1];
-        Matrix eig1 = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
-        while (xError1(eig1, eig0) > t) { //Runs while ||E1 - E0||1 > tolerance
-            eig0 = eig1;
-            shift = eig1.getValue(i, j);
-            eig1 = addMatrices(eig1, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
-            QR = QRFactorization(eig1);
+        Matrix eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
+        while (nonDiagSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+            shift = eig.getValue(i, j);
+            eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
+            QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
-            eig1 = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E1(k) = R(k)Q(k) + shift*I
+            eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E1(k) = R(k)Q(k) + shift*I
         }
-        return eig1;
+        return eig;
     }
 
 
