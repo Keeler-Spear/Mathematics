@@ -1,5 +1,22 @@
 public class LinearAlgebraCalculator {
 
+    final static double tol = 0.000001;
+
+    public static Matrix addMatrices(Matrix A, Matrix B, double sign) {//1 for add, -1 for sub\
+        //A + B or A - B
+        if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must be of the same size!");
+        }
+
+        Matrix result = new Matrix (A.getRows(), A.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                result.setValue(i, j, A.getValue(i , j) + sign * B.getValue(i, j));
+            }
+        }
+        return result;
+    }
     //Determinant and helper methods
     public static double determinant(Matrix matrix) {
         if (!matrix.isSquare()) {
@@ -57,6 +74,19 @@ public class LinearAlgebraCalculator {
         return new Matrix(matrix);
     }
 
+    private static Matrix constantIdentityMatrix(int n, double c) {
+        double[][] matrix = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = 0.0;
+                if (i == j) {
+                    matrix[i][j] = c;
+                }
+            }
+        }
+        return new Matrix(matrix);
+    }
+
     //Matrix Multiplication and helper methods
     private static Matrix vectorFromColumn (Matrix tempMatrix, int col) {
         Matrix vector = new Matrix(tempMatrix.getRows(), 1);
@@ -65,6 +95,7 @@ public class LinearAlgebraCalculator {
         }
         return vector;
     }
+
 
     public static Matrix multiplyMatrices(Matrix matrix1, Matrix matrix2) {
         if (matrix1.getCols() != matrix2.getRows()) {
@@ -262,6 +293,7 @@ public class LinearAlgebraCalculator {
         return matrix;
     }
 
+    //TODO: Multiply by p^-1
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
         Matrix U; //U will be an mxn matrix
         Matrix P; //Permutation Matrix
@@ -326,4 +358,236 @@ public class LinearAlgebraCalculator {
         y = vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
         return  y;
     }
+
+    //Eigenvalues
+
+    public static Matrix transpose(Matrix matrixOrg) { //r1 = c1, r2 = c2
+        Matrix matrix = new Matrix (matrixOrg.getCols(), matrixOrg.getRows());
+            for (int i = 1; i <= matrixOrg.getCols(); i++) {
+                for (int j = 1; j <= matrixOrg.getRows(); j++) {
+                    matrix.setValue(i, j, matrixOrg.getValue(j, i));
+                }
+            }
+
+        return matrix;
+    }
+
+    private static double l2Vector (Matrix matrix) {
+        double l = 0.0;
+        for (int i = 1; i <= matrix.getRows(); i++) {
+            l += Math.pow(matrix.getValue(i, 1), 2);
+        }
+        return Math.sqrt(l);
+    }
+
+    //Todo
+    private static double l2Matrix (Matrix matrix) {
+        return 0.0;
+    }
+
+    public static double l2Norm (Matrix matrix) {
+        if (matrix.getCols() == 1) {
+            return l2Vector(matrix);
+        }
+        else {
+            return l2Matrix(matrix);
+        }
+    }
+
+    public static double l1Norm(Matrix matrix) {
+        double a = 0.0;
+        double b;
+        for (int i = 1; i <= matrix.getCols(); i++) {
+            b = 0.0;
+            for (int j = 1; j <= matrix.getRows(); j++) {
+                b += Math.abs(matrix.getValue(j, i));
+            }
+            if (b > a) {
+                a = b;
+            }
+        }
+        return a;
+    }
+
+    private static double xError1 (Matrix A, Matrix B) {
+        return l1Norm(addMatrices(A, B, -1));
+    }
+    private static double rError2 (Matrix A, Matrix x, Matrix b) {
+        return l2Norm(addMatrices(b, multiplyMatrices(A, x), -1));
+    }
+    private static double xError2 (Matrix x, Matrix b) {
+        return l2Norm(addMatrices(x, b, -1));
+    }
+
+    public static Matrix normalize(Matrix x) {
+        Matrix x1;
+        for (int i = 1; i <= x.getCols(); i++) {
+            x1 = normalizeVector(vectorFromColumn(x, i));
+            x.setCol(i, x1.getMatrix());
+        }
+        return x;
+    }
+
+    private static Matrix normalizeVector (Matrix x) {
+        double l2 = l2Norm(x);
+        for (int i = 1; i <= x.getRows(); i++) {
+            x.scaleRow(i, 1.0/l2);
+        }
+        return x;
+    }
+
+    public static double powerMethod (Matrix A, Matrix x, double t) { //Returns dominant eigenvalue and associated eigenvector
+        if (A.getCols() != A.getRows()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+        Matrix xk = normalize(multiplyMatrices(A, x)); //xk = Ax(k-1)/||x(k-1)||
+        while (xError2(xk, x) > t) {
+            x = xk;
+            xk = normalize(multiplyMatrices(A, xk)); //xk = Ax(k-1)/||x(k-1)||
+        }
+        Matrix eigVal = multiplyMatrices(A, xk); //eig = xTk*A*xk
+        eigVal = multiplyMatrices(transpose(xk), eigVal);
+        return eigVal.getValue(1, 1);
+    }
+
+    public static double powerMethod (Matrix A) {
+        Matrix x = new Matrix(A.getRows(), 1);
+        for (int i = 1; i <= x.getRows(); i++) {
+            x.setValue(i,1, 1);
+        }
+        return powerMethod(A, x, tol);
+    }
+
+    //Vectors
+    public static double dotProduct (Matrix a, Matrix b) {
+        if (a.getCols() != 1 || b.getCols() != 1) {
+            throw new IllegalArgumentException("The matrices must be vectors!");
+        }
+        if (a.getRows() != b.getRows()) {
+            throw new IllegalArgumentException("The vectors not have the same number of rows!");
+        }
+        double dp = 0.0;
+
+        for (int i = 1; i <= a.getRows(); i++) {
+            dp += a.getValue(i, 1) * b.getValue(i, 1);
+        }
+        return dp;
+    }
+
+    public static Matrix proj(Matrix y, Matrix u) { //(Y*U)/(U*U) U
+        if (y.getCols() != 1 || u.getCols() != 1) {
+            throw new IllegalArgumentException("The matrices must be vectors!");
+        }
+        if (y.getRows() != u.getRows()) {
+            throw new IllegalArgumentException("The vectors not have the same number of rows!");
+        }
+        Matrix proj;
+        try { //Needs to be used so the code in not altering the original matrix A
+            proj = (Matrix) u.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        double scalar = dotProduct(y, u) / dotProduct(u, u);
+        for (int i = 1; i <= u.getRows(); i++) {
+            proj.scaleRow(i, scalar);
+        }
+        return proj;
+    }
+
+    public static Matrix zeroMatrix (int rows, int cols) {
+        Matrix matrix = new Matrix(rows, cols);
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                matrix.setValue(i, j, 0);
+            }
+        }
+        return matrix;
+    }
+
+    private static double[] diagVals(Matrix matrix) {
+        if (matrix.getCols() != matrix.getRows()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+        double[] vals = new double[matrix.getCols()];
+        for (int i = 1; i <= matrix.getRows(); i++) {
+            vals[i-1] = matrix.getValue(i, i);
+        }
+        return vals;
+    }
+
+    public static Matrix GramSchmidt (Matrix  x) {
+        Matrix v;
+        Matrix vn;
+        Matrix vnTemp;
+        Matrix xn;
+        Matrix temp;
+        try { //Needs to be used so the code in not altering the original matrix A
+             v = (Matrix) x.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 2; i <= v.getCols(); i++) { //Start at 2 b/c v1=x1
+            temp = zeroMatrix(x.getRows(), 1);
+            xn = vectorFromColumn(x, i);
+
+            for (int j = 1; j < i; j++) {
+                vnTemp = vectorFromColumn(v, j);
+                temp = addMatrices(temp, proj(xn, vnTemp), 1);
+            }
+
+            vn = addMatrices(xn, temp, -1 );
+            v.setCol(i, vn.getMatrix());
+        }
+
+        return v;
+    }
+
+    public static Matrix[] QRFactorization (Matrix A) {
+        Matrix[] QR = new Matrix[2];
+        Matrix Q = normalize(GramSchmidt(A));
+        Matrix R = multiplyMatrices(transpose(Q), A);
+        QR[0] = Q;
+        QR[1] = R;
+        return QR;
+    }
+
+    public static Matrix QREig (Matrix A, double t) {
+        Matrix eig0 = A;
+        Matrix[] QR = QRFactorization(A);
+        Matrix Q = QR[0];
+        Matrix R = QR[1];
+        Matrix eig1 = multiplyMatrices(R, Q); //E1 = RQ
+        while (xError1(eig1, eig0) > t) { //Runs while ||E1 - E0||1 > tolerance
+            QR = QRFactorization(eig1);
+            Q = QR[0];
+            R = QR[1];
+            eig0 = eig1;
+            eig1 = multiplyMatrices(R, Q); //E1(k) = R(k)Q(k)
+        }
+        return eig1;
+    }
+
+    public static Matrix QREigShift (Matrix A, int  i,int j,double t) { //Shifting is based on element at (i, j)
+        Matrix eig0 = A;
+        double shift = A.getValue(i, j);
+        A = addMatrices(A, constantIdentityMatrix(A.getRows(), shift), -1); //~A(k) = A(k) - shift*I
+        Matrix[] QR = QRFactorization(A);
+        Matrix Q = QR[0];
+        Matrix R = QR[1];
+        Matrix eig1 = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
+        while (xError1(eig1, eig0) > t) { //Runs while ||E1 - E0||1 > tolerance
+            eig0 = eig1;
+            shift = eig1.getValue(i, j);
+            eig1 = addMatrices(eig1, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
+            QR = QRFactorization(eig1);
+            Q = QR[0];
+            R = QR[1];
+            eig1 = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E1(k) = R(k)Q(k) + shift*I
+        }
+        return eig1;
+    }
+
+
 }

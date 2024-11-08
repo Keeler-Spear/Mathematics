@@ -3,7 +3,7 @@ public class Matrix {
     private int rows;
     private int cols;
     private boolean square = false;
-    private static final int MIN_ROWS = 2;
+    private static final int MIN_ROWS = 1;
     private static final int MIN_COLS = 1;
     private static final double h = 0.00000000001;
 
@@ -177,6 +177,19 @@ public class Matrix {
         }
 
         return result;
+    }
+
+    public void setCol(int col, double[][] v) {
+        col = col - 1;
+        if (col < 0 || col >= cols) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        if (v.length != rows || v[0].length != 1) {
+            throw new IllegalArgumentException("The given column is not the correct size!");
+        }
+        for (int i = 0; i < rows; i++) {
+            matrix[i][col] = v[i][0];
+        }
     }
 
     @Override
