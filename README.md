@@ -4,6 +4,4 @@ All the linear algebra calculations contained in this project are based on the f
 Judi J. McDonald. A free version of the text can be found at: https://www.pearson.wolframcloud.com/obj/eTexts/LA6Cloud/6616c834174039112795079e2b5b34c3.nb.
 
 Current ToDos:
-1. Eigenvalue and eigenvector approximators
-2. Vector operations
-3. Vector subspaces
+1. Vector subspaces
