@@ -2,7 +2,6 @@ public class Matrix {
     private double[][] matrix;
     private int rows;
     private int cols;
-    private boolean square = false;
     private static final int MIN_ROWS = 1;
     private static final int MIN_COLS = 1;
     private static final double h = 0.00000000001;
@@ -15,9 +14,6 @@ public class Matrix {
         this.matrix = vals;
         this.rows = vals.length;
         this.cols = vals[0].length;
-        if (rows == cols){
-            square = true;
-        }
     }
 
     public Matrix(int rows, int cols) {
@@ -27,9 +23,6 @@ public class Matrix {
         matrix = new double[rows][cols];
         this.rows = rows;
         this.cols = cols;
-        if (rows == cols){
-            square = true;
-        }
     }
 
     public void setValue (int row, int col, double value) {

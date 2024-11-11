@@ -2,7 +2,7 @@ public class LinearAlgebraCalculator {
 
     final static double tol = 0.000001;
 
-    public static Matrix addMatrices(Matrix A, Matrix B, double sign) {//1 for add, -1 for sub\
+    public static Matrix addMatrices(Matrix A, Matrix B, double sign) {//1 for add, -1 for sub
         //A + B or A - B
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
             throw new IllegalArgumentException("The matrices must be of the same size!");
@@ -600,6 +600,4 @@ public class LinearAlgebraCalculator {
         }
         return eig;
     }
-
-
 }
