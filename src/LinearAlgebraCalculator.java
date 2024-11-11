@@ -18,30 +18,30 @@ public class LinearAlgebraCalculator {
         return result;
     }
     //Determinant and helper methods
-    public static double determinant(Matrix matrix) {
-        if (!matrix.isSquare()) {
+    public static double determinant(Matrix A) {
+        if (!A.isSquare()) {
             throw new IllegalArgumentException("Matrix is not square");
         }
-        return determinantRec(matrix);
+        return determinantRec(A);
     }
 
-    private static double determinantRec(Matrix matrix) {
+    private static double determinantRec(Matrix A) {
         double determinant = 0.0;
-        if (matrix.getRows() == 2) { //Base Case
-            determinant = matrix.getValue(1, 1) * matrix.getValue(2, 2) - matrix.getValue(1, 2) * matrix.getValue(2, 1);
+        if (A.getRows() == 2) { //Base Case
+            determinant = A.getValue(1, 1) * A.getValue(2, 2) - A.getValue(1, 2) * A.getValue(2, 1);
         }
         else {
-            for (int i = 1; i <= matrix.getCols(); i++) {
-                determinant += matrix.getValue(1, i) * Math.pow(-1, i - 1) * determinantRec(createSubMatrix(matrix, 1, i));
+            for (int i = 1; i <= A.getCols(); i++) {
+                determinant += A.getValue(1, i) * Math.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
             }
         }
         return determinant;
     }
 
-    private static Matrix createSubMatrix(Matrix matrix, int row, int col) {
+    private static Matrix createSubMatrix(Matrix A, int row, int col) {
         Matrix subMatrix;
         try {
-            subMatrix = (Matrix) matrix.clone();
+            subMatrix = (Matrix) A.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
@@ -50,10 +50,10 @@ public class LinearAlgebraCalculator {
         return subMatrix;
     }
 
-    private static Matrix createSubMatrix(Matrix matrix, int col) {
+    private static Matrix createSubMatrix(Matrix A, int col) {
         Matrix subMatrix;
         try {
-            subMatrix = (Matrix) matrix.clone();
+            subMatrix = (Matrix) A.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
@@ -62,49 +62,49 @@ public class LinearAlgebraCalculator {
     }
 
     private static Matrix identityMatrix(int n) {
-        double[][] matrix = new double[n][n];
+        double[][] identity = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                matrix[i][j] = 0.0;
+                identity[i][j] = 0.0;
                 if (i == j) {
-                    matrix[i][j] = 1;
+                    identity[i][j] = 1;
                 }
             }
         }
-        return new Matrix(matrix);
+        return new Matrix(identity);
     }
 
     private static Matrix constantIdentityMatrix(int n, double c) {
-        double[][] matrix = new double[n][n];
+        double[][] identity = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                matrix[i][j] = 0.0;
+                identity[i][j] = 0.0;
                 if (i == j) {
-                    matrix[i][j] = c;
+                    identity[i][j] = c;
                 }
             }
         }
-        return new Matrix(matrix);
+        return new Matrix(identity);
     }
 
     //Matrix Multiplication and helper methods
-    private static Matrix vectorFromColumn (Matrix tempMatrix, int col) {
-        Matrix vector = new Matrix(tempMatrix.getRows(), 1);
-        for (int i = 1; i <= tempMatrix.getRows(); i++) {
-            vector.setValue(i, 1, tempMatrix.getValue(i, col));
+    private static Matrix vectorFromColumn (Matrix A, int col) {
+        Matrix vector = new Matrix(A.getRows(), 1);
+        for (int i = 1; i <= A.getRows(); i++) {
+            vector.setValue(i, 1, A.getValue(i, col));
         }
         return vector;
     }
 
 
-    public static Matrix multiplyMatrices(Matrix matrix1, Matrix matrix2) {
-        if (matrix1.getCols() != matrix2.getRows()) {
-            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + matrix1.getRows() + " != " +  matrix2.getRows() + "!");
+    public static Matrix multiplyMatrices(Matrix A, Matrix B) {
+        if (A.getCols() != B.getRows()) {
+            throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + A.getRows() + " != " +  B.getRows() + "!");
         }
-        Matrix product = new Matrix(matrix1.getRows(), matrix2.getCols());
-        for (int i = 1; i <= matrix2.getCols(); i++) {
-            Matrix tempVector = vectorFromColumn(matrix2, i);
-            Matrix tempCol = matrixVectorMultiplication(matrix1, tempVector);
+        Matrix product = new Matrix(A.getRows(), B.getCols());
+        for (int i = 1; i <= B.getCols(); i++) {
+            Matrix tempVector = vectorFromColumn(B, i);
+            Matrix tempCol = matrixVectorMultiplication(A, tempVector);
             for (int j = 1; j <= product.getRows(); j++) {
                 product.setValue(j, i, tempCol.getValue(j, 1));
             }
@@ -112,15 +112,15 @@ public class LinearAlgebraCalculator {
         return product;
     }
 
-    private static Matrix matrixVectorMultiplication (Matrix matrix, Matrix vector) {
-        if (vector.getCols() != 1 || matrix.getCols() != vector.getRows()) {
+    private static Matrix matrixVectorMultiplication (Matrix A, Matrix b) {
+        if (b.getCols() != 1 || A.getCols() != b.getRows()) {
             throw new IllegalArgumentException();
         }
-        Matrix newMatrix = new Matrix(matrix.getRows(), 1);
-        for (int i = 1; i <= matrix.getRows(); i++) {
+        Matrix newMatrix = new Matrix(A.getRows(), 1);
+        for (int i = 1; i <= A.getRows(); i++) {
             double val = 0.0;
-            for (int j = 1; j <= vector.getRows(); j++) {
-                val += matrix.getValue(i, j) * vector.getValue(j, 1);
+            for (int j = 1; j <= b.getRows(); j++) {
+                val += A.getValue(i, j) * b.getValue(j, 1);
             }
             newMatrix.setValue(i, 1, val);
             val = 0.0;
@@ -129,50 +129,50 @@ public class LinearAlgebraCalculator {
     }
 
     //Gaussian Elimination, LU decomposition, and helper methods
-    public static Matrix augmentMatrix(Matrix matrix1, Matrix matrix2) {
-        if (matrix1.getRows() != matrix2.getRows()) {
+    public static Matrix augmentMatrix(Matrix A, Matrix B) {
+        if (A.getRows() != B.getRows()) {
             throw new IllegalArgumentException("The matrices must have the same number of rows!");
         }
-        Matrix matrix = new Matrix (matrix1.getRows(), matrix1.getCols() + matrix2.getCols());
-        for (int i = 1; i <= matrix1.getCols(); i++) {
-            for (int j = 1; j <= matrix1.getRows(); j++) {
-                matrix.setValue(j, i, matrix1.getValue(j, i));
+        Matrix matrix = new Matrix (A.getRows(), A.getCols() + B.getCols());
+        for (int i = 1; i <= A.getCols(); i++) {
+            for (int j = 1; j <= A.getRows(); j++) {
+                matrix.setValue(j, i, A.getValue(j, i));
             }
         }
-        for (int i = 1; i <= matrix2.getCols(); i++) {
-            for (int j = 1; j <= matrix1.getRows(); j++) {
-                matrix.setValue(j, i + matrix1.getCols(), matrix2.getValue(j, i));
+        for (int i = 1; i <= B.getCols(); i++) {
+            for (int j = 1; j <= A.getRows(); j++) {
+                matrix.setValue(j, i + A.getCols(), B.getValue(j, i));
             }
         }
         return matrix;
     }
 
-    private static void partialPivoting(Matrix matrix, int row) {//Can optimize further if I use quick sort
-        for ( int i = row - 1; i < matrix.getRows(); i++ ) {
-            for (int j = row; j < matrix.getRows() - i; j++) {
-                if (matrix.compareRows(j, j+1, 1) < 0) {
-                    matrix.swapRows(j, j+1);
+    private static void partialPivoting(Matrix A, int row) {//Can optimize further if I use quick sort
+        for ( int i = row - 1; i < A.getRows(); i++ ) {
+            for (int j = row; j < A.getRows() - i; j++) {
+                if (A.compareRows(j, j+1, 1) < 0) {
+                    A.swapRows(j, j+1);
                 }
             }
         }
     }
 
-    private static double[] findPivot (Matrix matrix, int row) {
-        double pivot = matrix.getValue(row, 1);
+    private static double[] findPivot (Matrix A, int row) {
+        double pivot = A.getValue(row, 1);
         int i = 2;
-        while (pivot == 0 && i <= matrix.getCols()) {
-            pivot = matrix.getValue(row, i);
+        while (pivot == 0 && i <= A.getCols()) {
+            pivot = A.getValue(row, i);
             i++;
         }
         return new double[]{pivot, --i};
     }
 
-    private static int findPivotCol (Matrix matrix, int row) {
-        double pivot = matrix.getValue(row, 1);
+    private static int findPivotCol (Matrix A, int row) {
+        double pivot = A.getValue(row, 1);
         int i = 1;
-        while (pivot == 0 && i < matrix.getCols()) {
-            pivot = matrix.getValue(row, i);
-            if (pivot == 0 && i <= matrix.getCols()) {
+        while (pivot == 0 && i < A.getCols()) {
+            pivot = A.getValue(row, i);
+            if (pivot == 0 && i <= A.getCols()) {
                 i++;
             }
         }
@@ -180,117 +180,115 @@ public class LinearAlgebraCalculator {
     }
 
     public static Matrix gaussianElimination(Matrix matrixOrg) {
-        Matrix matrix;
-        try { //Needs to be used so the code in not altering the original matrix A
-            matrix = (Matrix) matrixOrg.clone();
+        Matrix A;
+        try { //Needs to be used so the code in not altering the original A A
+            A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = 1; i <= matrix.getRows(); i++) { //i = current row
-            partialPivoting(matrix, i); //Partially pivots the matrix.
-            double[] vals = findPivot(matrix, i);
+        for (int i = 1; i <= A.getRows(); i++) { //i = current row
+            partialPivoting(A, i); //Partially pivots the A.
+            double[] vals = findPivot(A, i);
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
 
 
-            for (int j = i; j < matrix.getRows(); j++) {//Getting 0's bellow the pivot
-                double ratio = -matrix.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
-                matrix.addRows(j + 1, i, ratio); //R1 = R1 + SR2
+            for (int j = i; j < A.getRows(); j++) {//Getting 0's bellow the pivot
+                double ratio = -A.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
+                A.addRows(j + 1, i, ratio); //R1 = R1 + SR2
             }
         }
-        return matrix;
+        return A;
     }
 
     private static Matrix backSolve(Matrix matrixOrg) {
-        Matrix matrix;
+        Matrix A;
         try {
-            matrix = (Matrix) matrixOrg.clone();
+            A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = matrix.getRows(); i >= 1; i--) {// Gets zero's above the current pivot
-            int pivotCol = findPivotCol(matrix, i);
-            double pivot = matrix.getValue(i, pivotCol);
+        for (int i = A.getRows(); i >= 1; i--) {// Gets zero's above the current pivot
+            int pivotCol = findPivotCol(A, i);
+            double pivot = A.getValue(i, pivotCol);
             if (pivot != 0) {
-                matrix.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
+                A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
             for (int j = i; j > 1; j--) {
-                matrix.addRows(j - 1, i, -matrix.getValue(j - 1, pivotCol));
+                A.addRows(j - 1, i, -A.getValue(j - 1, pivotCol));
             }
         }
-        return matrix;
+        return A;
     }
 
     private static Matrix forwardSolve (Matrix matrixOrg) {
-        Matrix matrix;
+        Matrix A;
         try {
-            matrix = (Matrix) matrixOrg.clone();
+            A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = 1; i < matrix.getRows(); i++) {// Gets zero's bellow the current pivot
-            int pivotCol = findPivotCol(matrix, i);
-            double pivot = matrix.getValue(i, pivotCol);
+        for (int i = 1; i < A.getRows(); i++) {// Gets zero's bellow the current pivot
+            int pivotCol = findPivotCol(A, i);
+            double pivot = A.getValue(i, pivotCol);
             if (pivot != 0) {
-                matrix.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
+                A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
-            for (int j = i; j < matrix.getRows(); j++) {
-                matrix.addRows(j + 1, i, -matrix.getValue(j+1, pivotCol));
+            for (int j = i; j < A.getRows(); j++) {
+                A.addRows(j + 1, i, -A.getValue(j+1, pivotCol));
             }
         }
-        return matrix;
+        return A;
     }
 
     public static Matrix RREF(Matrix matrixOrg) { //Returns RREF(A)
-        Matrix matrix;
-        matrix = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
-        partialPivoting(matrix, 1); //Pivots to ensure we can backsolve
-        matrix = backSolve(matrix); // backsolves for the solution.
-        return matrix;
+        Matrix A = gaussianElimination(matrixOrg); //Turns a A into row echelon form
+        partialPivoting(A, 1); //Pivots to ensure we can backsolve
+        A = backSolve(A); // backsolves for the solution.
+        return A;
     }
 
     public static Matrix RREFSolve(Matrix matrixOrg) { //Returns X
-        Matrix matrix;
-        matrix = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
-        partialPivoting(matrix, 1); //Pivots to ensure we can backsolve
-        matrix = backSolve(matrix); // backsolves for the solution.
-        Matrix x = vectorFromColumn(matrix, matrix.getCols());
+        Matrix A = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
+        partialPivoting(A, 1); //Pivots to ensure we can backsolve
+        A = backSolve(A); // backsolves for the solution.
+        Matrix x = vectorFromColumn(A, A.getCols());
         return x;
     }
 
     public static Matrix matrixInverse (Matrix matrixOrg) { //Row Reduce {A, I}
         if (!matrixOrg.isSquare()) {
-            throw new IllegalArgumentException("The matrix must be square!");
+            throw new IllegalArgumentException("The A must be square!");
         }
 
         if (determinant(matrixOrg) == 0) { //Is A ~ I? via Invertible Matrix Theorem
-            throw new IllegalArgumentException("The matrix is singular!");
+            throw new IllegalArgumentException("The A is singular!");
         }
 
-        Matrix matrix;
+        Matrix A;
 
         try {
-            matrix = (Matrix) matrixOrg.clone();
+            A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        int cols = matrix.getCols();
+        int cols = A.getCols();
 
 
-        Matrix I = identityMatrix(matrix.getRows());
-        matrix = augmentMatrix(matrix, I);
+        Matrix I = identityMatrix(A.getRows());
+        A = augmentMatrix(A, I);
 
-        matrix = RREF(matrix); //[A I] ~ [I A^-1]
+        A = RREF(A); //[A I] ~ [I A^-1]
 
         for (int i = 1; i <= cols; i++) {//Making [I A^-1] into [A^-1]
-            matrix.removeCol(1);
+            A.removeCol(1);
         }
 
-        return matrix;
+        return A;
     }
 
     //TODO: Multiply by p^-1
@@ -361,46 +359,46 @@ public class LinearAlgebraCalculator {
 
     //Eigenvalues
 
-    public static Matrix transpose(Matrix matrixOrg) { //r1 = c1, r2 = c2
-        Matrix matrix = new Matrix (matrixOrg.getCols(), matrixOrg.getRows());
-            for (int i = 1; i <= matrixOrg.getCols(); i++) {
-                for (int j = 1; j <= matrixOrg.getRows(); j++) {
-                    matrix.setValue(i, j, matrixOrg.getValue(j, i));
+    public static Matrix transpose(Matrix A) { //r1 = c1, r2 = c2
+        Matrix matrix = new Matrix (A.getCols(), A.getRows());
+            for (int i = 1; i <= A.getCols(); i++) {
+                for (int j = 1; j <= A.getRows(); j++) {
+                    matrix.setValue(i, j, A.getValue(j, i));
                 }
             }
 
         return matrix;
     }
 
-    private static double l2Vector (Matrix matrix) {
+    private static double l2Vector (Matrix b) {
         double l = 0.0;
-        for (int i = 1; i <= matrix.getRows(); i++) {
-            l += Math.pow(matrix.getValue(i, 1), 2);
+        for (int i = 1; i <= b.getRows(); i++) {
+            l += Math.pow(b.getValue(i, 1), 2);
         }
         return Math.sqrt(l);
     }
 
     //Todo
-    private static double l2Matrix (Matrix matrix) {
+    private static double l2Matrix (Matrix A) {
         return 0.0;
     }
 
-    public static double l2Norm (Matrix matrix) {
-        if (matrix.getCols() == 1) {
-            return l2Vector(matrix);
+    public static double l2Norm (Matrix A) {
+        if (A.getCols() == 1) {
+            return l2Vector(A);
         }
         else {
-            return l2Matrix(matrix);
+            return l2Matrix(A);
         }
     }
 
-    public static double l1Norm(Matrix matrix) {
+    public static double l1Norm(Matrix A) {
         double a = 0.0;
         double b;
-        for (int i = 1; i <= matrix.getCols(); i++) {
+        for (int i = 1; i <= A.getCols(); i++) {
             b = 0.0;
-            for (int j = 1; j <= matrix.getRows(); j++) {
-                b += Math.abs(matrix.getValue(j, i));
+            for (int j = 1; j <= A.getRows(); j++) {
+                b += Math.abs(A.getValue(j, i));
             }
             if (b > a) {
                 a = b;
@@ -431,21 +429,21 @@ public class LinearAlgebraCalculator {
         return sum;
     }
 
-    public static Matrix normalize(Matrix x) {
-        Matrix x1;
-        for (int i = 1; i <= x.getCols(); i++) {
-            x1 = normalizeVector(vectorFromColumn(x, i));
-            x.setCol(i, x1.getMatrix());
+    public static Matrix normalize(Matrix A) {
+        Matrix ci;
+        for (int i = 1; i <= A.getCols(); i++) {
+            ci = normalizeVector(vectorFromColumn(A, i));
+            A.setCol(i, ci.getMatrix());
         }
-        return x;
+        return A;
     }
 
-    private static Matrix normalizeVector (Matrix x) {
-        double l2 = l2Norm(x);
-        for (int i = 1; i <= x.getRows(); i++) {
-            x.scaleRow(i, 1.0/l2);
+    private static Matrix normalizeVector (Matrix b) {
+        double l2 = l2Norm(b);
+        for (int i = 1; i <= b.getRows(); i++) {
+            b.scaleRow(i, 1.0/l2);
         }
-        return x;
+        return b;
     }
 
     public static double powerMethod (Matrix A, Matrix x, double t) { //Returns dominant eigenvalue and associated eigenvector
@@ -517,43 +515,43 @@ public class LinearAlgebraCalculator {
         return matrix;
     }
 
-    private static double[] diagVals(Matrix matrix) {
-        if (matrix.getCols() != matrix.getRows()) {
+    private static double[] diagVals(Matrix A) {
+        if (!(A.isSquare())) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
-        double[] vals = new double[matrix.getCols()];
-        for (int i = 1; i <= matrix.getRows(); i++) {
-            vals[i-1] = matrix.getValue(i, i);
+        double[] vals = new double[A.getCols()];
+        for (int i = 1; i <= A.getRows(); i++) {
+            vals[i-1] = A.getValue(i, i);
         }
         return vals;
     }
 
-    public static Matrix GramSchmidt (Matrix  x) {
-        Matrix v;
+    public static Matrix GramSchmidt (Matrix matrixOrg) {
+        Matrix orthMatrix;
         Matrix vn;
-        Matrix vnTemp;
+        Matrix ci;
         Matrix xn;
         Matrix temp;
         try { //Needs to be used so the code in not altering the original matrix A
-             v = (Matrix) x.clone();
+            orthMatrix = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = 2; i <= v.getCols(); i++) { //Start at 2 b/c v1=x1
-            temp = zeroMatrix(x.getRows(), 1);
-            xn = vectorFromColumn(x, i);
+        for (int i = 2; i <= orthMatrix.getCols(); i++) { //Start at 2 b/c v1=x1
+            temp = zeroMatrix(matrixOrg.getRows(), 1);
+            xn = vectorFromColumn(matrixOrg, i);
 
             for (int j = 1; j < i; j++) {
-                vnTemp = vectorFromColumn(v, j);
-                temp = addMatrices(temp, proj(xn, vnTemp), 1);
+                ci = vectorFromColumn(orthMatrix, j);
+                temp = addMatrices(temp, proj(xn, ci), 1);
             }
 
             vn = addMatrices(xn, temp, -1 );
-            v.setCol(i, vn.getMatrix());
+            orthMatrix.setCol(i, vn.getMatrix());
         }
 
-        return v;
+        return orthMatrix;
     }
 
     public static Matrix[] QRFactorization (Matrix A) {
