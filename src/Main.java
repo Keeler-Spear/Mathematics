@@ -1,6 +1,3 @@
-import javax.sound.sampled.Line;
-import java.sql.SQLOutput;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -56,10 +53,10 @@ public class Main {
         Matrix matrix4 = new Matrix(vals4);
 
         //System.out.println(matrix2);
-        Matrix x1 = LinearAlgebraCalculator.LUSolve(matrix2, matrix4);
-        matrix2 = LinearAlgebraCalculator.augmentMatrix(matrix2, matrix4);
+        Matrix x1 = LinearAlgebra.LUSolve(matrix2, matrix4);
+        matrix2 = LinearAlgebra.augmentMatrix(matrix2, matrix4);
         //System.out.println(matrix2);
-        Matrix x2 = LinearAlgebraCalculator.RREF(matrix2);
+        Matrix x2 = LinearAlgebra.RREF(matrix2);
         System.out.println(x1);
         System.out.println(x2);
 

@@ -1,4 +1,4 @@
-public class LinearAlgebraCalculator {
+public class LinearAlgebra {
 
     final static double tol = 0.000001;
 
@@ -192,8 +192,7 @@ public class LinearAlgebraCalculator {
             double[] vals = findPivot(A, i);
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
-
-
+            
             for (int j = i; j < A.getRows(); j++) {//Getting 0's bellow the pivot
                 double ratio = -A.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
                 A.addRows(j + 1, i, ratio); //R1 = R1 + SR2
@@ -550,7 +549,6 @@ public class LinearAlgebraCalculator {
             vn = addMatrices(xn, temp, -1 );
             orthMatrix.setCol(i, vn.getMatrix());
         }
-
         return orthMatrix;
     }
 
