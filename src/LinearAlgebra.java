@@ -598,4 +598,13 @@ public class LinearAlgebra {
         }
         return eig;
     }
+
+    public static double[] eig(Matrix A) {
+        double[] eVals = new double[A.getCols()];
+        Matrix eigs =  QREig(A, tol);
+        for (int i = 1; i <= eVals.length; i++) {
+            eVals[i-1] = eigs.getValue(i, i);
+        }
+        return eVals;
+    }
 }
