@@ -338,7 +338,7 @@ public class LinearAlgebra {
             }
         }
         return new Matrix[]{L,U, P}; //Returns a list of L, U, and P
-    } //Returns L and U
+    }
 
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
         Matrix[] LU = LUDecomp(matrixOrg);

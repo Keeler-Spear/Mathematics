@@ -194,8 +194,11 @@ public class Matrix {
                     s += "[";
                 }
                 s += String.format("%.4f", matrix[i][j]);
-                if (j == cols - 1) {
+                if (j == cols - 1 && i != rows - 1) {
                     s += "]\n";
+                }
+                else if (j == cols - 1 && i == rows - 1) {
+                    s += "]";
                 }
                 else {
                     s += " ";

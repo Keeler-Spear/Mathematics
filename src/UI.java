@@ -1,10 +1,12 @@
 import javax.swing.*;
+import java.io.*;
+import java.util.Scanner;
 
 public class UI {
     private static int curLetter = 0;
     private static final String[] names = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     private static Matrix[] matrices = new Matrix[26];
-    private static String[] options = {"Create Matrix", "Perform Matrix Operations", "View Saved Matrices", "TO BE ADDED", "Exit"};
+    private static String[] options = {"Create Matrix", "Perform Matrix Operations", "View Saved Matrices", "Load Data", "Save Data", "Reset Data", "Exit"};
     private static String[] opOptions = {"Determinant", "Eigenvalues", "LU Decomposition", "Matrix Inverse", "Matrix Multiplication", "QR Decomposition", "RREF"};
 
     private static final String SAVE_FILE = "SavedVars.csv";
@@ -74,7 +76,7 @@ public class UI {
         int choice = JOptionPane.showOptionDialog(null, "Calculate:", "Select one:", 0, 3, null, opOptions, opOptions[6]);
         String name = JOptionPane.showInputDialog("Which matrix do you want to use?");
         Matrix A = findMatrix(name);
-
+        //ToDo: Make an option to save these matrices
         if (choice == 0) { //Det
             JOptionPane.showMessageDialog(null, "The determinant of your matrix is: " + LinearAlgebra.determinant(A));
 
@@ -121,13 +123,79 @@ public class UI {
         }
     }
 
+    private static void loadData() { //Loads the matrices from SAVE_FILE
+        try {
+            Scanner in = new Scanner(new FileInputStream(SAVE_FILE));
+            String line = in.nextLine();
+            int rows;
+            int cols;
+            double[][] temp = new double[100][100];
+            double[][] vals;
+
+            while (in.hasNextLine()) {
+                rows = 0;
+                cols = 0;
+
+                while(!line.equals("NEWMATRIX")) {
+                    String data[] = line.split(" ");
+                    for (int i = 0; i < data.length; i++) {
+                        data[i] = data[i].replace("[", "");
+                        data[i] = data[i].replace("]", "");
+                        temp[rows][i] = Double.parseDouble(data[i]);
+                    }
+                    cols = data.length;
+                    rows++;
+                    line = in.nextLine();
+                }
+                //Creates the matrix from the saved data
+                vals = new double[rows][cols];
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        vals[i][j] = temp[i][j];
+                    }
+                }
+                matrices[curLetter] = new Matrix(vals);;
+                curLetter++;
+                if (in.hasNextLine()) {
+                    line = in.nextLine();
+                }
+            }
+            in.close();
+        }
+        catch (IOException ex) {
+            System.out.println("Error: " + ex);
+        }
+    }
+
+    private static void saveData() { //Saves the current matrices in alphabetical order to SAVE_FILE
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream(SAVE_FILE));
+            for (int i = 0; i < curLetter; i++) {
+                out.println(matrices[i]);
+                out.println("NEWMATRIX");
+            }
+
+            out.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("Error: " + ex);
+        }
+    }
+
+    private static void resetData() {
+        try {
+            new FileOutputStream(SAVE_FILE).close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         int choice;
         boolean exit = false;
 
         while (!exit) {
             //Todo: Make this box vertical
-            choice = JOptionPane.showOptionDialog(null, "Options:", "Select one:", 0, 3, null, options, options[4]);
+            choice = JOptionPane.showOptionDialog(null, "Options:", "Select one:", 0, 3, null, options, options[6]);
             if (choice == 0) {
                 createMatrix();
             }
@@ -138,7 +206,13 @@ public class UI {
                 savedMatrices();
             }
             else if (choice == 3) {
-
+                loadData();
+            }
+            else if (choice == 4) {
+                saveData();
+            }
+            else if (choice == 5) {
+                resetData();
             }
             else {
                 exit = true;
