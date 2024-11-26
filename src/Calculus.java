@@ -31,13 +31,10 @@ public class Calculus {
         double h = x[1] - x[0];
 
         derivative[0] = leftSidedThreePoint(y[0], y[1], y[2], h);
-        System.out.println(derivative[0]);
         for (int i = 1; i < x.length - 1; i++) {
             derivative[i] = centeredDifference(y[i+1], y[i-1], h);
-            System.out.println(derivative[i]);
         }
         derivative[derivative.length - 1] = rightSidedThreePoint(y[y.length-1], y[y.length-2], y[y.length-3], h);
-        System.out.println(derivative[derivative.length - 1]);
         return derivative;
     }
 
