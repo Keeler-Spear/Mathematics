@@ -32,7 +32,7 @@ public class LinearAlgebra {
         }
         else {
             for (int i = 1; i <= A.getCols(); i++) {
-                determinant += A.getValue(1, i) * Math.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
+                determinant += A.getValue(1, i) * Maths.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
             }
         }
         return determinant;
@@ -372,9 +372,9 @@ public class LinearAlgebra {
     private static double l2Vector (Matrix b) {
         double l = 0.0;
         for (int i = 1; i <= b.getRows(); i++) {
-            l += Math.pow(b.getValue(i, 1), 2);
+            l += Maths.pow(b.getValue(i, 1), 2);
         }
-        return Math.sqrt(l);
+        return Maths.sqrt(l);
     }
 
     //Todo
@@ -397,7 +397,7 @@ public class LinearAlgebra {
         for (int i = 1; i <= A.getCols(); i++) {
             b = 0.0;
             for (int j = 1; j <= A.getRows(); j++) {
-                b += Math.abs(A.getValue(j, i));
+                b += Maths.abs(A.getValue(j, i));
             }
             if (b > a) {
                 a = b;
@@ -421,7 +421,7 @@ public class LinearAlgebra {
         for (int i = 1; i <= A.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 if (i != j) {
-                    sum += Math.abs(A.getValue(i, j));
+                    sum += Maths.abs(A.getValue(i, j));
                 }
             }
         }

@@ -156,10 +156,10 @@ public class Matrix {
 
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
-        double val1 = Math.abs(matrix[R1 - 1][col - 1]);
-        double val2 = Math.abs(matrix[R2 - 1][col - 1]);
+        double val1 = Maths.abs(matrix[R1 - 1][col - 1]);
+        double val2 = Maths.abs(matrix[R2 - 1][col - 1]);
 
-        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
+        if (Maths.abs(val1  - val2) < h && col != cols){ //Base case
             result = compareRows(R1, R2, col + 1);
         }
         else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
