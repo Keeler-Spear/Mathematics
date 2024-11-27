@@ -38,4 +38,29 @@ public class Calculus {
         return derivative;
     }
 
+    public static double integrate(double[] y, double a, double b) { //Returns the integral with O(h^4) error. This method assumes equally spaced data
+        //Simpson's Composite Quadrature Method
+        if (y.length < 3) {
+            throw new IllegalArgumentException("There are not enough data points to calculate the integral!");
+        }
+        double area = 0.0;
+        double h = (b - a) / (y.length - 1);
+         area += -y[0] + y[y.length - 1]; //Correcting before the loop
+         for (int i = 1; i < y.length; i += 2) {
+             area += 4 * y[i];
+             area += 2 * y[i - 1];
+         }
+         return (h/3)*area;
+    }
+
+    public static double integrate(Function function, double a, double b) { //Returns the integral with O(h^4) error.
+        //Simpson's Composite Quadrature Method
+        double area = 0.0;
+        area += -function.eval(a) + function.eval(b); //Correcting before the loop
+        for (double i = a + hDEF; i < b; i += 2 * hDEF) {
+            area += 4 * function.eval(i);
+            area += 2 * function.eval(i-hDEF);
+        }
+        return (hDEF/3)*area;
+    }
 }

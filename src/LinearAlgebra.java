@@ -147,6 +147,7 @@ public class LinearAlgebra {
         return matrix;
     }
 
+    //Todo: Use scalled partial pivoting
     private static void partialPivoting(Matrix A, int row) {//Can optimize further if I use quick sort
         for ( int i = row - 1; i < A.getRows(); i++ ) {
             for (int j = row; j < A.getRows() - i; j++) {
