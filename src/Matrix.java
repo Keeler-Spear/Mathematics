@@ -2,6 +2,7 @@ public class Matrix {
     private double[][] matrix;
     private int rows;
     private int cols;
+    private boolean augmented = false; //Needed to perform scaled partial pivoting
     private static final int MIN_ROWS = 1;
     private static final int MIN_COLS = 1;
     private static final double h = 0.00000000001;
@@ -30,6 +31,10 @@ public class Matrix {
             throw new ArrayIndexOutOfBoundsException();
         }
         matrix[row-1][col-1] = value;
+    }
+
+    public void setAugmentation (boolean augmented) {
+        this.augmented = augmented;
     }
 
     public double[][] getMatrix() {
@@ -156,10 +161,10 @@ public class Matrix {
 
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
-        double val1 = Maths.abs(matrix[R1 - 1][col - 1]);
-        double val2 = Maths.abs(matrix[R2 - 1][col - 1]);
+        double val1 = Math.abs(matrix[R1 - 1][col - 1]);
+        double val2 = Math.abs(matrix[R2 - 1][col - 1]);
 
-        if (Maths.abs(val1  - val2) < h && col != cols){ //Base case
+        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
             result = compareRows(R1, R2, col + 1);
         }
         else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
@@ -168,8 +173,54 @@ public class Matrix {
         else if (val1 - val2 < -1.0 * h){
             result = -1;
         }
-
         return result;
+    }
+
+    private double[] scaleRow (double [] row) {
+        double max = 0.0;
+        double augFactor = 0.0;
+        if (augmented) {
+            augFactor = 1.0;
+        }
+        //Finding the max row value
+        for (int i = 0; i < row.length - augFactor; i++) {
+            if (Math.abs(row[i]) > Math.abs(max)) {
+                max = row[i];
+            }
+        }
+        //Scaling the row
+        for (int i = 0; i < row.length; i++) {
+            row[i] = row[i] / max;
+        }
+        return row;
+    }
+
+    private int compareScaledRowsRec(double[] r1, double[] r2, int col) {
+        int result = 0;
+        double val1 = Math.abs(r1[col - 1]);
+        double val2 = Math.abs(r2[col - 1]);
+
+        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
+            result = compareScaledRowsRec(r1, r2, col + 1);
+        }
+        else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
+            result = 1;
+        }
+        else if (val1 - val2 < -1.0 * h){
+            result = -1;
+        }
+        return result;
+    }
+
+    public int compareScaledRows(int R1, int R2, int col) {
+
+        double[] r1 = matrix[R1 - 1];
+        double[] r2 = matrix[R2 - 1];
+
+        r1 = scaleRow(r1);
+        r2 = scaleRow(r2);
+
+        return compareScaledRowsRec(r1, r2, col);
     }
 
     public void setCol(int col, double[][] v) {
@@ -217,23 +268,31 @@ public class Matrix {
             }
         }
         Matrix newMatrix = new Matrix(vals);
-
+        newMatrix.setAugmentation(augmented);
         return newMatrix;
     }
-    public boolean equals(Matrix matrix2) {
-        boolean equal = true;
-        if (rows == matrix2.rows && cols == matrix2.cols) {
-            for (int i = 1; i <= rows; i++) {
-                for (int j = 1; j <= cols; j++) {
-                    if (getValue(i, j) != matrix2.getValue(i, j)) {
-                        equal = false;
-                    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Matrix matrix2 = (Matrix) obj;
+        if (rows != matrix2.rows || cols != matrix2.cols) {
+            return false;
+        }
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                if (Math.abs((getValue(i, j)) - (matrix2.getValue(i, j))) > h) {
+                    return false;
                 }
             }
         }
-        else {
-            equal = false;
-        }
-        return equal;
+        return true;
     }
 }

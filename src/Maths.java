@@ -1,10 +1,10 @@
-//My own implementation of the Java Math package
+//My own implementation of the Java Math package. It is currently not in use.
 public class Maths {
 
     public final static double PI = 3.14159265358979323846;
     public final static double e = 2.718281828459045;
-    private static final double tol = 0.00000001;
-    private static final int SIGFIG = 4;
+    public static final double tol = 0.00000001;
+    public static final int SIGFIG = 4;
 
     //Todo Implement myself; currently this method is written by ChatGPT 4.0.
     private static double round(double x) {
@@ -23,18 +23,31 @@ public class Maths {
     }
 
     //Todo make it so the method can handle non-integer powers
-    public static double pow(double x, int y) { //X^Y
+    //Break the number into an integer and a decimal (x/1000 or something) to put into faction form, then recursivly call this function
+    public static double pow(double x, double n) { //x^n
         double result = 1.0;
-        if (y >= 0) {
-            for (int i = 0; i < y; i++) {
-                result *= x;
+        if (n - (int) n < tol) { //If n is an integer
+            if (n >= 0) {
+                for (int i = 0; i < n; i++) {
+                    result *= x;
+                }
             }
-        }
-        else { //Exponent must be negative
-            for (int i = 0; i < abs(y); i++) {
-                result /= x;
+            else { //Exponent must be negative
+                for (int i = 0; i < abs(n); i++) {
+                    result /= x;
+                }
             }
+            return result;
         }
+        //Converting n into a fraction\
+        String num = Double.toString(abs(n));
+        int length = num.indexOf('.');
+        length = num.length() - length - 1;
+
+        int denominator = (int) pow(10, length);
+        int numerator = (int) (n * denominator);
+        result = nthRoot(x, denominator);
+        result = pow(result, numerator);
         return result;
     }
 
@@ -47,9 +60,16 @@ public class Maths {
     }
 
     public static double sqrt(double x) {
-        double xk = x/10; //Guess for the sqrt
-        while (abs(xk * xk - x) > tol) {
-            xk = xk - (xk*xk - x) / (2*xk); //Newton's Method. Find the roots of y = x^2 - x
+        return nthRoot(x, 2);
+    }
+
+    public static double nthRoot(double x, int n) {
+        double xk = x/10; //Guess for the root
+        if (n < 0) {
+            throw new IllegalArgumentException("n must be positive!");
+        }
+        while (abs(pow(xk, n) - x) > tol) {
+            xk = xk - (pow(xk, n) - x) / (n*pow(xk, n-1)); //Newton's Method. Find the roots of y = x^n - root^n
         }
         return xk;
     }

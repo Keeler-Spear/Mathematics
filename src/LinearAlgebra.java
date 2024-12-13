@@ -32,7 +32,7 @@ public class LinearAlgebra {
         }
         else {
             for (int i = 1; i <= A.getCols(); i++) {
-                determinant += A.getValue(1, i) * Maths.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
+                determinant += A.getValue(1, i) * Math.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
             }
         }
         return determinant;
@@ -61,7 +61,7 @@ public class LinearAlgebra {
         return subMatrix;
     }
 
-    private static Matrix identityMatrix(int n) {
+    public static Matrix identityMatrix(int n) {
         double[][] identity = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -147,11 +147,10 @@ public class LinearAlgebra {
         return matrix;
     }
 
-    //Todo: Use scalled partial pivoting
     private static void partialPivoting(Matrix A, int row) {//Can optimize further if I use quick sort
         for ( int i = row - 1; i < A.getRows(); i++ ) {
             for (int j = row; j < A.getRows() - i; j++) {
-                if (A.compareRows(j, j+1, 1) < 0) {
+                if (A.compareScaledRows(j, j+1, 1) < 0) {
                     A.swapRows(j, j+1);
                 }
             }
@@ -188,6 +187,8 @@ public class LinearAlgebra {
             throw new RuntimeException(e);
         }
 
+        A.setAugmentation(true);
+
         for (int i = 1; i <= A.getRows(); i++) { //i = current row
             partialPivoting(A, i); //Partially pivots the A.
             double[] vals = findPivot(A, i);
@@ -213,7 +214,8 @@ public class LinearAlgebra {
         for (int i = A.getRows(); i >= 1; i--) {// Gets zero's above the current pivot
             int pivotCol = findPivotCol(A, i);
             double pivot = A.getValue(i, pivotCol);
-            if (pivot != 0) {
+
+            if (Math.abs(pivot) > tol) {
                 A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
             for (int j = i; j > 1; j--) {
@@ -234,7 +236,7 @@ public class LinearAlgebra {
         for (int i = 1; i < A.getRows(); i++) {// Gets zero's bellow the current pivot
             int pivotCol = findPivotCol(A, i);
             double pivot = A.getValue(i, pivotCol);
-            if (pivot != 0) {
+            if (Math.abs(pivot) > tol) {
                 A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
             for (int j = i; j < A.getRows(); j++) {
@@ -245,15 +247,15 @@ public class LinearAlgebra {
     }
 
     public static Matrix RREF(Matrix matrixOrg) { //Returns RREF(A)
-        Matrix A = gaussianElimination(matrixOrg); //Turns a A into row echelon form
-        partialPivoting(A, 1); //Pivots to ensure we can backsolve
+        Matrix A = gaussianElimination(matrixOrg); //Turns A into row echelon form
+        //partialPivoting(A, 1); //Pivots to ensure we can backsolve
         A = backSolve(A); // backsolves for the solution.
         return A;
     }
 
     public static Matrix RREFSolve(Matrix matrixOrg) { //Returns X
         Matrix A = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
-        partialPivoting(A, 1); //Pivots to ensure we can backsolve
+        //partialPivoting(A, 1); //Pivots to ensure we can backsolve
         A = backSolve(A); // backsolves for the solution.
         Matrix x = vectorFromColumn(A, A.getCols());
         return x;
@@ -304,6 +306,8 @@ public class LinearAlgebra {
             throw new RuntimeException(e);
         }
 
+        U.setAugmentation(false);
+
         Matrix L = identityMatrix(U.getRows()); //L will be an mxm matrix
         U = augmentMatrix(U, identityMatrix(U.getRows())); //Setup to get P
         partialPivoting(U, 1); //Partially pivoting U for clean Gaussian Elimination
@@ -342,6 +346,7 @@ public class LinearAlgebra {
     }
 
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
+        matrixOrg.setAugmentation(false);
         Matrix[] LU = LUDecomp(matrixOrg);
         Matrix L = LU[0];
         Matrix U = LU[1];
@@ -352,6 +357,7 @@ public class LinearAlgebra {
         Matrix y = vectorFromColumn(Ly, Ly.getCols()); //Separates the solution from the matrix
 
         Matrix Ux = backSolve(augmentMatrix(U, y)); //Ux=y
+        Ux.setAugmentation(false);
         partialPivoting(Ux, 1); //Gets the vector in order
         y = vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
         return  y;
@@ -373,9 +379,9 @@ public class LinearAlgebra {
     private static double l2Vector (Matrix b) {
         double l = 0.0;
         for (int i = 1; i <= b.getRows(); i++) {
-            l += Maths.pow(b.getValue(i, 1), 2);
+            l += Math.pow(b.getValue(i, 1), 2);
         }
-        return Maths.sqrt(l);
+        return Math.sqrt(l);
     }
 
     //Todo
@@ -398,7 +404,7 @@ public class LinearAlgebra {
         for (int i = 1; i <= A.getCols(); i++) {
             b = 0.0;
             for (int j = 1; j <= A.getRows(); j++) {
-                b += Maths.abs(A.getValue(j, i));
+                b += Math.abs(A.getValue(j, i));
             }
             if (b > a) {
                 a = b;
@@ -422,7 +428,7 @@ public class LinearAlgebra {
         for (int i = 1; i <= A.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 if (i != j) {
-                    sum += Maths.abs(A.getValue(i, j));
+                    sum += Math.abs(A.getValue(i, j));
                 }
             }
         }

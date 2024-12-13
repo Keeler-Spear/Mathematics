@@ -1,4 +1,4 @@
-//Todo
+//ToDo: Implement a way for a String to be converted into a mathematical function.
 
 public class Function {
 
@@ -16,8 +16,8 @@ public class Function {
         this.function = function;
     }
 
-    public double evaluate(double x) {
-        return 2*x*x;
+    public double eval(double x) {
+        return Math.exp(x*x);
     }
 
 }
