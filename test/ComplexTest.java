@@ -57,13 +57,13 @@ class ComplexTest {
     @Test
     void testModulus0() {
         ComplexNumber z0 = new ComplexNumber(3, -4);
-        assertEquals(5, Complex.modulus(z0));
+        assertEquals(5, z0.getModulus());
     }
 
     @Test
     void testModulus1() {
         ComplexNumber z0 = new ComplexNumber(-2, 7);
-        assertEquals(Math.sqrt(53), Complex.modulus(z0));
+        assertEquals(Math.sqrt(53), z0.getModulus());
     }
 
 

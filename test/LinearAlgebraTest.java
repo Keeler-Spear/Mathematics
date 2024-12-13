@@ -239,4 +239,35 @@ class LinearAlgebraTest {
         Matrix correctMatrix = new Matrix(correctVals);
         assertEquals(correctMatrix, matrix);
     }
+
+    @Test
+    public void testLU0() {
+        double[][] vals = {
+                {1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 12}
+        };
+        Matrix matrix = new Matrix(vals);
+        Matrix[] LU = LinearAlgebra.LUDecomp(matrix);
+        Matrix L = LU[0];
+        Matrix U = LU[1];
+
+        double[][] LVALS = {
+                {1, 0, 0},
+                {4, 1, 0},
+                {7, 2, 1}
+        };
+        Matrix correctL = new Matrix(LVALS);
+
+        double[][] UVALS = {
+                {1, 2, 3},
+                {0, -3, -6},
+                {0, 0, 3}
+        };
+        Matrix correctU = new Matrix(LVALS);
+
+        assertEquals(correctL, L);
+
+        assertEquals(correctU, U);
+    }
 }

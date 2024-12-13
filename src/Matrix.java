@@ -212,15 +212,15 @@ public class Matrix {
         return result;
     }
 
-    public int compareScaledRows(int R1, int R2, int col) {
+    public int compareScaledRows(int R1, int R2) {
 
-        double[] r1 = matrix[R1 - 1];
-        double[] r2 = matrix[R2 - 1];
+        double[] r1 = matrix[R1 - 1].clone();
+        double[] r2 = matrix[R2 - 1].clone();
 
         r1 = scaleRow(r1);
         r2 = scaleRow(r2);
 
-        return compareScaledRowsRec(r1, r2, col);
+        return compareScaledRowsRec(r1, r2, 1);
     }
 
     public void setCol(int col, double[][] v) {

@@ -1,3 +1,5 @@
+import java.sql.SQLOutput;
+
 public class LinearAlgebra {
 
     final static double tol = 0.000001;
@@ -150,7 +152,7 @@ public class LinearAlgebra {
     private static void partialPivoting(Matrix A, int row) {//Can optimize further if I use quick sort
         for ( int i = row - 1; i < A.getRows(); i++ ) {
             for (int j = row; j < A.getRows() - i; j++) {
-                if (A.compareScaledRows(j, j+1, 1) < 0) {
+                if (A.compareScaledRows(j, j+1) < 0) {
                     A.swapRows(j, j+1);
                 }
             }
@@ -293,7 +295,7 @@ public class LinearAlgebra {
         return A;
     }
 
-    //TODO: Multiply by p^-1
+    //PA = LU, A = P^-1 * LU
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
         Matrix U; //U will be an mxn matrix
         Matrix P; //Permutation Matrix
@@ -306,8 +308,6 @@ public class LinearAlgebra {
             throw new RuntimeException(e);
         }
 
-        U.setAugmentation(false);
-
         Matrix L = identityMatrix(U.getRows()); //L will be an mxm matrix
         U = augmentMatrix(U, identityMatrix(U.getRows())); //Setup to get P
         partialPivoting(U, 1); //Partially pivoting U for clean Gaussian Elimination
@@ -317,10 +317,10 @@ public class LinearAlgebra {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-
         for (int i = cols + 1; i <= 2 * cols; i++) { //Removing P from UP
             U = createSubMatrix(U, cols + 1);
         }
+        U.setAugmentation(false);
 
         for (int j = cols; j >= 1; j--) {//Removing U from UP
             P = createSubMatrix(P, 1);

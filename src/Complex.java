@@ -22,7 +22,7 @@ public class Complex {
     }
 
     public static ComplexNumber div(ComplexNumber z0, ComplexNumber z1) { //z0/z1
-        ComplexNumber z = new ComplexNumber();
+        ComplexNumber z;
         ComplexNumber z1Con = conjugate(z1);
         ComplexNumber denominator =  mul(z1, z1Con);
         z = mul(z0, z1Con);
@@ -36,10 +36,6 @@ public class Complex {
         z.setReal(z0.getReal());
         z.setImaginary(-1*z0.getImaginary());
         return z;
-    }
-
-    public static double modulus(ComplexNumber z) {
-        return Math.sqrt(Math.pow(z.getReal(), 2) + Math.pow(z.getImaginary(), 2));
     }
 
 }
