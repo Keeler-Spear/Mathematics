@@ -435,6 +435,16 @@ public class LinearAlgebra {
         return sum;
     }
 
+    private static double lowerTriSum(Matrix A) {
+        double sum = 0.0;
+        for (int i = 1; i < A.getCols(); i++) {
+            for (int j = i + 1; j <= A.getRows(); j++) {
+                sum += Math.abs(A.getValue(j, i));
+            }
+        }
+        return sum;
+    }
+
     public static Matrix normalize(Matrix A) {
         Matrix ci;
         for (int i = 1; i <= A.getCols(); i++) {
@@ -576,7 +586,7 @@ public class LinearAlgebra {
         Matrix Q = QR[0];
         Matrix R = QR[1];
         Matrix eig = multiplyMatrices(R, Q); //E1 = RQ
-        while (nonDiagSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+        while (lowerTriSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
             QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
@@ -595,7 +605,7 @@ public class LinearAlgebra {
         Matrix Q = QR[0];
         Matrix R = QR[1];
         Matrix eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
-        while (nonDiagSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+        while (lowerTriSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
             shift = eig.getValue(i, j);
             eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
             QR = QRFactorization(eig);
@@ -607,11 +617,7 @@ public class LinearAlgebra {
     }
 
     public static double[] eig(Matrix A) {
-        double[] eVals = new double[A.getCols()];
-        Matrix eigs =  QREig(A, tol);
-        for (int i = 1; i <= eVals.length; i++) {
-            eVals[i-1] = eigs.getValue(i, i);
-        }
-        return eVals;
+        Matrix eigenVals =  QREig(A, tol);
+        return diagVals(eigenVals);
     }
 }
