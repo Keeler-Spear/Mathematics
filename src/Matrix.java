@@ -1,3 +1,16 @@
+/**
+ * Represents a mathematical matrix, providing support for internal matrix operations.
+ * <p>
+ *     This class supports matrix operations such as elementary row operations, row comparison, and more.
+ * </p>
+ * <p>
+ *     For mathematical consistency, 1-based indexing is used for accessing and setting elements.
+ * </p>
+ *
+ * @author Keeler Spear
+ * @version %I%, %G%
+ * @since 1.0
+*/
 public class Matrix {
     private double[][] matrix;
     private int rows;
@@ -7,7 +20,13 @@ public class Matrix {
     private static final int MIN_COLS = 1;
     private static final double h = 0.00000000001;
 
-
+    /**
+     * Creates a matrix object from the data provided.
+     *
+     * @param vals A 2d array of doubles representing the matrix entries. Each inner array corresponds to a row.
+     * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
+     *                                  ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
+     */
     public Matrix(double[][] vals) {
         if (vals.length < MIN_ROWS || vals[0].length < MIN_COLS) {
             throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
@@ -26,9 +45,18 @@ public class Matrix {
         this.cols = cols;
     }
 
+    /**
+     * Sets the value of the matrix at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based row index where the value will be set.
+     * @param col The 1-based column index where the value will be set.
+     * @param value The value to set at the specified position.
+     * @throws ArrayIndexOutOfBoundsException If the specified row or column is out of the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     */
     public void setValue (int row, int col, double value) {
-        if (row < 0 || row > rows || col < 0 || col > cols) {
-            throw new ArrayIndexOutOfBoundsException();
+        if (row <= 0 || row > rows || col <= 0 || col > cols) {
+            throw new ArrayIndexOutOfBoundsException("The row and/or column indices are invalid!");
         }
         matrix[row-1][col-1] = value;
     }
@@ -212,7 +240,25 @@ public class Matrix {
         return result;
     }
 
+    /**
+     * Compares two rows of the matrix after each is scaled by dividing all elements by the largest absolute value
+     * in the row. Determines which row has the largest leading value.
+     *
+     * @param R1 The 1-based index of the first row to compare.
+     * @param R2 The 1-based index of the second row to compare.
+     * @return An integer indicating which row is larger:
+     *         <ul>
+     *             <li>1 if the first row is larger.</li>
+     *             <li>-1 if the second row is larger.</li>
+     *             <li>0 if the rows are equal after scaling.</li>
+     *         </ul>
+     * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
+     */
     public int compareScaledRows(int R1, int R2) {
+
+        if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
+            throw new ArrayIndexOutOfBoundsException("One or both row indices are invalid!");
+        }
 
         double[] r1 = matrix[R1 - 1].clone();
         double[] r2 = matrix[R2 - 1].clone();
