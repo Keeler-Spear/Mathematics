@@ -1,10 +1,28 @@
-import java.sql.SQLOutput;
+/**
+ * A static class that performs mathematical operations on one or more matrices via analytic and numerical methods.
+ * <p>
+ *     This class supports matrix operations such as addition, multiplication, Gaussian Elimination, and more.
+ * </p>
+ *
+ * @author Keeler Spear
+ * @version %I%, %G%
+ * @since 1.0
+ */
 
 public class LinearAlgebra {
 
     final static double tol = 0.000001;
 
-    public static Matrix addMatrices(Matrix A, Matrix B, double sign) {//1 for add, -1 for sub
+    /**
+     * Adds one matrix to another matrix that is multiplied by a scalar. Matrix A = Matrix A + scalar * Matrix B.
+     *
+     * @param A The matrix that will be added to the other.
+     * @param B The matrix that will be multiplied by a scalar and added to the other.
+     * @param scalar The value the second matrix (B) will be multiplied by in matrix addition.
+     * @return The matrix that is the sum of matrix A and matrix B after B is multiplied by a scalar.
+     * @throws IllegalArgumentException If the matrices A and B do not have the same dimensions.
+     */
+    public static Matrix addMatrices(Matrix A, Matrix B, double scalar) {//1 for add, -1 for sub
         //A + B or A - B
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
             throw new IllegalArgumentException("The matrices must be of the same size!");
@@ -14,7 +32,7 @@ public class LinearAlgebra {
 
         for (int i = 1; i <= A.getRows(); i++) {
             for (int j = 1; j <= A.getCols(); j++) {
-                result.setValue(i, j, A.getValue(i , j) + sign * B.getValue(i, j));
+                result.setValue(i, j, A.getValue(i , j) + scalar * B.getValue(i, j));
             }
         }
         return result;

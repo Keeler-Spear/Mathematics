@@ -35,7 +35,14 @@ public class Matrix {
         this.rows = vals.length;
         this.cols = vals[0].length;
     }
-
+    /**
+     * Creates a blank matrix object of the size provided.
+     *
+     * @param rows The number of rows the matrix will have.
+     * @param cols The number of columns the matrix will have.
+     * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
+     *                                  ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
+     */
     public Matrix(int rows, int cols) {
         if (rows < MIN_ROWS || cols < MIN_COLS) {
             throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
@@ -50,47 +57,87 @@ public class Matrix {
      *
      * @param row The 1-based row index where the value will be set.
      * @param col The 1-based column index where the value will be set.
-     * @param value The value to set at the specified position.
-     * @throws ArrayIndexOutOfBoundsException If the specified row or column is out of the matrix's bounds
+     * @param value The value to set at the specified position in the matrix.
+     * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
      *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
      */
     public void setValue (int row, int col, double value) {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
-            throw new ArrayIndexOutOfBoundsException("The row and/or column indices are invalid!");
+            throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
         matrix[row-1][col-1] = value;
     }
 
+    /**
+     * Sets the matrix parameter governing if the matrix is augmented.
+     *
+     * @param augmented The boolean that the internal augmented variable will be set to.
+     */
     public void setAugmentation (boolean augmented) {
         this.augmented = augmented;
     }
 
+    /**
+     * Returns the entries of the matrix.
+     *
+     * @return The 2d array of doubles representing the matrix's entries.
+     */
     public double[][] getMatrix() {
         return matrix;
     }
 
+    /**
+     * Sets the value of the matrix at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based row index where the value will be collected.
+     * @param col The 1-based column index where the value will be collected.
+     * @return The value at the specified position in the matrix.
+     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     */
     public double getValue(int row, int col) {
-        if (row < 0 || row > rows || col < 0 || col > cols) {
+        if (row <= 0 || row > rows || col <= 0 || col > cols) {
             throw new ArrayIndexOutOfBoundsException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
         return matrix[row - 1][col - 1];
     }
 
+    /**
+     * Returns to total number of rows in the matrix.
+     *
+     * @return The number of rows the matrix has.
+     */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Returns to total number of columns in the matrix.
+     *
+     * @return The number of columns the matrix has.
+     */
     public int getCols() {
         return cols;
     }
 
+    /**
+     * Returns a boolean representing if the matrix is square.
+     *
+     * @return True if the matrix is square, false if otherwise.
+     */
     public boolean isSquare() {
         return rows == cols;
     }
 
+    /**
+     * Adds a row to the bottom of the matrix with the values provided.
+     *
+     * @param vals The 1d array of values to be added to the matrix as a row.
+     * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
+     */
     public void addRow(double[] vals) {
         if (vals.length != cols) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException("This row is not the same size as the others in your matrix!");
         }
         rows++;
         double[][] tempMatrix = new double[rows][cols];
@@ -105,9 +152,16 @@ public class Matrix {
         matrix = tempMatrix;
     }
 
+    /**
+     * Adds a column to the right side of the matrix with the values provided.
+     *
+     * @param vals The 1d array of values to be added to the matrix as a column.
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+
+     */
     public void addCol(double[] vals) {
         if (vals.length != rows) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException("This column is not the same size as the others in your matrix!");
         }
         cols++;
         double[][] tempMatrix = new double[rows][cols];
@@ -122,71 +176,123 @@ public class Matrix {
         matrix = tempMatrix;
     }
 
-    public void removeRow(int index) {
-        if (rows < index || index <= 0) {
-            throw new ArrayIndexOutOfBoundsException();
+    /**
+     * Removes the matrix's row at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based index where the row will be removed.
+     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}).
+     */
+    public void removeRow(int row) {
+        if (rows < row || row <= 0) {
+            throw new IllegalArgumentException("This row is out of bounds!");
         }
-        index = index - 1;
+        row = row - 1;
         rows--;
         double[][] tempMatrix = new double[rows][cols];
-        for (int i = 0; i < index; i++) {
+        for (int i = 0; i < row; i++) {
             tempMatrix[i] = matrix[i];
         }
-        for (int i = index; i < rows; i++) {
+        for (int i = row; i < rows; i++) {
             tempMatrix[i] = matrix[i+1];
         }
         matrix = tempMatrix;
     }
 
-    public void removeCol(int index) {
-        if (cols < index || index <= 0) {
-            throw new ArrayIndexOutOfBoundsException();
+    /**
+     * Removes the matrix's column at the specified position using 1-based indexing.
+     *
+     * @param col The 1-based index where the column will be removed.
+     * @throws IllegalArgumentException If the specified column index is outside the matrix's bounds
+     *                                        (1 ≤ col ≤ {@code cols}).
+     */
+    public void removeCol(int col) {
+        if (cols < col || col <= 0) {
+            throw new IllegalArgumentException("This column is out of bounds");
         }
-        index = index - 1;
+        col = col - 1;
         cols--;
         double[][] tempMatrix = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < index; j++) {
+            for (int j = 0; j < col; j++) {
                 tempMatrix[i][j] = matrix[i][j];
             }
         }
         for (int i = 0; i < rows; i++) {
-            for (int j = index; j < cols; j++) {
+            for (int j = col; j < cols; j++) {
                 tempMatrix[i][j] = matrix[i][j+1];
             }
         }
         matrix = tempMatrix;
     }
 
-    public void addRows(int R1, int R2, double scalar) { // R1 = R1 + R2 * Scalar
+    /**
+     * The elementary matrix operation of adding one row to another within the matrix. Row R1 = row R1 + scalar * row R2.
+     *
+     * @param R1 The 1-based index where the row will be replaced by the sum of it and another row.
+     * @param R2 The 1-based index of the row that will be multiplied by a scalar and added to the other.
+     * @param scalar The value the second row (R2) will be multiplied by in the row addition.
+     * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
+     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     */
+    public void addRows(int R1, int R2, double scalar) {
+        if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
+            throw new IllegalArgumentException("One or more of the rows are out of bounds!");
+        }
         for (int i = 0; i < cols; i++) {
             matrix[R1 - 1][i] += matrix[R2 - 1][i] * scalar;
         }
     }
 
+    /**
+     * The elementary matrix operation of swapping two rows within the matrix. Row R1 = row R2, row R2 = row R1.
+     *
+     * @param R1 The 1-based index of the first row to be swapped.
+     * @param R2 The 1-based index of the second row to be swapped.
+     * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
+     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     */
     public void swapRows(int R1, int R2) { //Maybe use permutation matrix and left multiply it by the current matrix
+        if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
+            throw new IllegalArgumentException("One or more of the rows are out of bounds!");
+        }
         double[] temRow = matrix[R1 - 1];
         matrix[R1 - 1] = matrix[R2 - 1];
         matrix[R2 - 1] = temRow;
 
     }
 
+    /**
+     * The elementary matrix operation of scaling a row within the matrix by a scalar. Row R = Row R * scalar.
+     *
+     * @param R The 1-based index of the row to be scaled.
+     * @param scalar The value the row will be multiplied by.
+     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
+     *                                        (1 ≤ R ≤ {@code rows}).
+     */
     public void scaleRow(int R, double scalar) {
+        if (R <= 0 || R > rows) {
+            throw new IllegalArgumentException("This row is out of bounds!");
+        }
         for (int i = 0; i < cols; i++) {
             matrix[R - 1][i] = matrix[R - 1][i] * scalar;
         }
     }
 
-    public double largestColVal(int col) {
-        double maxVal = 0;
-        for (int i = 0; i < rows; i++) {
-            if (maxVal < matrix[i][col]) {
-                maxVal = matrix[i][col];
-            }
-        }
-        return maxVal;
-    }
-
+    /**
+     * Compares two rows of the matrix. Determines which row has the largest leading value.
+     *
+     * @param R1 The 1-based index of the first row to compare.
+     * @param R2 The 1-based index of the second row to compare.
+     * @return An integer indicating which row is larger:
+     *         <ul>
+     *             <li>1 if the first row is larger.</li>
+     *             <li>-1 if the second row is larger.</li>
+     *             <li>0 if the rows are equal.</li>
+     *         </ul>
+     * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
+     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     */
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
         double val1 = Math.abs(matrix[R1 - 1][col - 1]);
@@ -204,7 +310,8 @@ public class Matrix {
         return result;
     }
 
-    private double[] scaleRow (double [] row) {
+    //Scales an input row to one; used in scaled row comparison.
+    private double[] scaleRowToOne(double [] row) {
         double max = 0.0;
         double augFactor = 0.0;
         if (augmented) {
@@ -223,6 +330,7 @@ public class Matrix {
         return row;
     }
 
+    //Recursively compares two scaled arrays.
     private int compareScaledRowsRec(double[] r1, double[] r2, int col) {
         int result = 0;
         double val1 = Math.abs(r1[col - 1]);
@@ -254,34 +362,53 @@ public class Matrix {
      *         </ul>
      * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
      */
-    public int compareScaledRows(int R1, int R2) {
+    public int compareScaledRows(int R1, int R2) { //Arrays are used so the original matrix is not changed.
 
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
-            throw new ArrayIndexOutOfBoundsException("One or both row indices are invalid!");
+            throw new IllegalArgumentException("One or both row indices are invalid!");
         }
 
         double[] r1 = matrix[R1 - 1].clone();
         double[] r2 = matrix[R2 - 1].clone();
 
-        r1 = scaleRow(r1);
-        r2 = scaleRow(r2);
+        r1 = scaleRowToOne(r1);
+        r2 = scaleRowToOne(r2);
 
         return compareScaledRowsRec(r1, r2, 1);
     }
 
-    public void setCol(int col, double[][] v) {
+    /**
+     * Sets the column in the matrix at the specified position using 1-based indexing.
+     *
+     * @param col The 1-based column index where the values will be set.
+     * @param vals A 2d array of values that will be inserted into the matrix at the given location. The array must be 2d
+     *                                        so that a vector matrix's internal values can be used to set columns.
+     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     */
+    public void setCol(int col, double[][] vals) {
         col = col - 1;
         if (col < 0 || col >= cols) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        if (v.length != rows || v[0].length != 1) {
+        if (vals.length != rows || vals[0].length != 1) {
             throw new IllegalArgumentException("The given column is not the correct size!");
         }
         for (int i = 0; i < rows; i++) {
-            matrix[i][col] = v[i][0];
+            matrix[i][col] = vals[i][0];
         }
     }
 
+    //ToDo Version of setCol with a 1d array
+
+    //ToDo: Set row method
+
+    /**
+     * Returns the matrix as a String.
+     *
+     * @return The matrix as a multi-line String, with each print line containing a row.
+     *                                      The matrix's entries are printed to four decimal places.
+     */
     @Override
     public String toString() {
         String s = "";
@@ -305,6 +432,11 @@ public class Matrix {
         return s;
     }
 
+    /**
+     * Clones the matrix as an object.
+     *
+     * @return A clone of the matrix as an object.
+     */
     @Override
     protected Object clone() throws CloneNotSupportedException { //Copies the array and then makes a new matrix with the copy
         double[][] vals = new double[rows][cols];
@@ -313,11 +445,17 @@ public class Matrix {
                 vals[i][j] = matrix[i][j];
             }
         }
-        Matrix newMatrix = new Matrix(vals);
+        Matrix newMatrix = new Matrix(vals.clone());
         newMatrix.setAugmentation(augmented);
         return newMatrix;
     }
 
+    /**
+     * Evaluates if this matrix and another object are the same based on class; row and column count; and matrix entries.
+     *
+     * @param obj The object the matrix will be compared to.
+     * @return A boolean representing if the matrix and the provided object are the same.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
