@@ -35,6 +35,7 @@ public class Matrix {
         this.rows = vals.length;
         this.cols = vals[0].length;
     }
+
     /**
      * Creates a blank matrix object of the size provided.
      *
@@ -53,53 +54,12 @@ public class Matrix {
     }
 
     /**
-     * Sets the value of the matrix at the specified position using 1-based indexing.
-     *
-     * @param row The 1-based row index where the value will be set.
-     * @param col The 1-based column index where the value will be set.
-     * @param value The value to set at the specified position in the matrix.
-     * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
-     */
-    public void setValue (int row, int col, double value) {
-        if (row <= 0 || row > rows || col <= 0 || col > cols) {
-            throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
-        }
-        matrix[row-1][col-1] = value;
-    }
-
-    /**
-     * Sets the matrix parameter governing if the matrix is augmented.
-     *
-     * @param augmented The boolean that the internal augmented variable will be set to.
-     */
-    public void setAugmentation (boolean augmented) {
-        this.augmented = augmented;
-    }
-
-    /**
      * Returns the entries of the matrix.
      *
      * @return The 2d array of doubles representing the matrix's entries.
      */
     public double[][] getMatrix() {
         return matrix;
-    }
-
-    /**
-     * Sets the value of the matrix at the specified position using 1-based indexing.
-     *
-     * @param row The 1-based row index where the value will be collected.
-     * @param col The 1-based column index where the value will be collected.
-     * @return The value at the specified position in the matrix.
-     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
-     */
-    public double getValue(int row, int col) {
-        if (row <= 0 || row > rows || col <= 0 || col > cols) {
-            throw new ArrayIndexOutOfBoundsException("Row: " + row + ", Col: " + col + " is out of bounds!");
-        }
-        return matrix[row - 1][col - 1];
     }
 
     /**
@@ -130,6 +90,56 @@ public class Matrix {
     }
 
     /**
+     * Returns a boolean representing if the matrix is augmented.
+     *
+     * @return True if the matrix is augmented, false if otherwise.
+     */
+    public boolean getAugmentation () {
+        return augmented;
+    }
+
+    /**
+     * Sets the matrix parameter governing if the matrix is augmented.
+     *
+     * @param augmented The boolean that the internal augmented variable will be set to.
+     */
+    public void setAugmentation (boolean augmented) {
+        this.augmented = augmented;
+    }
+
+    /**
+     * Sets the value of the matrix at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based row index where the value will be collected.
+     * @param col The 1-based column index where the value will be collected.
+     * @return The value at the specified position in the matrix.
+     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     */
+    public double getValue(int row, int col) {
+        if (row <= 0 || row > rows || col <= 0 || col > cols) {
+            throw new ArrayIndexOutOfBoundsException("Row: " + row + ", Col: " + col + " is out of bounds!");
+        }
+        return matrix[row - 1][col - 1];
+    }
+
+    /**
+     * Sets the value of the matrix at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based row index where the value will be set.
+     * @param col The 1-based column index where the value will be set.
+     * @param value The value to set at the specified position in the matrix.
+     * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     */
+    public void setValue (int row, int col, double value) {
+        if (row <= 0 || row > rows || col <= 0 || col > cols) {
+            throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
+        }
+        matrix[row-1][col-1] = value;
+    }
+
+    /**
      * Adds a row to the bottom of the matrix with the values provided.
      *
      * @param vals The 1d array of values to be added to the matrix as a row.
@@ -148,6 +158,29 @@ public class Matrix {
         }
         for (int i = 0; i < cols; i++) {
             tempMatrix[rows - 1][i] = vals[i];
+        }
+        matrix = tempMatrix;
+    }
+
+    /**
+     * Removes the matrix's row at the specified position using 1-based indexing.
+     *
+     * @param row The 1-based index where the row will be removed.
+     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
+     *                                        (1 ≤ row ≤ {@code rows}).
+     */
+    public void removeRow(int row) {
+        if (rows < row || row <= 0) {
+            throw new IllegalArgumentException("This row is out of bounds!");
+        }
+        row = row - 1;
+        rows--;
+        double[][] tempMatrix = new double[rows][cols];
+        for (int i = 0; i < row; i++) {
+            tempMatrix[i] = matrix[i];
+        }
+        for (int i = row; i < rows; i++) {
+            tempMatrix[i] = matrix[i+1];
         }
         matrix = tempMatrix;
     }
@@ -172,29 +205,6 @@ public class Matrix {
         }
         for (int i = 0; i < rows; i++) {
             tempMatrix[i][cols - 1] = vals[i];
-        }
-        matrix = tempMatrix;
-    }
-
-    /**
-     * Removes the matrix's row at the specified position using 1-based indexing.
-     *
-     * @param row The 1-based index where the row will be removed.
-     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}).
-     */
-    public void removeRow(int row) {
-        if (rows < row || row <= 0) {
-            throw new IllegalArgumentException("This row is out of bounds!");
-        }
-        row = row - 1;
-        rows--;
-        double[][] tempMatrix = new double[rows][cols];
-        for (int i = 0; i < row; i++) {
-            tempMatrix[i] = matrix[i];
-        }
-        for (int i = row; i < rows; i++) {
-            tempMatrix[i] = matrix[i+1];
         }
         matrix = tempMatrix;
     }
@@ -225,6 +235,34 @@ public class Matrix {
         }
         matrix = tempMatrix;
     }
+
+    /**
+     * Sets the column in the matrix at the specified position using 1-based indexing.
+     *
+     * @param col The 1-based column index where the values will be set.
+     * @param vals A 2d array of values that will be inserted into the matrix at the given location. The array must be 2d
+     *                                        so that a vector matrix's internal values can be used to set columns.
+     * @throws IllegalArgumentException If the specified column index is out of the matrix's bounds
+     *                                        (1 ≤ col ≤ {@code cols}).
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+
+     */
+    public void setCol(int col, double[][] vals) {
+        col = col - 1;
+        if (col < 0 || col >= cols) {
+            throw new IllegalArgumentException("The column out of bounds!");
+        }
+        if (vals.length != rows || vals[0].length != 1) {
+            throw new IllegalArgumentException("The given column is not the correct size!");
+        }
+        for (int i = 0; i < rows; i++) {
+            matrix[i][col] = vals[i][0];
+        }
+    }
+
+    //ToDo Version of setCol with a 1d array
+
+    //ToDo: Set row method
 
     /**
      * The elementary matrix operation of adding one row to another within the matrix. Row R1 = row R1 + scalar * row R2.
@@ -310,6 +348,35 @@ public class Matrix {
         return result;
     }
 
+    /**
+     * Compares two rows of the matrix after each is scaled by dividing all elements by the largest absolute value
+     * in the row. Determines which row has the largest leading value.
+     *
+     * @param R1 The 1-based index of the first row to compare.
+     * @param R2 The 1-based index of the second row to compare.
+     * @return An integer indicating which row is larger:
+     *         <ul>
+     *             <li>1 if the first row is larger.</li>
+     *             <li>-1 if the second row is larger.</li>
+     *             <li>0 if the rows are equal after scaling.</li>
+     *         </ul>
+     * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
+     */
+    public int compareScaledRows(int R1, int R2) { //Arrays are used so the original matrix is not changed.
+
+        if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
+            throw new IllegalArgumentException("One or both row indices are invalid!");
+        }
+
+        double[] r1 = matrix[R1 - 1].clone();
+        double[] r2 = matrix[R2 - 1].clone();
+
+        r1 = scaleRowToOne(r1);
+        r2 = scaleRowToOne(r2);
+
+        return compareScaledRowsRec(r1, r2, 1);
+    }
+
     //Scales an input row to one; used in scaled row comparison.
     private double[] scaleRowToOne(double [] row) {
         double max = 0.0;
@@ -347,61 +414,6 @@ public class Matrix {
         }
         return result;
     }
-
-    /**
-     * Compares two rows of the matrix after each is scaled by dividing all elements by the largest absolute value
-     * in the row. Determines which row has the largest leading value.
-     *
-     * @param R1 The 1-based index of the first row to compare.
-     * @param R2 The 1-based index of the second row to compare.
-     * @return An integer indicating which row is larger:
-     *         <ul>
-     *             <li>1 if the first row is larger.</li>
-     *             <li>-1 if the second row is larger.</li>
-     *             <li>0 if the rows are equal after scaling.</li>
-     *         </ul>
-     * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
-     */
-    public int compareScaledRows(int R1, int R2) { //Arrays are used so the original matrix is not changed.
-
-        if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
-            throw new IllegalArgumentException("One or both row indices are invalid!");
-        }
-
-        double[] r1 = matrix[R1 - 1].clone();
-        double[] r2 = matrix[R2 - 1].clone();
-
-        r1 = scaleRowToOne(r1);
-        r2 = scaleRowToOne(r2);
-
-        return compareScaledRowsRec(r1, r2, 1);
-    }
-
-    /**
-     * Sets the column in the matrix at the specified position using 1-based indexing.
-     *
-     * @param col The 1-based column index where the values will be set.
-     * @param vals A 2d array of values that will be inserted into the matrix at the given location. The array must be 2d
-     *                                        so that a vector matrix's internal values can be used to set columns.
-     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
-     */
-    public void setCol(int col, double[][] vals) {
-        col = col - 1;
-        if (col < 0 || col >= cols) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        if (vals.length != rows || vals[0].length != 1) {
-            throw new IllegalArgumentException("The given column is not the correct size!");
-        }
-        for (int i = 0; i < rows; i++) {
-            matrix[i][col] = vals[i][0];
-        }
-    }
-
-    //ToDo Version of setCol with a 1d array
-
-    //ToDo: Set row method
 
     /**
      * Returns the matrix as a String.
