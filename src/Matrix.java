@@ -18,7 +18,17 @@ public class Matrix {
     private boolean augmented = false; //Needed to perform scaled partial pivoting
     private static final int MIN_ROWS = 1;
     private static final int MIN_COLS = 1;
-    private static final double h = 0.00000000001;
+    private static final double tol = 0.00000000001;
+
+    //Computes if the provided value is "zero."
+    private static boolean isZero(double val) {
+        if (Math.abs(val) < tol) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     /**
      * Creates a matrix object from the data provided.
@@ -29,7 +39,7 @@ public class Matrix {
      */
     public Matrix(double[][] vals) {
         if (vals.length < MIN_ROWS || vals[0].length < MIN_COLS) {
-            throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
+            throw new IllegalArgumentException("This matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
         this.matrix = vals;
         this.rows = vals.length;
@@ -46,7 +56,7 @@ public class Matrix {
      */
     public Matrix(int rows, int cols) {
         if (rows < MIN_ROWS || cols < MIN_COLS) {
-            throw new IllegalArgumentException("Your matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
+            throw new IllegalArgumentException("This matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
         matrix = new double[rows][cols];
         this.rows = rows;
@@ -113,12 +123,12 @@ public class Matrix {
      * @param row The 1-based row index where the value will be collected.
      * @param col The 1-based column index where the value will be collected.
      * @return The value at the specified position in the matrix.
-     * @throws ArrayIndexOutOfBoundsException If the specified row or column index is out of the matrix's bounds
+     * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
      *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
      */
     public double getValue(int row, int col) {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
-            throw new ArrayIndexOutOfBoundsException("Row: " + row + ", Col: " + col + " is out of bounds!");
+            throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
         return matrix[row - 1][col - 1];
     }
@@ -147,7 +157,7 @@ public class Matrix {
      */
     public void addRow(double[] vals) {
         if (vals.length != cols) {
-            throw new IllegalArgumentException("This row is not the same size as the others in your matrix!");
+            throw new IllegalArgumentException("This row is not the same size as the others in this matrix!");
         }
         rows++;
         double[][] tempMatrix = new double[rows][cols];
@@ -194,7 +204,7 @@ public class Matrix {
      */
     public void addCol(double[] vals) {
         if (vals.length != rows) {
-            throw new IllegalArgumentException("This column is not the same size as the others in your matrix!");
+            throw new IllegalArgumentException("This column is not the same size as the others in this matrix!");
         }
         cols++;
         double[][] tempMatrix = new double[rows][cols];
@@ -336,13 +346,13 @@ public class Matrix {
         double val1 = Math.abs(matrix[R1 - 1][col - 1]);
         double val2 = Math.abs(matrix[R2 - 1][col - 1]);
 
-        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
+        if (isZero(val1 - val2) && (col != cols)) { //Base case
             result = compareRows(R1, R2, col + 1);
         }
-        else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
+        else if (!isZero(val1 - val2)) {
             result = 1;
         }
-        else if (val1 - val2 < -1.0 * h){
+        else if (val1 - val2 < -1.0 * tol) {
             result = -1;
         }
         return result;
@@ -403,13 +413,13 @@ public class Matrix {
         double val1 = Math.abs(r1[col - 1]);
         double val2 = Math.abs(r2[col - 1]);
 
-        if (Math.abs(val1  - val2) < h && col != cols){ //Base case
+        if (isZero(val1  - val2) && col != cols){ //Base case
             result = compareScaledRowsRec(r1, r2, col + 1);
         }
-        else if (val1 - val2 > h ){ //0.00  and -0.00 are triggered here
+        else if (!isZero(val1 - val2)){ //0.00  and -0.00 are triggered here
             result = 1;
         }
-        else if (val1 - val2 < -1.0 * h){
+        else if (val1 - val2 < -1.0 * tol){
             result = -1;
         }
         return result;
@@ -484,7 +494,7 @@ public class Matrix {
         }
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= cols; j++) {
-                if (Math.abs((getValue(i, j)) - (matrix2.getValue(i, j))) > h) {
+                if (!isZero((getValue(i, j)) - (matrix2.getValue(i, j)))) {
                     return false;
                 }
             }
