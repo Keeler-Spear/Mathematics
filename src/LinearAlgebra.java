@@ -12,8 +12,6 @@ public class LinearAlgebra {
 
     final static double tol = 0.000001;
 
-    //Todo: Private method that determines if a value is close enough to zero
-
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
         if (Math.abs(val) < tol) {
@@ -251,7 +249,7 @@ public class LinearAlgebra {
         Matrix x = vectorFromColumn(A, A.getCols());
         return x;
     }
-    
+
     /**
      * Row-reduces the provided matrix to row echelon form via Gaussian Elimination.
      *
@@ -404,7 +402,31 @@ public class LinearAlgebra {
         return sum;
     }
 
-    //PA = LU, A = P^-1 * LU
+    //The absolute sum of the off-diagonal terms of A.
+    private static double nonDiagSum(Matrix A) {
+        double sum = 0.0;
+        for (int i = 1; i <= A.getCols(); i++) {
+            for (int j = 1; j <= A.getRows(); j++) {
+                if (i != j) {
+                    sum += Math.abs(A.getValue(i, j));
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Factors a matrix into permutation, lower-triangular, and upper-triangular matrices. Matrix P * matrixOrg =
+     *                                      matrix L * matrix U.
+     *
+     * @param matrixOrg The matrix that will be factored.
+     * @return An array of matrices containing:
+     *         <ul>
+     *             <li>1 A lower-triangular matrix.</li>
+     *             <li>-1 An upper-triangular matrix.</li>
+     *             <li>0 A permutation matrix which the provided one must be multiplied by for correct factorization.</li>
+     *         </ul>
+     */
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
         Matrix U; //U will be an mxn matrix
         Matrix P; //Permutation Matrix
@@ -454,7 +476,33 @@ public class LinearAlgebra {
         return new Matrix[]{L,U, P}; //Returns a list of L, U, and P
     }
 
+    //Creates a copy of the provided matrix, with one column removed.
+    private static Matrix createSubMatrix(Matrix A, int col) {
+        Matrix subMatrix;
+        try {
+            subMatrix = (Matrix) A.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        subMatrix.removeCol(col);
+        return subMatrix;
+    }
+
+    /**
+     * Solves the system provided (matrixOrg * x = b) through forward and back solving its LU matrices.
+     *
+     * @param matrixOrg The matrix that will be solved for based on the provided vector.
+     * @param b The matrix vector for which the system will be solved for.
+     * @return A matrix vector which is the solution to the system.
+     * @throws IllegalArgumentException If the provided matrix vector's number of columns is not one or if the
+     *                                      vector's number of rows is not equal to the matrix's number of columns.
+     * @see #LUDecomp(Matrix)
+     */
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
+        if (b.getCols() != 1 || b.getRows() != matrixOrg.getCols()) {
+            throw new IllegalArgumentException("The provided b matrix is not valid!");
+        }
+
         matrixOrg.setAugmentation(false);
         Matrix[] LU = LUDecomp(matrixOrg);
         Matrix L = LU[0];
@@ -471,7 +519,6 @@ public class LinearAlgebra {
         y = vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
         return  y;
     }
-
 
     /**
      * Inverts the provided matrix, given that it is invertible.
@@ -513,18 +560,13 @@ public class LinearAlgebra {
         return A;
     }
 
-    //Creates a copy of the provided matrix, with one column removed.
-    private static Matrix createSubMatrix(Matrix A, int col) {
-        Matrix subMatrix;
-        try {
-            subMatrix = (Matrix) A.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        subMatrix.removeCol(col);
-        return subMatrix;
-    }
-
+    /**
+     * Calculates the determinant of a square matrix.
+     *
+     * @param A The square matrix whose determinant will be calculated.
+     * @return The determinant of the provided matrix.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
     public static double determinant(Matrix A) {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("Matrix is not square");
@@ -532,6 +574,7 @@ public class LinearAlgebra {
         return determinantRec(A);
     }
 
+    //Recursively calculates the determinant of matrix A.
     private static double determinantRec(Matrix A) {
         double determinant = 0.0;
         if (A.getRows() == 2) { //Base Case
@@ -566,8 +609,74 @@ public class LinearAlgebra {
         return subMatrix;
     }
 
-    //Eigenvalues
+    /**
+     * Calculates the L1 norm of a matrix.
+     *
+     * @param A The matrix whose L1 norm will be calculated.
+     * @return One of the following:
+     *         <ul>
+     *             <li>1 The sum of the matrix's absolute values if it has one column.</li>
+     *             <li>-1 The largest absolute column sum of the matrix.</li>
+     *         </ul>
+     */
+    public static double l1Norm(Matrix A) {
+        double l;
+        if (A.getCols() == 1) {
+            l = l1Vector(A, 1);
+        }
+        else {
+            l = l1Matrix(A);
+        }
+        return l;
+    }
 
+    //The sum of the matrix's absolute values.
+    private static double l1Vector (Matrix b, int col) {
+        double l = 0.0;
+        for (int i = 1; i <= b.getRows(); i++) {
+            l += Math.abs(b.getValue(i, col));
+        }
+        return l;
+    }
+
+    //The largest absolute column sum of the matrix.
+    private static double l1Matrix (Matrix A) {
+        double l = 0.0;
+        double temp;
+        for (int i = 1; i <= A.getCols(); i++) {
+            temp = l1Vector(A, i);
+            if (temp > l) {
+                l = temp;
+            }
+        }
+
+        return l;
+    }
+
+    /**
+     * Calculates the L2 norm of a matrix.
+     *
+     * @param A The matrix whose L2 norm will be calculated.
+     * @return One of the following:
+     *         <ul>
+     *             <li>1 The length of the matrix if it has one column.</li>
+     *             <li>-The square root of the matrix's spectral radius.</li>
+     *         </ul>
+     * @throws UnsupportedOperationException If the provided matrix is not a vector nor square.
+     */
+    public static double l2Norm (Matrix A) {
+        if (A.getCols() == 1) {
+            return l2Vector(A);
+        }
+        else if (A.isSquare()) {
+            return l2Matrix(A);
+        }
+        else {
+            throw new UnsupportedOperationException("L2Norm of non-square matrices is not yet supported!");
+        }
+    }
+
+    //The length of a vector.
     private static double l2Vector (Matrix b) {
         double l = 0.0;
         for (int i = 1; i <= b.getRows(); i++) {
@@ -576,59 +685,81 @@ public class LinearAlgebra {
         return Math.sqrt(l);
     }
 
-    //Todo
+    //The square root of the matrix's spectral radius.
     private static double l2Matrix (Matrix A) {
-        return 0.0;
+        return Math.sqrt(maxEig(A));
     }
 
-    public static double l2Norm (Matrix A) {
+    /**
+     * Calculates the LInfinite norm of a matrix.
+     *
+     * @param A The matrix whose LInfinite norm will be calculated.
+     * @return One of the following:
+     *         <ul>
+     *             <li>1 The largest absolute value in the matrix if it has one column.</li>
+     *             <li>-The largest absolute row sum of the matrix.</li>
+     *         </ul>
+     */
+    public static double lInfNorm (Matrix A) {
         if (A.getCols() == 1) {
-            return l2Vector(A);
+            return lInfVector(A);
         }
         else {
-            return l2Matrix(A);
+            return lInfMatrix(A);
         }
     }
 
-    public static double l1Norm(Matrix A) {
-        double a = 0.0;
-        double b;
-        for (int i = 1; i <= A.getCols(); i++) {
-            b = 0.0;
-            for (int j = 1; j <= A.getRows(); j++) {
-                b += Math.abs(A.getValue(j, i));
-            }
-            if (b > a) {
-                a = b;
+    //The largest absolute value in the vector.
+    private static double lInfVector (Matrix b) {
+        double l = 0.0;
+        double temp;
+        for (int i = 1; i <= b.getRows(); i++) {
+            temp = Math.abs(b.getValue(i, 1));
+            if (temp > l) {
+                l = temp;
             }
         }
-        return a;
+        return l;
     }
 
-    private static double xError1 (Matrix A, Matrix B) {
-        return l1Norm(addMatrices(A, B, -1));
+    //The largest absolute row sum of the matrix.
+    private static double lInfMatrix (Matrix A) {
+        double l = 0.0;
+        double temp;
+        for (int i = 1; i <= A.getRows(); i++) {
+            temp = 0.0;
+            for (int j = 1; j <= A.getCols(); j++) {
+                temp += Math.abs(A.getValue(i, j));
+            }
+            if (temp > l) {
+                l = temp;
+            }
+        }
+
+        return l;
     }
 
+    //The l2 norm of the residual error of the provided matrices (Ax - b).
     private static double rError2 (Matrix A, Matrix x, Matrix b) {
         return l2Norm(addMatrices(b, multiplyMatrices(A, x), -1));
     }
 
+    //The l1 norm of the difference between the two provided vectors.
+    private static double xError1 (Matrix A, Matrix B) {
+        return l1Norm(addMatrices(A, B, -1));
+    }
+
+    //The l2 norm of the difference between the two provided vectors.
     private static double xError2 (Matrix x, Matrix b) {
         return l2Norm(addMatrices(x, b, -1));
     }
 
-    private static double nonDiagSum(Matrix A) {
-        double sum = 0.0;
-        for (int i = 1; i <= A.getCols(); i++) {
-            for (int j = 1; j <= A.getRows(); j++) {
-                if (i != j) {
-                    sum += Math.abs(A.getValue(i, j));
-                }
-            }
-        }
-        return sum;
-    }
-
+    /**
+     * Normalizes a matrix such that each column has an L2 norm of 1.
+     *
+     * @param A The matrix that will be normalized.
+     * @return The matrix with normalized columns.
+     */
     public static Matrix normalize(Matrix A) {
         Matrix ci;
         for (int i = 1; i <= A.getCols(); i++) {
@@ -646,29 +777,15 @@ public class LinearAlgebra {
         return b;
     }
 
-    public static double powerMethod (Matrix A, Matrix x, double t) { //Returns dominant eigenvalue and associated eigenvector
-        if (!A.isSquare()) {
-            throw new IllegalArgumentException("The matrix must be square!");
-        }
-        Matrix xk = normalize(multiplyMatrices(A, x)); //xk = Ax(k-1)/||x(k-1)||
-        while (xError2(xk, x) > t) {
-            x = xk;
-            xk = normalize(multiplyMatrices(A, xk)); //xk = Ax(k-1)/||x(k-1)||
-        }
-        Matrix eigVal = multiplyMatrices(A, xk); //eig = xTk*A*xk
-        eigVal = multiplyMatrices(transpose(xk), eigVal);
-        return eigVal.getValue(1, 1);
-    }
-
-    public static double powerMethod (Matrix A) {
-        Matrix x = new Matrix(A.getRows(), 1);
-        for (int i = 1; i <= x.getRows(); i++) {
-            x.setValue(i,1, 1);
-        }
-        return powerMethod(A, x, tol);
-    }
-
-    //Vectors
+    /**
+     * Calculates the dot product of two vectors.
+     *
+     * @param a The first vector.
+     * @param b The second vector.
+     * @return The dot product of the two provided vectors.
+     * @throws IllegalArgumentException If the provided matrices are not vectors.
+     * @throws IllegalArgumentException If the provided matrices do not have the same number of rows
+     */
     public static double dotProduct (Matrix a, Matrix b) {
         if (a.getCols() != 1 || b.getCols() != 1) {
             throw new IllegalArgumentException("The matrices must be vectors!");
@@ -684,7 +801,16 @@ public class LinearAlgebra {
         return dp;
     }
 
-    public static Matrix proj(Matrix y, Matrix u) { //(Y*U)/(U*U) U
+    /**
+     * Calculates the projection of y onto u. (Y dot U / U dot U) * U
+     *
+     * @param y The vector to be projected.
+     * @param u The vector to be projected onto.
+     * @return The projection of y onto u.
+     * @throws IllegalArgumentException If the provided matrices are not vectors.
+     * @throws IllegalArgumentException If the provided matrices do not have the same number of rows
+     */
+    public static Matrix proj(Matrix y, Matrix u) {
         if (y.getCols() != 1 || u.getCols() != 1) {
             throw new IllegalArgumentException("The matrices must be vectors!");
         }
@@ -692,7 +818,7 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The vectors not have the same number of rows!");
         }
         Matrix proj;
-        try { //Needs to be used so the code in not altering the original matrix A
+        try {
             proj = (Matrix) u.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
@@ -705,19 +831,12 @@ public class LinearAlgebra {
         return proj;
     }
 
-
-
-    private static double[] diagVals(Matrix A) {
-        if (!(A.isSquare())) {
-            throw new IllegalArgumentException("The matrix must be square!");
-        }
-        double[] vals = new double[A.getCols()];
-        for (int i = 1; i <= A.getRows(); i++) {
-            vals[i-1] = A.getValue(i, i);
-        }
-        return vals;
-    }
-
+    /**
+     * Creates an orthogonal basis of vectors in R^n from the provided mxn matrix.
+     *
+     * @param matrixOrg The set of n vectors to be used to form an orthogonal basis in R^n.
+     * @return A set of orthogonal basis vectors in R^n in the form a matrix.
+     */
     public static Matrix GramSchmidt (Matrix matrixOrg) {
         Matrix orthMatrix;
         Matrix vn;
@@ -745,6 +864,59 @@ public class LinearAlgebra {
         return orthMatrix;
     }
 
+    /**
+     * Numerically calculates the dominant eigenvalue of a square matrix at a linear rate via the power method, provided
+     *                                  the matrix has a unique dominant eigenvalue.
+     *
+     * @param A The square matrix whose dominant eigenvalue will be calculated.
+     * @param x The initial guess for the matrix's dominant eigenvector.
+     * @param t The tolerance this method will use.
+     * @return The dominant eigenvalue of the provided matrix.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
+    public static double powerMethod (Matrix A, Matrix x, double t) {
+        if (!A.isSquare()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+        Matrix xk = normalize(multiplyMatrices(A, x)); //xk = Ax(k-1)/||x(k-1)||
+        while (xError2(xk, x) > t) {
+            x = xk;
+            xk = normalize(multiplyMatrices(A, xk)); //xk = Ax(k-1)/||x(k-1)||
+        }
+        Matrix eigVal = multiplyMatrices(A, xk); //eig = xTk*A*xk
+        eigVal = multiplyMatrices(transpose(xk), eigVal);
+        return eigVal.getValue(1, 1);
+    }
+
+    /**
+     * Numerically calculates the dominant eigenvalue of a square matrix at a linear rate via the power method, provided
+     *                                  the matrix has a unique dominant eigenvalue.
+     *
+     * @param A The square matrix whose dominant eigenvalue will be calculated.
+     * @return The dominant eigenvalue of the provided matrix.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
+    public static double maxEig (Matrix A) {
+        if (!A.isSquare()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+        Matrix x = new Matrix(A.getRows(), 1);
+        for (int i = 1; i <= x.getRows(); i++) {
+            x.setValue(i,1, 1);
+        }
+        return powerMethod(A, x, tol);
+    }
+
+    /**
+     * Factors a matrix into the product of an orthogonal and upper-triangular matrix. Matrix A = matrix Q * matrix R.
+     *
+     * @param A The matrix that will be factored.
+     * @return An array of matrices containing:
+     *         <ul>
+     *             <li>1 An orthogonal matrix.</li>
+     *             <li>-1 An upper-triangular matrix.</li>
+     *         </ul>
+     */
     public static Matrix[] QRFactorization (Matrix A) {
         Matrix[] QR = new Matrix[2];
         Matrix Q = normalize(GramSchmidt(A));
@@ -754,7 +926,15 @@ public class LinearAlgebra {
         return QR;
     }
 
-    //Todo: get rid of t, use tol
+    /**
+     * Numerically calculates the eigenvalues of a square matrix via the QR method, provided all eigenvalues are distinct
+     *                                      and real.
+     *
+     * @param A The square matrix whose eigenvalues will be calculated.
+     * @param t The tolerance this method will use.
+     * @return A matrix with eigenvalues along its diagonal.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
     public static Matrix QREig (Matrix A, double t) {
         if (A.getRows() != A.getCols()) {
             throw new IllegalArgumentException("The matrix must be square!");
@@ -772,19 +952,30 @@ public class LinearAlgebra {
         return eig;
     }
 
-    //Todo: Get rid of t, use tol
-    public static Matrix QREigShift (Matrix A, int  i,int j,double t) { //Shifting is based on element at (i, j)
+    /**
+     * Numerically calculates the eigenvalues of a square matrix via the QR shifting method, provided all eigenvalues
+     *                                      are distinct and real. The eigenvalue corresponding to the provided guess
+     *                                      will be the most accurate, with all others being less accurate.
+     *
+     * @param A The square matrix whose eigenvalues will be calculated.
+     * @param row The row coordinate of the guess for the desired eigenvalue.
+     * @param col The column coordinate of the guess for the desired eigenvalue.
+     * @param t The tolerance this method will use.
+     * @return A matrix with eigenvalues along its diagonal.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
+    public static Matrix QREigShift (Matrix A, int  row,int col,double t) { //Shifting is based on element at (i, j)
         if (A.getRows() != A.getCols()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
-        double shift = A.getValue(i, j);
+        double shift = A.getValue(row, col);
         A = addMatrices(A, constantIdentityMatrix(A.getRows(), shift), -1); //~A(k) = A(k) - shift*I
         Matrix[] QR = QRFactorization(A);
         Matrix Q = QR[0];
         Matrix R = QR[1];
         Matrix eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
         while (lowerTriSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
-            shift = eig.getValue(i, j);
+            shift = eig.getValue(row, col);
             eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
             QR = QRFactorization(eig);
             Q = QR[0];
@@ -794,8 +985,30 @@ public class LinearAlgebra {
         return eig;
     }
 
+    /**
+     * Numerically calculates the eigenvalues of a square matrix via the QR method, provided all eigenvalues are distinct
+     *                                      and real.
+     * @param A The square matrix whose eigenvalues will be calculated.
+     * @return An array of the matrix's eigenvalues.
+     * @throws IllegalArgumentException If the provided matrix is not square.
+     */
     public static double[] eig(Matrix A) {
+        if (!A.isSquare()) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
         Matrix eigenVals =  QREig(A, tol);
         return diagVals(eigenVals);
+    }
+
+    //Creates a 1d array of the values along a matrix's diagonal.
+    private static double[] diagVals(Matrix A) {
+        if (!(A.isSquare())) {
+            throw new IllegalArgumentException("The matrix must be square!");
+        }
+        double[] vals = new double[A.getCols()];
+        for (int i = 1; i <= A.getRows(); i++) {
+            vals[i-1] = A.getValue(i, i);
+        }
+        return vals;
     }
 }

@@ -264,7 +264,7 @@ class LinearAlgebraTest {
                 {0, -3, -6},
                 {0, 0, 3}
         };
-        Matrix correctU = new Matrix(LVALS);
+        Matrix correctU = new Matrix(UVALS);
 
         assertEquals(correctL, L);
 
