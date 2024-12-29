@@ -11,6 +11,7 @@
 public class LinearAlgebra {
 
     final static double TOL = 0.000001;
+    final static int MAX_ITERATIONS = 1000;
 
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
@@ -878,9 +879,11 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The matrix must be square!");
         }
         Matrix xk = normalize(multiplyMatrices(A, x)); //xk = Ax(k-1)/||x(k-1)||
-        while (xError2(xk, x) > t) {
+        int iterations = 0;
+        while (xError2(xk, x) > t && iterations < MAX_ITERATIONS) {
             x = xk;
             xk = normalize(multiplyMatrices(A, xk)); //xk = Ax(k-1)/||x(k-1)||
+            iterations++;
         }
         Matrix eigVal = multiplyMatrices(A, xk); //eig = xTk*A*xk
         eigVal = multiplyMatrices(transpose(xk), eigVal);
@@ -942,11 +945,13 @@ public class LinearAlgebra {
         Matrix Q = QR[0];
         Matrix R = QR[1];
         Matrix eig = multiplyMatrices(R, Q); //E1 = RQ
-        while (lowerTriSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+        int iterations = 0;
+        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) { //Runs while the sum of the non-diagonal entries is greater than zero
             QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
             eig = multiplyMatrices(R, Q); //E1(k) = R(k)Q(k)
+            iterations++;
         }
         return eig;
     }
@@ -973,13 +978,15 @@ public class LinearAlgebra {
         Matrix Q = QR[0];
         Matrix R = QR[1];
         Matrix eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
-        while (lowerTriSum(eig) > t) { //Runs while the sum of the non-diagonal entries is greater than zero
+        int iterations = 0;
+        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) { //Runs while the sum of the non-diagonal entries is greater than zero
             shift = eig.getValue(row, col);
             eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
             QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
             eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E1(k) = R(k)Q(k) + shift*I
+            iterations++;
         }
         return eig;
     }

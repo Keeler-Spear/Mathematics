@@ -246,11 +246,32 @@ public class Matrix {
     }
 
     /**
-     * Sets the column in the matrix at the specified position using 1-based indexing.
+     * Sets the column in the matrix at the specified position to the one provided using 1-based indexing.
      *
      * @param col The 1-based column index where the values will be set.
-     * @param vals A 2d array of values that will be inserted into the matrix at the given location. The array must be 2d
-     * so that a vector matrix's internal values can be used to set columns.
+     * @param vals A 1d array of values that will be inserted into the matrix at the given location.
+     * @throws IllegalArgumentException If the specified column index is out of the matrix's bounds
+     * (1 ≤ col ≤ {@code cols}).
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+     */
+    public void setCol(int col, double[] vals) {
+        col = col - 1;
+        if (col < 0 || col >= cols) {
+            throw new IllegalArgumentException("The column out of bounds!");
+        }
+        if (vals.length != rows) {
+            throw new IllegalArgumentException("The given column is not the correct size!");
+        }
+        for (int i = 0; i < rows; i++) {
+            matrix[i][col] = vals[i];
+        }
+    }
+
+    /**
+     * Sets the column in the matrix at the specified position to the one provided using 1-based indexing.
+     *
+     * @param col The 1-based column index where the values will be set.
+     * @param vals A 2d array of values that will be inserted into the matrix at the given location.
      * @throws IllegalArgumentException If the specified column index is out of the matrix's bounds
      * (1 ≤ col ≤ {@code cols}).
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
@@ -268,9 +289,49 @@ public class Matrix {
         }
     }
 
-    //ToDo Version of setCol with a 1d array
+    /**
+     * Sets the row in the matrix at the specified position to the one provided using 1-based indexing.
+     *
+     * @param row The 1-based row index where the values will be set.
+     * @param vals A 1d array of values that will be inserted into the matrix at the given location.
+     * @throws IllegalArgumentException If the specified row index is out of the matrix's bounds
+     * (1 ≤ row ≤ {@code rows}).
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+     */
+    public void setRow(int row, double[] vals) {
+        row = row - 1;
+        if (row < 0 || row >= rows) {
+            throw new IllegalArgumentException("The row out of bounds!");
+        }
+        if (vals.length != cols) {
+            throw new IllegalArgumentException("The given row is not the correct size!");
+        }
+        for (int i = 0; i < cols; i++) {
+            matrix[row][i] = vals[i];
+        }
+    }
 
-    //ToDo: Set row method
+    /**
+     * Sets the row in the matrix at the specified position to the one provided using 1-based indexing.
+     *
+     * @param row The 1-based row index where the values will be set.
+     * @param vals A 2d array of values that will be inserted into the matrix at the given location.
+     * @throws IllegalArgumentException If the specified row index is out of the matrix's bounds
+     * (1 ≤ row ≤ {@code rows}).
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+     */
+    public void setRow(int row, double[][] vals) {
+        row = row - 1;
+        if (row < 0 || row >= rows) {
+            throw new IllegalArgumentException("The row out of bounds!");
+        }
+        if (vals[0].length != cols || vals.length != 1) {
+            throw new IllegalArgumentException("The given row is not the correct size!");
+        }
+        for (int i = 0; i < cols; i++) {
+            matrix[row][i] = vals[0][i];
+        }
+    }
 
     /**
      * The elementary matrix operation of adding one row to another within the matrix. Row R1 = row R1 + scalar * row R2.
