@@ -10,11 +10,11 @@
  */
 public class LinearAlgebra {
 
-    final static double tol = 0.000001;
+    final static double TOL = 0.000001;
 
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
-        if (Math.abs(val) < tol) {
+        if (Math.abs(val) < TOL) {
             return true;
         }
         else {
@@ -51,8 +51,8 @@ public class LinearAlgebra {
      *
      * @param n The size that the identity matrix will be.
      * @return An nxn identity matrix multiplied by a given constant.
-     * @see #scaleMatrix(Matrix, double)
      * @throws IllegalArgumentException If n less than or equal to zero.
+     * @see #scaleMatrix(Matrix, double).
      */
     public static Matrix constantIdentityMatrix(int n, double c) {
         if (n <= 0) {
@@ -417,14 +417,14 @@ public class LinearAlgebra {
 
     /**
      * Factors a matrix into permutation, lower-triangular, and upper-triangular matrices. Matrix P * matrixOrg =
-     *                                      matrix L * matrix U.
+     * matrix L * matrix U.
      *
      * @param matrixOrg The matrix that will be factored.
      * @return An array of matrices containing:
      *         <ul>
-     *             <li>1 A lower-triangular matrix.</li>
-     *             <li>-1 An upper-triangular matrix.</li>
-     *             <li>0 A permutation matrix which the provided one must be multiplied by for correct factorization.</li>
+     *             <li> A lower-triangular matrix.</li>
+     *             <li> An upper-triangular matrix.</li>
+     *             <li> A permutation matrix which the provided one must be multiplied by for correct factorization.</li>
      *         </ul>
      */
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
@@ -495,21 +495,20 @@ public class LinearAlgebra {
      * @param b The matrix vector for which the system will be solved for.
      * @return A matrix vector which is the solution to the system.
      * @throws IllegalArgumentException If the provided matrix vector's number of columns is not one or if the
-     *                                      vector's number of rows is not equal to the matrix's number of columns.
-     * @see #LUDecomp(Matrix)
+     * vector's number of rows is not equal to the matrix's number of columns.
+     * @see #LUDecomp(Matrix).
      */
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
         if (b.getCols() != 1 || b.getRows() != matrixOrg.getCols()) {
             throw new IllegalArgumentException("The provided b matrix is not valid!");
         }
-
         matrixOrg.setAugmentation(false);
         Matrix[] LU = LUDecomp(matrixOrg);
         Matrix L = LU[0];
         Matrix U = LU[1];
         Matrix P = LU[2];
         P = matrixInverse(P);
-        L = multiplyMatrices(P, L); //L = P^-1 L
+        L = multiplyMatrices(P, L);
         Matrix Ly = RREF(augmentMatrix(L,b)); //Ly = b; Needed because P^-1 L is not triangular
         Matrix y = vectorFromColumn(Ly, Ly.getCols()); //Separates the solution from the matrix
 
@@ -615,8 +614,8 @@ public class LinearAlgebra {
      * @param A The matrix whose L1 norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li>1 The sum of the matrix's absolute values if it has one column.</li>
-     *             <li>-1 The largest absolute column sum of the matrix.</li>
+     *             <li> The sum of the matrix's absolute values if it has one column.</li>
+     *             <li> The largest absolute column sum of the matrix otherwise.</li>
      *         </ul>
      */
     public static double l1Norm(Matrix A) {
@@ -659,8 +658,8 @@ public class LinearAlgebra {
      * @param A The matrix whose L2 norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li>1 The length of the matrix if it has one column.</li>
-     *             <li>-The square root of the matrix's spectral radius.</li>
+     *             <li> The length of the matrix if it has one column.</li>
+     *             <li> The square root of the matrix's spectral radius otherwise.</li>
      *         </ul>
      * @throws UnsupportedOperationException If the provided matrix is not a vector nor square.
      */
@@ -696,8 +695,8 @@ public class LinearAlgebra {
      * @param A The matrix whose LInfinite norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li>1 The largest absolute value in the matrix if it has one column.</li>
-     *             <li>-The largest absolute row sum of the matrix.</li>
+     *             <li> The largest absolute value in the matrix if it has one column.</li>
+     *             <li> The largest absolute row sum of the matrix otherwise.</li>
      *         </ul>
      */
     public static double lInfNorm (Matrix A) {
@@ -866,7 +865,7 @@ public class LinearAlgebra {
 
     /**
      * Numerically calculates the dominant eigenvalue of a square matrix at a linear rate via the power method, provided
-     *                                  the matrix has a unique dominant eigenvalue.
+     * the matrix has a unique dominant eigenvalue.
      *
      * @param A The square matrix whose dominant eigenvalue will be calculated.
      * @param x The initial guess for the matrix's dominant eigenvector.
@@ -890,7 +889,7 @@ public class LinearAlgebra {
 
     /**
      * Numerically calculates the dominant eigenvalue of a square matrix at a linear rate via the power method, provided
-     *                                  the matrix has a unique dominant eigenvalue.
+     * the matrix has a unique dominant eigenvalue.
      *
      * @param A The square matrix whose dominant eigenvalue will be calculated.
      * @return The dominant eigenvalue of the provided matrix.
@@ -904,7 +903,7 @@ public class LinearAlgebra {
         for (int i = 1; i <= x.getRows(); i++) {
             x.setValue(i,1, 1);
         }
-        return powerMethod(A, x, tol);
+        return powerMethod(A, x, TOL);
     }
 
     /**
@@ -913,8 +912,8 @@ public class LinearAlgebra {
      * @param A The matrix that will be factored.
      * @return An array of matrices containing:
      *         <ul>
-     *             <li>1 An orthogonal matrix.</li>
-     *             <li>-1 An upper-triangular matrix.</li>
+     *             <li> An orthogonal matrix.</li>
+     *             <li> An upper-triangular matrix.</li>
      *         </ul>
      */
     public static Matrix[] QRFactorization (Matrix A) {
@@ -928,7 +927,7 @@ public class LinearAlgebra {
 
     /**
      * Numerically calculates the eigenvalues of a square matrix via the QR method, provided all eigenvalues are distinct
-     *                                      and real.
+     * and real.
      *
      * @param A The square matrix whose eigenvalues will be calculated.
      * @param t The tolerance this method will use.
@@ -954,8 +953,8 @@ public class LinearAlgebra {
 
     /**
      * Numerically calculates the eigenvalues of a square matrix via the QR shifting method, provided all eigenvalues
-     *                                      are distinct and real. The eigenvalue corresponding to the provided guess
-     *                                      will be the most accurate, with all others being less accurate.
+     * are distinct and real. The eigenvalue corresponding to the provided guess will be the most accurate, with all
+     * others being less accurate.
      *
      * @param A The square matrix whose eigenvalues will be calculated.
      * @param row The row coordinate of the guess for the desired eigenvalue.
@@ -987,16 +986,22 @@ public class LinearAlgebra {
 
     /**
      * Numerically calculates the eigenvalues of a square matrix via the QR method, provided all eigenvalues are distinct
-     *                                      and real.
+     * and real.
+     * <p>
+     *     The eigenvalues are calculated using the regular QR method due to its output of all of a matrix's eigenvalues
+     *     with similar accuracy.
+     * </p>
+     *
      * @param A The square matrix whose eigenvalues will be calculated.
      * @return An array of the matrix's eigenvalues.
      * @throws IllegalArgumentException If the provided matrix is not square.
+     * @see #QREig(Matrix, double)
      */
     public static double[] eig(Matrix A) {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
-        Matrix eigenVals =  QREig(A, tol);
+        Matrix eigenVals =  QREig(A, TOL);
         return diagVals(eigenVals);
     }
 

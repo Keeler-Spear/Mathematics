@@ -35,7 +35,7 @@ public class Matrix {
      *
      * @param vals A 2d array of doubles representing the matrix entries. Each inner array corresponds to a row.
      * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
-     *                                  ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
+     * ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
      */
     public Matrix(double[][] vals) {
         if (vals.length < MIN_ROWS || vals[0].length < MIN_COLS) {
@@ -52,7 +52,7 @@ public class Matrix {
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
      * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
-     *                                  ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
+     * ({@value MIN_ROWS} row(s) and {@value MIN_COLS} column(s)).
      */
     public Matrix(int rows, int cols) {
         if (rows < MIN_ROWS || cols < MIN_COLS) {
@@ -124,7 +124,7 @@ public class Matrix {
      * @param col The 1-based column index where the value will be collected.
      * @return The value at the specified position in the matrix.
      * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     * (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
      */
     public double getValue(int row, int col) {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
@@ -140,7 +140,7 @@ public class Matrix {
      * @param col The 1-based column index where the value will be set.
      * @param value The value to set at the specified position in the matrix.
      * @throws IllegalArgumentException If the specified row or column index is out of the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
+     * (1 ≤ row ≤ {@code rows}, 1 ≤ col ≤ {@code cols}).
      */
     public void setValue (int row, int col, double value) {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
@@ -177,7 +177,7 @@ public class Matrix {
      *
      * @param row The 1-based index where the row will be removed.
      * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
-     *                                        (1 ≤ row ≤ {@code rows}).
+     * (1 ≤ row ≤ {@code rows}).
      */
     public void removeRow(int row) {
         if (rows < row || row <= 0) {
@@ -200,7 +200,6 @@ public class Matrix {
      *
      * @param vals The 1d array of values to be added to the matrix as a column.
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
-
      */
     public void addCol(double[] vals) {
         if (vals.length != rows) {
@@ -224,7 +223,7 @@ public class Matrix {
      *
      * @param col The 1-based index where the column will be removed.
      * @throws IllegalArgumentException If the specified column index is outside the matrix's bounds
-     *                                        (1 ≤ col ≤ {@code cols}).
+     * (1 ≤ col ≤ {@code cols}).
      */
     public void removeCol(int col) {
         if (cols < col || col <= 0) {
@@ -251,11 +250,10 @@ public class Matrix {
      *
      * @param col The 1-based column index where the values will be set.
      * @param vals A 2d array of values that will be inserted into the matrix at the given location. The array must be 2d
-     *                                        so that a vector matrix's internal values can be used to set columns.
+     * so that a vector matrix's internal values can be used to set columns.
      * @throws IllegalArgumentException If the specified column index is out of the matrix's bounds
-     *                                        (1 ≤ col ≤ {@code cols}).
+     * (1 ≤ col ≤ {@code cols}).
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
-
      */
     public void setCol(int col, double[][] vals) {
         col = col - 1;
@@ -281,7 +279,7 @@ public class Matrix {
      * @param R2 The 1-based index of the row that will be multiplied by a scalar and added to the other.
      * @param scalar The value the second row (R2) will be multiplied by in the row addition.
      * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
-     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     * (1 ≤ R1, R2 ≤ {@code rows}).
      */
     public void addRows(int R1, int R2, double scalar) {
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
@@ -298,7 +296,7 @@ public class Matrix {
      * @param R1 The 1-based index of the first row to be swapped.
      * @param R2 The 1-based index of the second row to be swapped.
      * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
-     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     * (1 ≤ R1, R2 ≤ {@code rows}).
      */
     public void swapRows(int R1, int R2) { //Maybe use permutation matrix and left multiply it by the current matrix
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
@@ -307,7 +305,6 @@ public class Matrix {
         double[] temRow = matrix[R1 - 1];
         matrix[R1 - 1] = matrix[R2 - 1];
         matrix[R2 - 1] = temRow;
-
     }
 
     /**
@@ -315,8 +312,7 @@ public class Matrix {
      *
      * @param R The 1-based index of the row to be scaled.
      * @param scalar The value the row will be multiplied by.
-     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds
-     *                                        (1 ≤ R ≤ {@code rows}).
+     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds (1 ≤ R ≤ {@code rows}).
      */
     public void scaleRow(int R, double scalar) {
         if (R <= 0 || R > rows) {
@@ -334,12 +330,12 @@ public class Matrix {
      * @param R2 The 1-based index of the second row to compare.
      * @return An integer indicating which row is larger:
      *         <ul>
-     *             <li>1 if the first row is larger.</li>
-     *             <li>-1 if the second row is larger.</li>
-     *             <li>0 if the rows are equal.</li>
+     *             <li> 1 if the first row is larger.</li>
+     *             <li> -1 if the second row is larger.</li>
+     *             <li> 0 if the rows are equal.</li>
      *         </ul>
      * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
-     *                                      (1 ≤ R1, R2 ≤ {@code rows}).
+     * (1 ≤ R1, R2 ≤ {@code rows}).
      */
     public int compareRows(int R1, int R2, int col) {
         int result = 0;
@@ -366,9 +362,9 @@ public class Matrix {
      * @param R2 The 1-based index of the second row to compare.
      * @return An integer indicating which row is larger:
      *         <ul>
-     *             <li>1 if the first row is larger.</li>
-     *             <li>-1 if the second row is larger.</li>
-     *             <li>0 if the rows are equal after scaling.</li>
+     *             <li> 1 if the first row is larger after scaling.</li>
+     *             <li> -1 if the second row is larger after scaling.</li>
+     *             <li> 0 if the rows are equal after scaling.</li>
      *         </ul>
      * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
      */
@@ -428,8 +424,8 @@ public class Matrix {
     /**
      * Returns the matrix as a String.
      *
-     * @return The matrix as a multi-line String, with each print line containing a row.
-     *                                      The matrix's entries are printed to four decimal places.
+     * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
+     * to four decimal places.
      */
     @Override
     public String toString() {
