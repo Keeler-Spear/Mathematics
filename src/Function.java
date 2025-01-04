@@ -1,5 +1,5 @@
+//WORK IN PROGRESS
 //ToDo: Implement a way for a String to be converted into a mathematical function.
-
 public class Function {
 
     private String function;

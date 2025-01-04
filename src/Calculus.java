@@ -122,6 +122,7 @@ public class Calculus {
      *     efficiency. Gaussian Quadrature was not chosen due to the computational cost of Legendre Polynomial root-finding.
      * </p>
      *
+     * @param x The set of equidistant x points for which f(x) data exists.
      * @param y The set of a function outputs from equidistant inputs within the interval.
      * @param a The lower bound of integration.
      * @param b The upper bound of integration.

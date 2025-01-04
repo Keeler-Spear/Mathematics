@@ -51,9 +51,10 @@ public class LinearAlgebra {
      * Creates an nxn identity matrix and then multiplies it by a constant.
      *
      * @param n The size that the identity matrix will be.
+     * @param c constant that the identity matrix will be multiplied by.
      * @return An nxn identity matrix multiplied by a given constant.
      * @throws IllegalArgumentException If n less than or equal to zero.
-     * @see #scaleMatrix(Matrix, double).
+     * @see #scaleMatrix(Matrix, double)
      */
     public static Matrix constantIdentityMatrix(int n, double c) {
         if (n <= 0) {
@@ -71,6 +72,7 @@ public class LinearAlgebra {
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
      * @throws IllegalArgumentException If the matrix's size is less than 1.
+     * @return a zero matrix of the size provided.
      */
     public static Matrix zeroMatrix (int rows, int cols) {
         if (rows <= 0 || cols <= 0) {
@@ -538,7 +540,7 @@ public class LinearAlgebra {
      * @return A matrix vector which is the solution to the system.
      * @throws IllegalArgumentException If the provided matrix vector's number of columns is not one or if the
      * vector's number of rows is not equal to the matrix's number of columns.
-     * @see #LUDecomp(Matrix).
+     * @see #LUDecomp(Matrix)
      */
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) {
         if (b.getCols() != 1 || b.getRows() != matrixOrg.getCols()) {

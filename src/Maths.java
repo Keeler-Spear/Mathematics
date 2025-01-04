@@ -1,3 +1,4 @@
+//WORK IN PROGRESS
 //My own implementation of the Java Math package. It is currently not in use.
 public class Maths {
 

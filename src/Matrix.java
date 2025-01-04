@@ -428,6 +428,7 @@ public class Matrix {
      *
      * @param R1 The 1-based index of the first row to compare.
      * @param R2 The 1-based index of the second row to compare.
+     * @param col The column in which row values will be compared.
      * @return An integer indicating which row is larger:
      *         <ul>
      *             <li> 1 if the first row is larger</li>
