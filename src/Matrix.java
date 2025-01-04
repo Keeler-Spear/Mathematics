@@ -12,13 +12,14 @@
  * @since 1.0
 */
 public class Matrix {
+    private static final int MIN_ROWS = 1;
+    private static final int MIN_COLS = 1;
+    private static final double tol = 0.00000000001;
+
     private double[][] matrix;
     private int rows;
     private int cols;
     private boolean augmented = false; //Needed to perform scaled partial pivoting
-    private static final int MIN_ROWS = 1;
-    private static final int MIN_COLS = 1;
-    private static final double tol = 0.00000000001;
 
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
@@ -41,6 +42,7 @@ public class Matrix {
         if (vals.length < MIN_ROWS || vals[0].length < MIN_COLS) {
             throw new IllegalArgumentException("This matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
+
         this.matrix = vals;
         this.rows = vals.length;
         this.cols = vals[0].length;
@@ -58,6 +60,7 @@ public class Matrix {
         if (rows < MIN_ROWS || cols < MIN_COLS) {
             throw new IllegalArgumentException("This matrix must have at least " + MIN_ROWS + " row(s) and " + MIN_COLS + " column(s)!");
         }
+
         matrix = new double[rows][cols];
         this.rows = rows;
         this.cols = cols;
@@ -130,6 +133,7 @@ public class Matrix {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
             throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
+
         return matrix[row - 1][col - 1];
     }
 
@@ -146,6 +150,7 @@ public class Matrix {
         if (row <= 0 || row > rows || col <= 0 || col > cols) {
             throw new IllegalArgumentException("Row: " + row + ", Col: " + col + " is out of bounds!");
         }
+
         matrix[row-1][col-1] = value;
     }
 
@@ -159,16 +164,21 @@ public class Matrix {
         if (vals.length != cols) {
             throw new IllegalArgumentException("This row is not the same size as the others in this matrix!");
         }
+
         rows++;
+
         double[][] tempMatrix = new double[rows][cols];
+
         for (int i = 0; i < rows - 1; i++) {
             for (int j = 0; j < cols; j++) {
                 tempMatrix[i][j] = matrix[i][j];
             }
         }
+
         for (int i = 0; i < cols; i++) {
             tempMatrix[rows - 1][i] = vals[i];
         }
+
         matrix = tempMatrix;
     }
 
@@ -183,15 +193,20 @@ public class Matrix {
         if (rows < row || row <= 0) {
             throw new IllegalArgumentException("This row is out of bounds!");
         }
-        row = row - 1;
+
+        row--;
         rows--;
+
         double[][] tempMatrix = new double[rows][cols];
+
         for (int i = 0; i < row; i++) {
             tempMatrix[i] = matrix[i];
         }
+
         for (int i = row; i < rows; i++) {
             tempMatrix[i] = matrix[i+1];
         }
+
         matrix = tempMatrix;
     }
 
@@ -205,16 +220,20 @@ public class Matrix {
         if (vals.length != rows) {
             throw new IllegalArgumentException("This column is not the same size as the others in this matrix!");
         }
+
         cols++;
         double[][] tempMatrix = new double[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols - 1; j++) {
                 tempMatrix[i][j] = matrix[i][j];
             }
         }
+
         for (int i = 0; i < rows; i++) {
             tempMatrix[i][cols - 1] = vals[i];
         }
+
         matrix = tempMatrix;
     }
 
@@ -229,19 +248,24 @@ public class Matrix {
         if (cols < col || col <= 0) {
             throw new IllegalArgumentException("This column is out of bounds");
         }
-        col = col - 1;
+
+        col--;
         cols--;
+
         double[][] tempMatrix = new double[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < col; j++) {
                 tempMatrix[i][j] = matrix[i][j];
             }
         }
+
         for (int i = 0; i < rows; i++) {
             for (int j = col; j < cols; j++) {
                 tempMatrix[i][j] = matrix[i][j+1];
             }
         }
+
         matrix = tempMatrix;
     }
 
@@ -255,13 +279,16 @@ public class Matrix {
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
      */
     public void setCol(int col, double[] vals) {
-        col = col - 1;
+        col--;
+
         if (col < 0 || col >= cols) {
             throw new IllegalArgumentException("The column out of bounds!");
         }
+
         if (vals.length != rows) {
             throw new IllegalArgumentException("The given column is not the correct size!");
         }
+
         for (int i = 0; i < rows; i++) {
             matrix[i][col] = vals[i];
         }
@@ -277,13 +304,16 @@ public class Matrix {
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
      */
     public void setCol(int col, double[][] vals) {
-        col = col - 1;
+        col--;
+
         if (col < 0 || col >= cols) {
             throw new IllegalArgumentException("The column out of bounds!");
         }
+
         if (vals.length != rows || vals[0].length != 1) {
             throw new IllegalArgumentException("The given column is not the correct size!");
         }
+
         for (int i = 0; i < rows; i++) {
             matrix[i][col] = vals[i][0];
         }
@@ -299,13 +329,16 @@ public class Matrix {
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
      */
     public void setRow(int row, double[] vals) {
-        row = row - 1;
+        row--;
+
         if (row < 0 || row >= rows) {
             throw new IllegalArgumentException("The row out of bounds!");
         }
+
         if (vals.length != cols) {
             throw new IllegalArgumentException("The given row is not the correct size!");
         }
+
         for (int i = 0; i < cols; i++) {
             matrix[row][i] = vals[i];
         }
@@ -321,13 +354,16 @@ public class Matrix {
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
      */
     public void setRow(int row, double[][] vals) {
-        row = row - 1;
+        row--;
+
         if (row < 0 || row >= rows) {
             throw new IllegalArgumentException("The row out of bounds!");
         }
+
         if (vals[0].length != cols || vals.length != 1) {
             throw new IllegalArgumentException("The given row is not the correct size!");
         }
+
         for (int i = 0; i < cols; i++) {
             matrix[row][i] = vals[0][i];
         }
@@ -346,6 +382,7 @@ public class Matrix {
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
             throw new IllegalArgumentException("One or more of the rows are out of bounds!");
         }
+
         for (int i = 0; i < cols; i++) {
             matrix[R1 - 1][i] += matrix[R2 - 1][i] * scalar;
         }
@@ -359,10 +396,11 @@ public class Matrix {
      * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
      * (1 ≤ R1, R2 ≤ {@code rows}).
      */
-    public void swapRows(int R1, int R2) { //Maybe use permutation matrix and left multiply it by the current matrix
+    public void swapRows(int R1, int R2) {
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
             throw new IllegalArgumentException("One or more of the rows are out of bounds!");
         }
+
         double[] temRow = matrix[R1 - 1];
         matrix[R1 - 1] = matrix[R2 - 1];
         matrix[R2 - 1] = temRow;
@@ -379,6 +417,7 @@ public class Matrix {
         if (R <= 0 || R > rows) {
             throw new IllegalArgumentException("This row is out of bounds!");
         }
+
         for (int i = 0; i < cols; i++) {
             matrix[R - 1][i] = matrix[R - 1][i] * scalar;
         }
@@ -391,9 +430,9 @@ public class Matrix {
      * @param R2 The 1-based index of the second row to compare.
      * @return An integer indicating which row is larger:
      *         <ul>
-     *             <li> 1 if the first row is larger.</li>
-     *             <li> -1 if the second row is larger.</li>
-     *             <li> 0 if the rows are equal.</li>
+     *             <li> 1 if the first row is larger</li>
+     *             <li> -1 if the second row is larger</li>
+     *             <li> 0 if the rows are equal</li>
      *         </ul>
      * @throws IllegalArgumentException * @throws IllegalArgumentException If the provided row indices are out of bounds
      * (1 ≤ R1, R2 ≤ {@code rows}).
@@ -403,7 +442,7 @@ public class Matrix {
         double val1 = Math.abs(matrix[R1 - 1][col - 1]);
         double val2 = Math.abs(matrix[R2 - 1][col - 1]);
 
-        if (isZero(val1 - val2) && (col != cols)) { //Base case
+        if (isZero(val1 - val2) && (col != cols)) {
             result = compareRows(R1, R2, col + 1);
         }
         else if (!isZero(val1 - val2)) {
@@ -412,6 +451,7 @@ public class Matrix {
         else if (val1 - val2 < -1.0 * tol) {
             result = -1;
         }
+
         return result;
     }
 
@@ -423,14 +463,13 @@ public class Matrix {
      * @param R2 The 1-based index of the second row to compare.
      * @return An integer indicating which row is larger:
      *         <ul>
-     *             <li> 1 if the first row is larger after scaling.</li>
-     *             <li> -1 if the second row is larger after scaling.</li>
-     *             <li> 0 if the rows are equal after scaling.</li>
+     *             <li> 1 if the first row is larger after scaling</li>
+     *             <li> -1 if the second row is larger after scaling</li>
+     *             <li> 0 if the rows are equal after scaling</li>
      *         </ul>
      * @throws IllegalArgumentException If the provided row indices are out of bounds (1 ≤ R1, R2 ≤ {@code rows}).
      */
-    public int compareScaledRows(int R1, int R2) { //Arrays are used so the original matrix is not changed.
-
+    public int compareScaledRows(int R1, int R2) {
         if (R1 <= 0 || R1 > rows || R2 <= 0 || R2 > rows) {
             throw new IllegalArgumentException("One or both row indices are invalid!");
         }
@@ -448,19 +487,21 @@ public class Matrix {
     private double[] scaleRowToOne(double [] row) {
         double max = 0.0;
         double augFactor = 0.0;
+
         if (augmented) {
             augFactor = 1.0;
         }
-        //Finding the max row value
+
         for (int i = 0; i < row.length - augFactor; i++) {
             if (Math.abs(row[i]) > Math.abs(max)) {
                 max = row[i];
             }
         }
-        //Scaling the row
+
         for (int i = 0; i < row.length; i++) {
             row[i] = row[i] / max;
         }
+
         return row;
     }
 
@@ -470,10 +511,10 @@ public class Matrix {
         double val1 = Math.abs(r1[col - 1]);
         double val2 = Math.abs(r2[col - 1]);
 
-        if (isZero(val1  - val2) && col != cols){ //Base case
+        if (isZero(val1  - val2) && col != cols){
             result = compareScaledRowsRec(r1, r2, col + 1);
         }
-        else if (!isZero(val1 - val2)){ //0.00  and -0.00 are triggered here
+        else if (!isZero(val1 - val2)){
             result = 1;
         }
         else if (val1 - val2 < -1.0 * tol){
@@ -508,6 +549,7 @@ public class Matrix {
                 }
             }
         }
+
         return s;
     }
 
@@ -519,13 +561,16 @@ public class Matrix {
     @Override
     protected Object clone() throws CloneNotSupportedException { //Copies the array and then makes a new matrix with the copy
         double[][] vals = new double[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 vals[i][j] = matrix[i][j];
             }
         }
+
         Matrix newMatrix = new Matrix(vals.clone());
         newMatrix.setAugmentation(augmented);
+
         return newMatrix;
     }
 
@@ -549,6 +594,7 @@ public class Matrix {
         if (rows != matrix2.rows || cols != matrix2.cols) {
             return false;
         }
+
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= cols; j++) {
                 if (!isZero((getValue(i, j)) - (matrix2.getValue(i, j)))) {
@@ -556,6 +602,7 @@ public class Matrix {
                 }
             }
         }
+
         return true;
     }
 }

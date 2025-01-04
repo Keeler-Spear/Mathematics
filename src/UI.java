@@ -3,6 +3,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * A main class that functions as an interface between a user and the LinearAlgebra and Matrix classes.
+ * <p>
+ *     This class supports matrix operations such as addition, multiplication, RREF, and more.
+ * </p>
+ *
+ * @author Keeler Spear
+ * @version %I%, %G%
+ * @since 1.0
+ */
 public class UI {
     private static final String[] NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     private static final String[] OPTIONS = {"Create Matrix", "Perform Matrix Operations", "View Saved Matrices", "Load Data", "Save Data", "Reset Data", "Exit"};
@@ -12,13 +22,15 @@ public class UI {
     private static Matrix[] matrices = new Matrix[26];
     private static ArrayList<String> curNames = new ArrayList<>();
 
-
+    //Lets a user select a saved matrix.
     private static Matrix selectMatrix() {
         int choice = JOptionPane.showOptionDialog(null, "Which matrix do you want to use?", "Select one:", 0, 3, null, curNames.toArray(), curNames.getFirst());
+
         return matrices[choice];
     }
 
-    public static void createMatrix () {
+    //Lets a user create and save a matrix.
+    private static void createMatrix () {
         int correct;
         int curRow;
         int curCol;
@@ -27,10 +39,13 @@ public class UI {
         if (curNames.size() >= 27) {
             throw new ArrayStoreException("There is not enough memory to create a new matrix!"); //Is this the right type
         }
+
         JOptionPane.showMessageDialog(null, "You are creating matrix " + NAMES[curNames.size()]);
         int rows = Integer.parseInt(JOptionPane.showInputDialog("How many rows does your matrix have?"));
         int cols = Integer.parseInt(JOptionPane.showInputDialog("How many columns does your matrix have?"));
+
         double[][] vals = new double[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 vals[i][j] = Double.parseDouble(JOptionPane.showInputDialog("Enter value at " + (i + 1) + ", " + (j + 1)));
@@ -38,8 +53,10 @@ public class UI {
         }
 
         Matrix matrixObj = new Matrix(vals);
+
         String matrix = "Is this correct? \n" + matrixObj.toString();
         correct = JOptionPane.showConfirmDialog(null, matrix);
+
         while (correct == 1) {
             curRow = Integer.parseInt(JOptionPane.showInputDialog("What row needs to be changed?"));
             curCol = Integer.parseInt(JOptionPane.showInputDialog("What column needs to be changed?"));
@@ -53,7 +70,8 @@ public class UI {
         curNames.add(NAMES[curNames.size()]);
     }
 
-    public static void viewSavedMatrices() {
+    //Displays a list of saved matrices and lets the user view one.
+    private static void viewSavedMatrices() {
         String curMatrices = "";
 
         for (int i = 0; i < curNames.size(); i++) {
@@ -62,20 +80,20 @@ public class UI {
                 curMatrices += ", ";
             }
         }
+
         Matrix A = selectMatrix();
         String matrix = A.toString();
 
         JOptionPane.showMessageDialog(null, "Matrix:\n" + matrix);
     }
 
-    public static void matrixOperations () {
-        //Todo: make this box vertical
+    //Lets the user perform matrix operations on a saved matrix.
+    private static void matrixOperations () {
         int choice = JOptionPane.showOptionDialog(null, "Calculate:", "Select one:", 0, 3, null, OPOPTIONS, OPOPTIONS[6]);
         Matrix A = selectMatrix();
-        //ToDo: Make an option to save these matrices
+
         if (choice == 0) { //Det
             JOptionPane.showMessageDialog(null, "The determinant of your matrix is: " + LinearAlgebra.determinant(A));
-
         }
         else if (choice == 1) { //Eig
             double[] eVals =  LinearAlgebra.eig(A);
@@ -118,9 +136,12 @@ public class UI {
         }
     }
 
-    private static void loadData() { //Loads the matrices from SAVE_FILE
+    //Loads the matrices from SAVE_FILE into the list of saved matrices, with their designations assigned in alphabetical
+    //order starting from the first matrix in SAVE_FILE.
+    private static void loadData() {
         try {
             Scanner in = new Scanner(new FileInputStream(SAVE_FILE));
+
             if (in.hasNextLine()) {
                 String line = in.nextLine();
                 int rows;
@@ -131,7 +152,6 @@ public class UI {
                 while (in.hasNextLine()) {
                     rows = 0;
                     cols = 0;
-
                     while(!line.equals("NEWMATRIX")) {
                         String data[] = line.split(" ");
                         for (int i = 0; i < data.length; i++) {
@@ -143,8 +163,7 @@ public class UI {
                         rows++;
                         line = in.nextLine();
                     }
-                    //Creates the matrix from the saved data
-                    vals = new double[rows][cols];
+                    vals = new double[rows][cols]; //Creates the matrix from the saved data
                     for (int i = 0; i < rows; i++) {
                         for (int j = 0; j < cols; j++) {
                             vals[i][j] = temp[i][j];
@@ -159,20 +178,22 @@ public class UI {
                 in.close();
                 JOptionPane.showMessageDialog(null, "Data Loaded!");
             }
-
         }
         catch (IOException ex) {
             System.out.println("Error: " + ex);
         }
     }
 
-    private static void saveData() { //Saves the current matrices in alphabetical order to SAVE_FILE
+    //Saves the current matrices in alphabetical order, starting with A, to SAVE_FILE.
+    private static void saveData() {
         try {
             PrintStream out = new PrintStream(new FileOutputStream(SAVE_FILE));
+
             for (int i = 0; i < curNames.size(); i++) {
                 out.println(matrices[i]);
                 out.println("NEWMATRIX");
             }
+
             out.close();
             JOptionPane.showMessageDialog(null, "Data Saved!");
         } catch (FileNotFoundException ex) {
@@ -180,6 +201,7 @@ public class UI {
         }
     }
 
+    //Deleted all the data is SAVE_FILE.
     private static void resetData() {
         try {
             new FileOutputStream(SAVE_FILE).close();
@@ -189,12 +211,36 @@ public class UI {
         }
     }
 
+    /**
+     * An interactive interface that allows the user to create matrices and perform linear algebra operations.
+     * The following interface operations are supported:
+     *         <ul>
+     *             <li> Create Matrix</li>
+     *             <li> Perform Matrix Operations</li>
+     *             <li> View Saved Matrices</li>
+     *             <li> Load Data</li>
+     *             <li> Save Data</li>
+     *             <li> Reset Data</li>
+     *             <li> Exit</li>
+     *         </ul>
+     * The following mathematical calculations and operations are supported:
+     *         <ul>
+     *             <li> Determinant</li>
+     *             <li> Eigenvalues</li>
+     *             <li> LU Decomposition</li>
+     *             <li> Matrix Inverse</li>
+     *             <li> Matrix Multiplication</li>
+     *             <li> QR Decomposition</li>
+     *             <li> RREF</li>
+     *         </ul>
+     */
     public static void main(String[] args) {
         int choice;
         boolean exit = false;
+
         while (!exit) {
-            //Todo: Make this box vertical
             choice = JOptionPane.showOptionDialog(null, "Options:", "Select one:", 0, 3, null, OPTIONS, OPTIONS[6]);
+
             if (choice == 0) {
                 createMatrix();
             }

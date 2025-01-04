@@ -9,7 +9,6 @@
  * @since 1.0
  */
 public class LinearAlgebra {
-
     final static double TOL = 0.000001;
     final static int MAX_ITERATIONS = 1000;
 
@@ -44,6 +43,7 @@ public class LinearAlgebra {
                 }
             }
         }
+
         return new Matrix(identity);
     }
 
@@ -61,6 +61,7 @@ public class LinearAlgebra {
         }
 
         Matrix identity = identityMatrix(n);
+
         return scaleMatrix(identity, c);
     }
 
@@ -75,12 +76,15 @@ public class LinearAlgebra {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
         }
+
         Matrix matrix = new Matrix(rows, cols);
+
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= cols; j++) {
                 matrix.setValue(i, j, 0);
             }
         }
+
         return matrix;
     }
 
@@ -92,6 +96,7 @@ public class LinearAlgebra {
      */
     public static Matrix transpose(Matrix A) {
         Matrix matrix = new Matrix (A.getCols(), A.getRows());
+
         for (int i = 1; i <= A.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 matrix.setValue(i, j, A.getValue(j, i));
@@ -113,17 +118,21 @@ public class LinearAlgebra {
         if (A.getRows() != B.getRows()) {
             throw new IllegalArgumentException("The matrices must have the same number of rows!");
         }
+
         Matrix matrix = new Matrix (A.getRows(), A.getCols() + B.getCols());
+
         for (int i = 1; i <= A.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 matrix.setValue(j, i, A.getValue(j, i));
             }
         }
+
         for (int i = 1; i <= B.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 matrix.setValue(j, i + A.getCols(), B.getValue(j, i));
             }
         }
+
         return matrix;
     }
 
@@ -136,6 +145,7 @@ public class LinearAlgebra {
      */
     public static Matrix scaleMatrix(Matrix matrixOrg, double scalar) {
         Matrix A;
+
         try {
             A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
@@ -172,6 +182,7 @@ public class LinearAlgebra {
                 sum.setValue(i, j, A.getValue(i , j) + scalar * B.getValue(i, j));
             }
         }
+
         return sum;
     }
 
@@ -187,7 +198,9 @@ public class LinearAlgebra {
         if (A.getCols() != B.getRows()) {
             throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + A.getRows() + " != " +  B.getRows() + "!");
         }
+
         Matrix product = new Matrix(A.getRows(), B.getCols());
+
         for (int i = 1; i <= B.getCols(); i++) {
             Matrix tempVector = vectorFromColumn(B, i);
             Matrix tempCol = matrixVectorMultiplication(A, tempVector);
@@ -195,15 +208,18 @@ public class LinearAlgebra {
                 product.setValue(j, i, tempCol.getValue(j, 1));
             }
         }
+
         return product;
     }
 
     //Constructs an mx1 matrix from a column in the provided mxn matrix.
     private static Matrix vectorFromColumn (Matrix A, int col) {
         Matrix vector = new Matrix(A.getRows(), 1);
+
         for (int i = 1; i <= A.getRows(); i++) {
             vector.setValue(i, 1, A.getValue(i, col));
         }
+
         return vector;
     }
 
@@ -212,15 +228,17 @@ public class LinearAlgebra {
         if (b.getCols() != 1 || A.getCols() != b.getRows()) {
             throw new IllegalArgumentException();
         }
+
         Matrix newMatrix = new Matrix(A.getRows(), 1);
+
         for (int i = 1; i <= A.getRows(); i++) {
             double val = 0.0;
             for (int j = 1; j <= b.getRows(); j++) {
                 val += A.getValue(i, j) * b.getValue(j, 1);
             }
             newMatrix.setValue(i, 1, val);
-            val = 0.0;
         }
+
         return newMatrix;
     }
 
@@ -230,10 +248,11 @@ public class LinearAlgebra {
      * @param matrixOrg The matrix that will be row reduced.
      * @return The matrix that is a copy of A that has been reduced to reduced row echelon form.
      */
-    public static Matrix RREF(Matrix matrixOrg) { //Returns RREF(A)
-        Matrix A = gaussianElimination(matrixOrg); //Turns A into row echelon form
-        //partialPivoting(A, 1); //Pivots to ensure we can backsolve
-        A = backSolve(A); // backsolves for the solution.
+    public static Matrix RREF(Matrix matrixOrg) {
+        Matrix A = gaussianElimination(matrixOrg);
+
+        A = backSolve(A);
+
         return A;
     }
 
@@ -243,11 +262,13 @@ public class LinearAlgebra {
      * @param matrixOrg The matrix that will be row reduced.
      * @return The vector that is the solution to the augmented system.
      */
-    public static Matrix RREFSolve(Matrix matrixOrg) { //Returns X
-        Matrix A = gaussianElimination(matrixOrg); //Turns a matrix into row echelon form
-        //partialPivoting(A, 1); //Pivots to ensure we can backsolve
-        A = backSolve(A); // backsolves for the solution.
+    public static Matrix RREFSolve(Matrix matrixOrg) {
+        Matrix A = gaussianElimination(matrixOrg);
+
+        A = backSolve(A);
+
         Matrix x = vectorFromColumn(A, A.getCols());
+
         return x;
     }
 
@@ -259,7 +280,8 @@ public class LinearAlgebra {
      */
     public static Matrix gaussianElimination(Matrix matrixOrg) {
         Matrix A;
-        try { //Needs to be used so the code in not altering the original A A
+
+        try {
             A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
@@ -272,12 +294,12 @@ public class LinearAlgebra {
             double[] vals = findPivot(A, i);
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
-            
-            for (int j = i; j < A.getRows(); j++) {//Getting 0's bellow the pivot
+            for (int j = i; j < A.getRows(); j++) { //Getting 0's bellow the pivot
                 double ratio = -A.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
                 A.addRows(j + 1, i, ratio); //R1 = R1 + SR2
             }
         }
+
         return A;
     }
 
@@ -296,10 +318,12 @@ public class LinearAlgebra {
     private static double[] findPivot (Matrix A, int row) {
         double pivot = A.getValue(row, 1);
         int i = 2;
+
         while (pivot == 0 && i <= A.getCols()) {
             pivot = A.getValue(row, i);
             i++;
         }
+
         return new double[]{pivot, --i};
     }
 
@@ -307,12 +331,14 @@ public class LinearAlgebra {
     private static int findPivotCol (Matrix A, int row) {
         double pivot = A.getValue(row, 1);
         int i = 1;
+
         while (pivot == 0 && i < A.getCols()) {
             pivot = A.getValue(row, i);
             if (pivot == 0 && i <= A.getCols()) {
                 i++;
             }
         }
+
         return i;
     }
 
@@ -329,16 +355,16 @@ public class LinearAlgebra {
         }
 
         Matrix A;
+
         try {
             A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = A.getRows(); i >= 1; i--) {// Gets zero's above the current pivot
+        for (int i = A.getRows(); i >= 1; i--) { // Gets zero's above the current pivot
             int pivotCol = findPivotCol(A, i);
             double pivot = A.getValue(i, pivotCol);
-
             if (!isZero(pivot)) {
                 A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
@@ -346,17 +372,20 @@ public class LinearAlgebra {
                 A.addRows(j - 1, i, -A.getValue(j - 1, pivotCol));
             }
         }
+
         return A;
     }
 
     //Calculates the sum of the lower-triangular values in a matrix.
     private static double lowerTriSum(Matrix A) {
         double sum = 0.0;
+
         for (int i = 1; i < A.getCols(); i++) {
             for (int j = i + 1; j <= A.getRows(); j++) {
                 sum += Math.abs(A.getValue(j, i));
             }
         }
+
         return sum;
     }
 
@@ -373,39 +402,46 @@ public class LinearAlgebra {
         }
 
         Matrix A;
+
         try {
             A = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = 1; i < A.getRows(); i++) {// Gets zero's bellow the current pivot
+        for (int i = 1; i < A.getRows(); i++) { // Gets zero's bellow the current pivot
             int pivotCol = findPivotCol(A, i);
             double pivot = A.getValue(i, pivotCol);
+
             if (!isZero(pivot)) {
                 A.scaleRow(i, 1 / pivot); //Scales the current row so the pivot = 1.0.
             }
+
             for (int j = i; j < A.getRows(); j++) {
                 A.addRows(j + 1, i, -A.getValue(j+1, pivotCol));
             }
         }
+
         return A;
     }
 
     //Calculates the sum of the upper-triangular values in a matrix.
     private static double upperTriSum(Matrix A) {
         double sum = 0.0;
+
         for (int i = 1; i <= A.getRows(); i++) {
             for (int j = i + 1; j <= A.getCols(); j++) {
                 sum += Math.abs(A.getValue(i, j));
             }
         }
+
         return sum;
     }
 
     //The absolute sum of the off-diagonal terms of A.
     private static double nonDiagSum(Matrix A) {
         double sum = 0.0;
+
         for (int i = 1; i <= A.getCols(); i++) {
             for (int j = 1; j <= A.getRows(); j++) {
                 if (i != j) {
@@ -413,6 +449,7 @@ public class LinearAlgebra {
                 }
             }
         }
+
         return sum;
     }
 
@@ -423,69 +460,73 @@ public class LinearAlgebra {
      * @param matrixOrg The matrix that will be factored.
      * @return An array of matrices containing:
      *         <ul>
-     *             <li> A lower-triangular matrix.</li>
-     *             <li> An upper-triangular matrix.</li>
-     *             <li> A permutation matrix which the provided one must be multiplied by for correct factorization.</li>
+     *             <li> A lower-triangular matrix</li>
+     *             <li> An upper-triangular matrix</li>
+     *             <li> A permutation matrix which the provided one must be multiplied by for correct factorization</li>
      *         </ul>
      */
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
-        Matrix U; //U will be an mxn matrix
-        Matrix P; //Permutation Matrix
+        Matrix U;
+        Matrix P;
         int h = 1;
         int cols = matrixOrg.getCols();
 
-        try { //Needs to be used so the code in not altering the original matrix A
+        try {
             U = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
-        Matrix L = identityMatrix(U.getRows()); //L will be an mxm matrix
-        U = augmentMatrix(U, identityMatrix(U.getRows())); //Setup to get P
-        partialPivoting(U, 1); //Partially pivoting U for clean Gaussian Elimination
+        Matrix L = identityMatrix(U.getRows());
 
-        try { //Needs to be used so the code in not altering the original matrix
+        U = augmentMatrix(U, identityMatrix(U.getRows())); //Setup to get P
+        partialPivoting(U, 1);
+
+        try {
             P = (Matrix) U.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+
         for (int i = cols + 1; i <= 2 * cols; i++) { //Removing P from UP
             U = createSubMatrix(U, cols + 1);
         }
+
         U.setAugmentation(false);
 
-        for (int j = cols; j >= 1; j--) {//Removing U from UP
+        for (int j = cols; j >= 1; j--) { //Removing U from UP
             P = createSubMatrix(P, 1);
         }
 
-        //Gaussian Elimination but L is created alongside U
-        for (int i = 1; i <= U.getRows(); i++) { //i = current row
+        for (int i = 1; i <= U.getRows(); i++) { //Gaussian Elimination but L is created alongside U
             double[] vals = findPivot(U, i);
             double pivot = vals[0];
             int pivotCol = (int) vals[1];
-
-            for (int k = h; k <= U.getRows(); k++) { //The columns of L will be the scaled pivot columns of U. h is used to ensure L is lower-triangular.
+            for (int k = h; k <= U.getRows(); k++) { //The columns of L will be the scaled pivot columns of U
                 L.setValue(k, i, U.getValue(k, pivotCol)/pivot); //L[k,i] = U[k,i] / pivot
             }
             h++;
-
-            for (int j = i; j < U.getRows(); j++) {//Getting 0's bellow the pivot
+            for (int j = i; j < U.getRows(); j++) { //Getting 0's bellow the pivot
                 double ratio = -U.getValue(j + 1, pivotCol)/pivot; //S = -R1/R2 at the pivot column
                 U.addRows(j + 1, i, ratio); //R1 = R1 + SR2
             }
         }
-        return new Matrix[]{L,U, P}; //Returns a list of L, U, and P
+
+        return new Matrix[]{L,U, P};
     }
 
     //Creates a copy of the provided matrix, with one column removed.
     private static Matrix createSubMatrix(Matrix A, int col) {
         Matrix subMatrix;
+
         try {
             subMatrix = (Matrix) A.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+
         subMatrix.removeCol(col);
+
         return subMatrix;
     }
 
@@ -499,24 +540,29 @@ public class LinearAlgebra {
      * vector's number of rows is not equal to the matrix's number of columns.
      * @see #LUDecomp(Matrix).
      */
-    public static Matrix LUSolve(Matrix matrixOrg, Matrix b) { //Returns to solution to the system
+    public static Matrix LUSolve(Matrix matrixOrg, Matrix b) {
         if (b.getCols() != 1 || b.getRows() != matrixOrg.getCols()) {
             throw new IllegalArgumentException("The provided b matrix is not valid!");
         }
+
         matrixOrg.setAugmentation(false);
+
         Matrix[] LU = LUDecomp(matrixOrg);
         Matrix L = LU[0];
         Matrix U = LU[1];
         Matrix P = LU[2];
+
         P = matrixInverse(P);
         L = multiplyMatrices(P, L);
+
         Matrix Ly = RREF(augmentMatrix(L,b)); //Ly = b; Needed because P^-1 L is not triangular
         Matrix y = vectorFromColumn(Ly, Ly.getCols()); //Separates the solution from the matrix
 
         Matrix Ux = backSolve(augmentMatrix(U, y)); //Ux=y
         Ux.setAugmentation(false);
         partialPivoting(Ux, 1); //Gets the vector in order
-        y = vectorFromColumn(Ux, Ux.getCols()); //Separates the solution from the matrix
+        y = vectorFromColumn(Ux, Ux.getCols());
+
         return  y;
     }
 
@@ -528,12 +574,12 @@ public class LinearAlgebra {
      * @throws IllegalArgumentException If the provided matrix is not square.
      * @throws IllegalArgumentException If the provided matrix is singular.
      */
-    public static Matrix matrixInverse (Matrix matrixOrg) { //Row Reduce {A, I}
+    public static Matrix matrixInverse (Matrix matrixOrg) {
         if (!matrixOrg.isSquare()) {
             throw new IllegalArgumentException("The A must be square!");
         }
 
-        if (isZero(determinant(matrixOrg))) { //Is A ~ I? via Invertible Matrix Theorem
+        if (isZero(determinant(matrixOrg))) {
             throw new IllegalArgumentException("The provided matrix is singular!");
         }
 
@@ -553,7 +599,7 @@ public class LinearAlgebra {
 
         A = RREF(A); //[A I] ~ [I A^-1]
 
-        for (int i = 1; i <= cols; i++) {//Making [I A^-1] into [A^-1]
+        for (int i = 1; i <= cols; i++) { //Making [I A^-1] into [A^-1]
             A.removeCol(1);
         }
 
@@ -571,13 +617,15 @@ public class LinearAlgebra {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("Matrix is not square");
         }
+
         return determinantRec(A);
     }
 
     //Recursively calculates the determinant of matrix A.
     private static double determinantRec(Matrix A) {
         double determinant = 0.0;
-        if (A.getRows() == 2) { //Base Case
+
+        if (A.getRows() == 2) {
             determinant = A.getValue(1, 1) * A.getValue(2, 2) - A.getValue(1, 2) * A.getValue(2, 1);
         }
         else {
@@ -585,12 +633,12 @@ public class LinearAlgebra {
                 determinant += A.getValue(1, i) * Math.pow(-1, i - 1) * determinantRec(createSubMatrix(A, 1, i));
             }
         }
+
         return determinant;
     }
 
     //Creates a copy of the provided matrix, with one row and one column removed.
     private static Matrix createSubMatrix(Matrix A, int row, int col) {
-
         if (row <= 0 || col <= 0 || row > A.getRows() || col > A.getCols()) {
             throw new IllegalArgumentException("The row, column, or both are out of bounds!");
         }
@@ -615,27 +663,31 @@ public class LinearAlgebra {
      * @param A The matrix whose L1 norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li> The sum of the matrix's absolute values if it has one column.</li>
-     *             <li> The largest absolute column sum of the matrix otherwise.</li>
+     *             <li> The sum of the matrix's absolute values if it has one column</li>
+     *             <li> The largest absolute column sum of the matrix otherwise</li>
      *         </ul>
      */
     public static double l1Norm(Matrix A) {
         double l;
+
         if (A.getCols() == 1) {
             l = l1Vector(A, 1);
         }
         else {
             l = l1Matrix(A);
         }
+
         return l;
     }
 
     //The sum of the matrix's absolute values.
     private static double l1Vector (Matrix b, int col) {
         double l = 0.0;
+
         for (int i = 1; i <= b.getRows(); i++) {
             l += Math.abs(b.getValue(i, col));
         }
+
         return l;
     }
 
@@ -643,6 +695,7 @@ public class LinearAlgebra {
     private static double l1Matrix (Matrix A) {
         double l = 0.0;
         double temp;
+
         for (int i = 1; i <= A.getCols(); i++) {
             temp = l1Vector(A, i);
             if (temp > l) {
@@ -659,8 +712,8 @@ public class LinearAlgebra {
      * @param A The matrix whose L2 norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li> The length of the matrix if it has one column.</li>
-     *             <li> The square root of the matrix's spectral radius otherwise.</li>
+     *             <li> The length of the matrix if it has one column</li>
+     *             <li> The square root of the matrix's spectral radius otherwise</li>
      *         </ul>
      * @throws UnsupportedOperationException If the provided matrix is not a vector nor square.
      */
@@ -679,9 +732,11 @@ public class LinearAlgebra {
     //The length of a vector.
     private static double l2Vector (Matrix b) {
         double l = 0.0;
+
         for (int i = 1; i <= b.getRows(); i++) {
             l += Math.pow(b.getValue(i, 1), 2);
         }
+
         return Math.sqrt(l);
     }
 
@@ -696,8 +751,8 @@ public class LinearAlgebra {
      * @param A The matrix whose LInfinite norm will be calculated.
      * @return One of the following:
      *         <ul>
-     *             <li> The largest absolute value in the matrix if it has one column.</li>
-     *             <li> The largest absolute row sum of the matrix otherwise.</li>
+     *             <li> The largest absolute value in the matrix if it has one column</li>
+     *             <li> The largest absolute row sum of the matrix otherwise</li>
      *         </ul>
      */
     public static double lInfNorm (Matrix A) {
@@ -713,12 +768,14 @@ public class LinearAlgebra {
     private static double lInfVector (Matrix b) {
         double l = 0.0;
         double temp;
+
         for (int i = 1; i <= b.getRows(); i++) {
             temp = Math.abs(b.getValue(i, 1));
             if (temp > l) {
                 l = temp;
             }
         }
+
         return l;
     }
 
@@ -726,6 +783,7 @@ public class LinearAlgebra {
     private static double lInfMatrix (Matrix A) {
         double l = 0.0;
         double temp;
+
         for (int i = 1; i <= A.getRows(); i++) {
             temp = 0.0;
             for (int j = 1; j <= A.getCols(); j++) {
@@ -762,18 +820,22 @@ public class LinearAlgebra {
      */
     public static Matrix normalize(Matrix A) {
         Matrix ci;
+
         for (int i = 1; i <= A.getCols(); i++) {
             ci = normalizeVector(vectorFromColumn(A, i));
             A.setCol(i, ci.getMatrix());
         }
+
         return A;
     }
 
     private static Matrix normalizeVector (Matrix b) {
         double l2 = l2Norm(b);
+
         for (int i = 1; i <= b.getRows(); i++) {
             b.scaleRow(i, 1.0/l2);
         }
+
         return b;
     }
 
@@ -790,14 +852,17 @@ public class LinearAlgebra {
         if (a.getCols() != 1 || b.getCols() != 1) {
             throw new IllegalArgumentException("The matrices must be vectors!");
         }
+
         if (a.getRows() != b.getRows()) {
             throw new IllegalArgumentException("The vectors not have the same number of rows!");
         }
+
         double dp = 0.0;
 
         for (int i = 1; i <= a.getRows(); i++) {
             dp += a.getValue(i, 1) * b.getValue(i, 1);
         }
+
         return dp;
     }
 
@@ -814,10 +879,13 @@ public class LinearAlgebra {
         if (y.getCols() != 1 || u.getCols() != 1) {
             throw new IllegalArgumentException("The matrices must be vectors!");
         }
+
         if (y.getRows() != u.getRows()) {
             throw new IllegalArgumentException("The vectors not have the same number of rows!");
         }
+
         Matrix proj;
+
         try {
             proj = (Matrix) u.clone();
         } catch (CloneNotSupportedException e) {
@@ -825,9 +893,11 @@ public class LinearAlgebra {
         }
 
         double scalar = dotProduct(y, u) / dotProduct(u, u);
+
         for (int i = 1; i <= u.getRows(); i++) {
             proj.scaleRow(i, scalar);
         }
+
         return proj;
     }
 
@@ -843,7 +913,8 @@ public class LinearAlgebra {
         Matrix ci;
         Matrix xn;
         Matrix temp;
-        try { //Needs to be used so the code in not altering the original matrix A
+
+        try {
             orthMatrix = (Matrix) matrixOrg.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
@@ -857,10 +928,10 @@ public class LinearAlgebra {
                 ci = vectorFromColumn(orthMatrix, j);
                 temp = addMatrices(temp, proj(xn, ci), 1);
             }
-
             vn = addMatrices(xn, temp, -1 );
             orthMatrix.setCol(i, vn.getMatrix());
         }
+
         return orthMatrix;
     }
 
@@ -878,15 +949,19 @@ public class LinearAlgebra {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         Matrix xk = normalize(multiplyMatrices(A, x)); //xk = Ax(k-1)/||x(k-1)||
         int iterations = 0;
+
         while (xError2(xk, x) > t && iterations < MAX_ITERATIONS) {
             x = xk;
             xk = normalize(multiplyMatrices(A, xk)); //xk = Ax(k-1)/||x(k-1)||
             iterations++;
         }
+
         Matrix eigVal = multiplyMatrices(A, xk); //eig = xTk*A*xk
         eigVal = multiplyMatrices(transpose(xk), eigVal);
+
         return eigVal.getValue(1, 1);
     }
 
@@ -902,10 +977,13 @@ public class LinearAlgebra {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         Matrix x = new Matrix(A.getRows(), 1);
+
         for (int i = 1; i <= x.getRows(); i++) {
             x.setValue(i,1, 1);
         }
+
         return powerMethod(A, x, TOL);
     }
 
@@ -915,16 +993,18 @@ public class LinearAlgebra {
      * @param A The matrix that will be factored.
      * @return An array of matrices containing:
      *         <ul>
-     *             <li> An orthogonal matrix.</li>
-     *             <li> An upper-triangular matrix.</li>
+     *             <li> An orthogonal matrix</li>
+     *             <li> An upper-triangular matrix</li>
      *         </ul>
      */
     public static Matrix[] QRFactorization (Matrix A) {
         Matrix[] QR = new Matrix[2];
+
         Matrix Q = normalize(GramSchmidt(A));
         Matrix R = multiplyMatrices(transpose(Q), A);
         QR[0] = Q;
         QR[1] = R;
+
         return QR;
     }
 
@@ -941,18 +1021,21 @@ public class LinearAlgebra {
         if (A.getRows() != A.getCols()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         Matrix[] QR = QRFactorization(A);
         Matrix Q = QR[0];
         Matrix R = QR[1];
-        Matrix eig = multiplyMatrices(R, Q); //E1 = RQ
+        Matrix eig = multiplyMatrices(R, Q);
         int iterations = 0;
-        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) { //Runs while the sum of the non-diagonal entries is greater than zero
+
+        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) {
             QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
-            eig = multiplyMatrices(R, Q); //E1(k) = R(k)Q(k)
+            eig = multiplyMatrices(R, Q); //E(k) = R(k)Q(k)
             iterations++;
         }
+
         return eig;
     }
 
@@ -968,10 +1051,11 @@ public class LinearAlgebra {
      * @return A matrix with eigenvalues along its diagonal.
      * @throws IllegalArgumentException If the provided matrix is not square.
      */
-    public static Matrix QREigShift (Matrix A, int  row,int col,double t) { //Shifting is based on element at (i, j)
+    public static Matrix QREigShift (Matrix A, int  row,int col,double t) {
         if (A.getRows() != A.getCols()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         double shift = A.getValue(row, col);
         A = addMatrices(A, constantIdentityMatrix(A.getRows(), shift), -1); //~A(k) = A(k) - shift*I
         Matrix[] QR = QRFactorization(A);
@@ -979,15 +1063,17 @@ public class LinearAlgebra {
         Matrix R = QR[1];
         Matrix eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1); //E1 = RQ + shift*I
         int iterations = 0;
-        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) { //Runs while the sum of the non-diagonal entries is greater than zero
+
+        while (lowerTriSum(eig) > t && iterations < MAX_ITERATIONS) {
             shift = eig.getValue(row, col);
-            eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E1(k) = E1(k) - shift*I
+            eig = addMatrices(eig, constantIdentityMatrix(A.getRows(), shift), -1); //~E(k) = E(k) - shift*I
             QR = QRFactorization(eig);
             Q = QR[0];
             R = QR[1];
-            eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E1(k) = R(k)Q(k) + shift*I
+            eig = addMatrices(multiplyMatrices(R, Q), constantIdentityMatrix(A.getRows(), shift), 1);  //E(k) = R(k)Q(k) + shift*I
             iterations++;
         }
+
         return eig;
     }
 
@@ -1008,7 +1094,9 @@ public class LinearAlgebra {
         if (!A.isSquare()) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         Matrix eigenVals =  QREig(A, TOL);
+
         return diagVals(eigenVals);
     }
 
@@ -1017,10 +1105,13 @@ public class LinearAlgebra {
         if (!(A.isSquare())) {
             throw new IllegalArgumentException("The matrix must be square!");
         }
+
         double[] vals = new double[A.getCols()];
+
         for (int i = 1; i <= A.getRows(); i++) {
             vals[i-1] = A.getValue(i, i);
         }
+
         return vals;
     }
 }

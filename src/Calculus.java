@@ -52,7 +52,7 @@ public class Calculus {
      * @throws IllegalArgumentException If the x data is not equidistant.
      * @return An array of the function's derivative evaluations at the provided points.
      */
-    public static double[] differentiate(double[] x, double[] y) { //Returns derivatives at each data point with O(h^2) error. This method assumes equally spaced data
+    public static double[] differentiate(double[] x, double[] y) {
         if (x.length != y.length) {
             throw new IllegalArgumentException("You must have the same number of data points in x and f(x)!");
         }
@@ -106,7 +106,6 @@ public class Calculus {
      * @return The function's integral over the provided interval.
      */
     public static double integrate(Function function, double a, double b) {
-        //Simpson's Composite Quadrature Method
         double area = 0.0;
         double h = (b - a) / (BASE_NUM_INTERVALS);
         for (double i = a; i < b; i += 2 * h) {
