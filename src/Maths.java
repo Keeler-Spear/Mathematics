@@ -1,4 +1,9 @@
 //WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
+
 //My own implementation of the Java Math package. It is currently not in use.
 public class Maths {
 
@@ -7,19 +12,15 @@ public class Maths {
     public static final double tol = 0.00000001;
     public static final int SIGFIG = 4;
 
-    //Todo Implement myself; currently this method is written by ChatGPT 4.0.
     private static double round(double x) {
-        // Step 1: Multiply by 1000 to shift the decimal point 3 places to the right
-        x = x * pow(10, SIGFIG); //EDITED FROM CHATGPT to use SIGFIG
+        x = x * pow(10, SIGFIG);
 
-        // Step 2: Add 0.5 to implement rounding (positive or negative)
         if (x >= 0) {
             x = (long)(x + 0.5);
         } else {
             x = (long)(x - 0.5);
         }
 
-        // Step 3: Divide by 1000 to shift the decimal point back to the left
         return x / 1000.0;
     }
 
