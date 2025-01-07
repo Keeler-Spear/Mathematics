@@ -111,8 +111,11 @@ public class UI {
             Matrix[] LU = LinearAlgebra.LUDecomp(A);
             String L = LU[0].toString();
             String U = LU[1].toString();
+            String P = LU[2].toString();
             JOptionPane.showMessageDialog(null, "Matrix L:\n" + L);
             JOptionPane.showMessageDialog(null, "Matrix U:\n" + U);
+            JOptionPane.showMessageDialog(null, "Matrix P:\n" + P);
+
         }
         else if (choice == 3) { //Inv
             String Inv = LinearAlgebra.matrixInverse(A).toString();
@@ -249,7 +252,7 @@ public class UI {
                     matrixOperations();
                 }
                 else {
-                    JOptionPane.showMessageDialog(null, "There are matrices to use!");
+                    JOptionPane.showMessageDialog(null, "There are no matrices to use!");
                 }
             }
             else if (choice == 2) {
