@@ -515,7 +515,7 @@ public class Matrix {
         if (isZero(val1  - val2) && col != cols){
             result = compareScaledRowsRec(r1, r2, col + 1);
         }
-        else if (!isZero(val1 - val2)){
+        else if (val1 - val2 > tol){
             result = 1;
         }
         else if (val1 - val2 < -1.0 * tol){

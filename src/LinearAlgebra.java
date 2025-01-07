@@ -252,9 +252,7 @@ public class LinearAlgebra {
      */
     public static Matrix RREF(Matrix matrixOrg) {
         Matrix A = gaussianElimination(matrixOrg);
-
         A = backSolve(A);
-
         return A;
     }
 
@@ -266,7 +264,6 @@ public class LinearAlgebra {
      */
     public static Matrix RREFSolve(Matrix matrixOrg) {
         Matrix A = gaussianElimination(matrixOrg);
-
         A = backSolve(A);
 
         Matrix x = vectorFromColumn(A, A.getCols());
@@ -466,8 +463,13 @@ public class LinearAlgebra {
      *             <li> An upper-triangular matrix</li>
      *             <li> A permutation matrix which the provided one must be multiplied by for correct factorization</li>
      *         </ul>
+     * @throws IllegalArgumentException If the provided matrix is not square.
      */
     public static Matrix[] LUDecomp(Matrix matrixOrg) { //Returns L and U
+        if (!matrixOrg.isSquare()) {
+            throw new IllegalArgumentException("The provided matrix must be square!");
+        }
+
         Matrix U;
         Matrix P;
         int h = 1;
@@ -538,11 +540,16 @@ public class LinearAlgebra {
      * @param matrixOrg The matrix that will be solved for based on the provided vector.
      * @param b The matrix vector for which the system will be solved for.
      * @return A matrix vector which is the solution to the system.
+     * @throws IllegalArgumentException If the provided matrix is not square.
      * @throws IllegalArgumentException If the provided matrix vector's number of columns is not one or if the
      * vector's number of rows is not equal to the matrix's number of columns.
      * @see #LUDecomp(Matrix)
      */
     public static Matrix LUSolve(Matrix matrixOrg, Matrix b) {
+        if (!matrixOrg.isSquare()) {
+            throw new IllegalArgumentException("The provided matrix must be square!");
+        }
+
         if (b.getCols() != 1 || b.getRows() != matrixOrg.getCols()) {
             throw new IllegalArgumentException("The provided b matrix is not valid!");
         }
