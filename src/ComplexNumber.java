@@ -1,4 +1,8 @@
 //WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
+//WORK IN PROGRESS
 public class ComplexNumber {
     private double real;
     private double imaginary;
@@ -70,7 +74,7 @@ public class ComplexNumber {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException { //Copies the array and then makes a new matrix with the copy
+    protected Object clone() throws CloneNotSupportedException {
         return new ComplexNumber(real, imaginary);
     }
 
