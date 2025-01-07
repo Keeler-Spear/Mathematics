@@ -4,8 +4,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-//All matrices used in these tests are from Linear Algebra and Its Applications, Sixth Edition by Lay, Lay, and McDonald.
 public class ProjectTest {
+
+    private static final double tol = 0.0001;
+
+    //All matrices used in these tests are from Linear Algebra and Its Applications, Sixth Edition by Lay, Lay, and McDonald.
 
     @Test //Section 2.1.2 Example 1
     public void additionTest() {
@@ -158,7 +161,7 @@ public class ProjectTest {
 
         double trueDet = 20;
 
-        assertEquals(trueDet, det);
+        assertEquals(trueDet, det, tol);
     }
 
     @Test //Section 6.4.3 Example 4
@@ -193,10 +196,32 @@ public class ProjectTest {
 
         double[] trueEigs = {1, 2/3.0, 1/3.0};
 
-        assertArrayEquals(eigs, trueEigs, 1e-6);
+        assertArrayEquals(trueEigs, eigs, tol);
 
     }
 
+    //The functions use in the following texts is e^x^2, which is set in Function.java. The true values were calculated
+    //with WolframAlpha
 
+    @Test
+    public void diffTest() {
+        Function fnc = new Function("e^x^2");
 
+        double der = Calculus.differentiate(fnc, 2);
+
+        double trueDer = 218.3934009;
+
+        assertEquals(trueDer, der, tol);
+    }
+
+    @Test
+    public void intTest() {
+       Function fnc = new Function("e^x^2");
+
+       double area = Calculus.integrate(fnc, 0, 2);
+
+       double trueArea = 16.4526;
+
+        assertEquals(trueArea, area, tol);
+    }
 }
