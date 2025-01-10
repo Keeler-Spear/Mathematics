@@ -4,28 +4,28 @@ Project Summary:
   
 File summary:
 
--Calculus.java: Static class with calculus operations.
--Complex.java: Static class with complex arithmetic, WIP.
--ComplexNumber.java: Non-static class with the properties of a complex number, WIP.
--Function.java: Non-static class with the properties of a mathematical function, WIP.
--LinearAlgebra.java: Static class with linear algebra operations.
--Main.java: Main class for user input, WIP.
--Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.
--Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.
--UI.java: Main class that provides a user interface for the most important linear algebra methods.
+-Calculus.java: Static class with calculus operations.\
+-Complex.java: Static class with complex arithmetic, WIP.\
+-ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
+-Function.java: Non-static class with the properties of a mathematical function, WIP.\
+-LinearAlgebra.java: Static class with linear algebra operations.\
+-Main.java: Main class for user input, WIP.\
+-Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
+-Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.\
+-UI.java: Main class that provides a user interface for the most important linear algebra methods.\
 
 Main Operations and Method Type:
 
--Matrix Addition (Analytically)
--Matrix Multiplication (Analytically)
--Matrix Row Reduction (Analytically)
--LU Decomposition (Analytically)
--Matrix Inversion (Analytically)
--Determinant Calculation (Analytically)
--Gram-Schmidt Orthogonalization (Analytically)
--Eigenvalue Calculation (Numerically via the QR Method)
--Differentiation (Numerically via O(h^2) Methods)
--Integration (Numerically via O(h^4) Methods)
+-Matrix Addition (Analytically)\
+-Matrix Multiplication (Analytically)\
+-Matrix Row Reduction (Analytically)\
+-LU Decomposition (Analytically)\
+-Matrix Inversion (Analytically)\
+-Determinant Calculation (Analytically)\
+-Gram-Schmidt Orthogonalization (Analytically)\
+-Eigenvalue Calculation (Numerically via the QR Method)\
+-Differentiation (Numerically via O(h^2) Methods)\
+-Integration (Numerically via O(h^4) Methods)\
 
 User Guide:
 
