@@ -25,7 +25,7 @@
 -Gram-Schmidt Orthogonalization (Analytically)\
 -Eigenvalue Calculation (Numerically via the QR Method)\
 -Differentiation (Numerically via O(h^2) Methods)\
--Integration (Numerically via O(h^4) Methods)\
+-Integration (Numerically via O(h^4) Methods)
 
 # User Guide
 
