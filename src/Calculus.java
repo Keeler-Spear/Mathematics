@@ -1,3 +1,5 @@
+import java.util.function.Function;
+
 /**
  * A static class that performs calculus on data sets and functions using numerical methods.
  * <p>
@@ -34,7 +36,7 @@ public class Calculus {
      * @return The function's derivative evaluation at the provided point.
      */
     public static double differentiate(Function function, double x0) {
-        return centeredDifference(function.eval(x0 + hDEF), function.eval(x0 - hDEF), hDEF);
+        return centeredDifference((Double) function.apply(x0 + hDEF), (Double) function.apply(x0 - hDEF), hDEF);
     }
 
     /**
@@ -109,7 +111,7 @@ public class Calculus {
         double area = 0.0;
         double h = (b - a) / (BASE_NUM_INTERVALS);
         for (double i = a; i < b; i += 2 * h) {
-            area += simpsQuad(function.eval(i), function.eval(i + h), function.eval(i + 2 * h), i, i + 2 * h);
+            area += simpsQuad((Double) function.apply(i), (Double) function.apply(i + h), (Double) function.apply(i + 2 * h), i, i + 2 * h);
         }
         return area;
     }

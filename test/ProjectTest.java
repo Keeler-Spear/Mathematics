@@ -1,6 +1,7 @@
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -205,7 +206,7 @@ public class ProjectTest {
 
     @Test
     public void diffTest() {
-        Function fnc = new Function("e^x^2");
+        Function<Double, Double> fnc = x -> Math.pow(Math.E, Math.pow(x, 2.0));
 
         double der = Calculus.differentiate(fnc, 2);
 
@@ -216,7 +217,7 @@ public class ProjectTest {
 
     @Test
     public void intTest() {
-       Function fnc = new Function("e^x^2");
+        Function<Double, Double> fnc = x -> Math.pow(Math.E, Math.pow(x, 2.0));
 
        double area = Calculus.integrate(fnc, 0, 2);
 
