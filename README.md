@@ -7,7 +7,6 @@
 -Calculus.java: Static class with calculus operations.\
 -Complex.java: Static class with complex arithmetic, WIP.\
 -ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
--Function.java: Non-static class with the properties of a mathematical function, WIP.\
 -LinearAlgebra.java: Static class with linear algebra operations.\
 -Main.java: Main class for user input, WIP.\
 -Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
@@ -41,7 +40,7 @@
   
 # Contributions
 
-  Outside of the Java libraries used (Math, Swing, and JUnit Jupiter), the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
+  Outside of the Java libraries used (Math, Swing, JUnit Jupiter, IO, and Util), the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
 
 # Note for College/University Admissions Officers and Faculty
 
