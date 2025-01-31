@@ -28,7 +28,7 @@
 
 # User Guide
 
-  There are two ways to use the code. First, if you plan to perform a common linear algebra operation, use UI.java for a smooth experience. Second, if the operation is not offered in UI.java or you prefer not to use UI.java, use the public methods provided to execute your operation in Main.java. To use any of the calculus methods with a function (as opposed to a data set), you must type your function in Function.java’s eval(double x) method.
+  There are two ways to use the code. First, if you plan to perform a common linear algebra operation, use UI.java for a smooth experience. Second, if the operation is not offered in UI.java or you prefer not to use UI.java, use the public methods provided to execute your operation in Main.java. To use any of the calculus methods with a function (as opposed to a data set), you must use java.util.function.Function interface.
   
 # Motivations
 
@@ -44,4 +44,4 @@
 
 # Note for College/University Admissions Officers and Faculty
 
-  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, and UI.java should be reviewed; the remaining files are unfinished.
+  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, and UI.java should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
