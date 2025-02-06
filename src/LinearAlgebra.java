@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * A static class that performs mathematical operations on one or more matrices via analytic and numerical methods.
  * <p>
@@ -72,7 +74,7 @@ public class LinearAlgebra {
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
      * @throws IllegalArgumentException If the matrix's size is less than 1.
-     * @return a zero matrix of the size provided.
+     * @return A zero matrix of the size provided.
      */
     public static Matrix zeroMatrix (int rows, int cols) {
         if (rows <= 0 || cols <= 0) {
@@ -84,6 +86,32 @@ public class LinearAlgebra {
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= cols; j++) {
                 matrix.setValue(i, j, 0);
+            }
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Creates a matrix of the size provided filled with random values. This method was added after I submitted my application to your institution.
+     *
+     * @param rows The number of rows the matrix will have.
+     * @param cols The number of columns the matrix will have.
+     * @param max The upper bound of random number generation.
+     * @throws IllegalArgumentException If the matrix's size is less than 1.
+     * @return A zero matrix of the size provided.
+     */
+    public static Matrix randMatrix (int rows, int cols, double max) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
+        }
+
+        Random rand = new Random();
+        Matrix matrix = new Matrix(rows, cols);
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                matrix.setValue(i, j, rand.nextDouble(max));
             }
         }
 
@@ -214,12 +242,45 @@ public class LinearAlgebra {
         return product;
     }
 
-    //Constructs an mx1 matrix from a column in the provided mxn matrix.
-    private static Matrix vectorFromColumn (Matrix A, int col) {
+    /**
+     * Constructs an mx1 matrix from the column specified.
+     *
+     * @param A The matrix that the vector will be created from.
+     * @param col The column index that the vector will be created from.
+     * @return An mx1 matrix with the values from the column specified.
+     * @throws IllegalArgumentException If the specified column index is outside the matrix's bounds.
+     */
+    public static Matrix vectorFromColumn (Matrix A, int col) {
+        if (A.getCols() < col || col <= 0) {
+            throw new IllegalArgumentException("The row index is of bounds");
+        }
+
         Matrix vector = new Matrix(A.getRows(), 1);
 
         for (int i = 1; i <= A.getRows(); i++) {
             vector.setValue(i, 1, A.getValue(i, col));
+        }
+
+        return vector;
+    }
+
+    /**
+     * Constructs an nx1 matrix from the column specified. This method was added after I submitted my application to your institution.
+     *
+     * @param A The matrix that the vector will be created from.
+     * @param row The row index that the vector will be created from.
+     * @return An nx1 matrix with the values from the row specified.
+     * @throws IllegalArgumentException If the specified row index is outside the matrix's bounds.
+     */
+    public static Matrix vectorFromRow (Matrix A, int row) {
+        if (A.getRows() < row || row <= 0) {
+            throw new IllegalArgumentException("The row index is of bounds");
+        }
+
+        Matrix vector = new Matrix(A.getCols(), 1);
+
+        for (int i = 1; i <= A.getCols(); i++) {
+            vector.setValue(i, 1, A.getValue(row, i));
         }
 
         return vector;
@@ -863,7 +924,7 @@ public class LinearAlgebra {
         }
 
         if (a.getRows() != b.getRows()) {
-            throw new IllegalArgumentException("The vectors not have the same number of rows!");
+            throw new IllegalArgumentException("The vectors do not have the same number of rows!");
         }
 
         double dp = 0.0;

@@ -49,6 +49,28 @@ public class Matrix {
     }
 
     /**
+     * Creates a matrix object from the data provided in the form of a vector. This method was added after I submitted my application to your institution.
+     *
+     * @param vals A 1d array of doubles representing the matrix entries.
+     * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
+     * ({@value MIN_COLS} column(s)).
+     */
+    public Matrix(double[] vals) {
+        if (vals.length < MIN_ROWS) {
+            throw new IllegalArgumentException("This matrix must have at least " + MIN_COLS + " column(s)!");
+        }
+
+        this.matrix = new double[vals.length][1];
+
+        for (int i = 0; i < vals.length; i++) {
+            matrix[i][0] = vals[i];
+        }
+
+        this.rows = vals.length;
+        this.cols = 1;
+    }
+
+    /**
      * Creates a blank matrix object of the size provided.
      *
      * @param rows The number of rows the matrix will have.
