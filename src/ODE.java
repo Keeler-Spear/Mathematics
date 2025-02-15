@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
  * A static class that solves ordinary differential equations via numerical methods.
  * <p>
  *     This class and all functions within were added after I submitted my application to your institution. All code
- *     within this project will be submitted and graded for MTH49cr Numerical Differential Equations Modeling.
+ *     within this project will be submitted and graded for MTH-49cr Numerical Differential Equations Modeling.
  * </p>
  * @author Keeler Spear
  * @version %I%, %G%
