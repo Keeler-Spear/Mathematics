@@ -92,7 +92,7 @@ public class ODE {
         double[][] yVals = new double[2][1 + (int) ((t - t0)/h)];
         Matrix yi = new Matrix(y0);
         Matrix yP = new Matrix(y0);
-        int i = 1;
+        int i = 0;
 
         while (t0 < t) {
             //Finding y'(t)
@@ -127,7 +127,7 @@ public class ODE {
         double[][] yVals = new double[2][1 + (int) ((t - t0)/h)];
         Matrix yi = new Matrix(y0);
         Matrix yP = new Matrix(y0);
-        int i = 1;
+        int i = 0;
         Matrix k1 = new Matrix(2, 1);
         Matrix k2 = new Matrix(2, 1);
         Matrix k3 = new Matrix(2, 1);
