@@ -49,7 +49,8 @@ public class Matrix {
     }
 
     /**
-     * Creates a matrix object from the data provided in the form of a vector. This method was added after I submitted my application to your institution.
+     * Creates a matrix object from the data provided in the form of a vector. This method was added after I submitted
+     * my application to your institution.
      *
      * @param vals A 1d array of doubles representing the matrix entries.
      * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
@@ -544,6 +545,44 @@ public class Matrix {
             result = -1;
         }
         return result;
+    }
+
+    /**
+     * Returns the matrix as a String in NumPy formating. This method was added after I submitted my application to your
+     * institution.
+     *
+     * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
+     * to four decimal places.
+     */
+    public String npString() {
+        String s = "";
+        if (rows > 1) {
+            s += "[";
+        }
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (j == 0) {
+                    s += "[";
+                }
+                s += String.format("%.4f", matrix[i][j]);
+                if (j == cols - 1 && i != rows - 1) {
+                    s += "], ";
+                }
+                else if (j == cols - 1 && i == rows - 1) {
+                    s += "]";
+                }
+                else {
+                    s += ", ";
+                }
+            }
+        }
+
+        if (rows > 1) {
+            s += "]";
+        }
+
+        return s;
     }
 
     /**
