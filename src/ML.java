@@ -13,7 +13,7 @@ public class ML {
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 15000;
     final static double LR = 0.001;
-    final static double RAND_MAX = 50;
+    final static double RAND_BOUND = 50;
 
 
     /**
@@ -30,9 +30,9 @@ public class ML {
             throw new IllegalArgumentException("The data does not have one sample for each label!");
         }
 
-        Matrix w = LinearAlgebra.randMatrix(x.getCols(), 1, RAND_MAX);
+        Matrix w = LinearAlgebra.randMatrix(x.getCols(), 1, -RAND_BOUND, RAND_BOUND);
         Random rand = new Random();
-        double b = rand.nextDouble(RAND_MAX);
+        double b = rand.nextDouble(RAND_BOUND);
 
         return gradDes(x, y, w, b, LR);
     }

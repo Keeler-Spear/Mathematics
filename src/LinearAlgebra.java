@@ -97,13 +97,18 @@ public class LinearAlgebra {
      *
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
+     * @param min The lower bound of random number generation.
      * @param max The upper bound of random number generation.
      * @throws IllegalArgumentException If the matrix's size is less than 1.
-     * @return A zero matrix of the size provided.
+     * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
+     * @return a matrix of the size provided filled with random values
      */
-    public static Matrix randMatrix (int rows, int cols, double max) {
+    public static Matrix randMatrix (int rows, int cols, double min, double max) {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
+        }
+        if (min >= max) {
+            throw new IllegalArgumentException("The minimum value must be less than the maximum value!");
         }
 
         Random rand = new Random();
@@ -111,7 +116,7 @@ public class LinearAlgebra {
 
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= cols; j++) {
-                matrix.setValue(i, j, rand.nextDouble(max));
+                matrix.setValue(i, j, min + (max - min) * rand.nextDouble());
             }
         }
 
