@@ -119,6 +119,31 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates a vector filled with the values between min and max, inclusive. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param min The minimum or initial value of the matrix.
+     * @param max The maximum or final value of the matrix.
+     * @param inc The step size between values.
+     * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
+     * @return A vector filled with the values between min and max, inclusive.
+     */
+    public static Matrix linSpace(double min, double max, double inc) {
+        if (min >= max) {
+            throw new IllegalArgumentException("The minimum value must be less than the maximum value!");
+        }
+
+        double[] vals = new double[1 + (int) ((max - min) / inc)];
+
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = min;
+            min += inc;
+        }
+
+        return new Matrix(vals);
+    }
+
+    /**
      * Creates a matrix that is the transpose of the one provided.
      *
      * @param A The matrix that will be copied and transposed.
