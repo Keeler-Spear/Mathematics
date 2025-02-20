@@ -207,6 +207,35 @@ public class Matrix {
     }
 
     /**
+     * Adds a row to the top of the matrix with the values provided. This method was added after I submitted my
+     * application to your institution.
+     *
+     * @param vals The 2d array of values to be added to the matrix as a row.
+     * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
+     */
+    public void addRowTop(double[][] vals) {
+        if (vals.length != cols) {
+            throw new IllegalArgumentException("This row is not the same size as the others in this matrix!");
+        }
+
+        rows++;
+
+        double[][] tempMatrix = new double[rows][cols];
+
+        for (int i = 1; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i - 1][j];
+            }
+        }
+
+        for (int i = 0; i < cols; i++) {
+            tempMatrix[0][i] = vals[i][0];
+        }
+
+        matrix = tempMatrix;
+    }
+
+    /**
      * Adds a row to the bottom of the matrix with the values provided.
      *
      * @param vals The 1d array of values to be added to the matrix as a row.
@@ -229,6 +258,35 @@ public class Matrix {
 
         for (int i = 0; i < cols; i++) {
             tempMatrix[rows - 1][i] = vals[i];
+        }
+
+        matrix = tempMatrix;
+    }
+
+    /**
+     * Adds a row to the bottom of the matrix with the values provided. This method was added after I submitted my
+     * application to your institution.
+     *
+     * @param vals The 2d array of values to be added to the matrix as a row.
+     * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
+     */
+    public void addRowBottom(double[][] vals) {
+        if (vals.length != cols) {
+            throw new IllegalArgumentException("This row is not the same size as the others in this matrix!");
+        }
+
+        rows++;
+
+        double[][] tempMatrix = new double[rows][cols];
+
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = 0; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+
+        for (int i = 0; i < cols; i++) {
+            tempMatrix[rows - 1][i] = vals[i][0];
         }
 
         matrix = tempMatrix;
@@ -264,7 +322,8 @@ public class Matrix {
     }
 
     /**
-     * Adds a column to the left side of the matrix with the values provided.
+     * Adds a column to the left side of the matrix with the values provided. This method was added after I submitted my
+     * application to your institution.
      *
      * @param vals The 1d array of values to be added to the matrix as a column.
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
@@ -285,6 +344,34 @@ public class Matrix {
 
         for (int i = 0; i < rows; i++) {
             tempMatrix[i][0] = vals[i];
+        }
+
+        matrix = tempMatrix;
+    }
+
+    /**
+     * Adds a column to the left side of the matrix with the values provided. This method was added after I submitted my
+     * application to your institution.
+     *
+     * @param vals The 2d array of values to be added to the matrix as a column.
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+     */
+    public void addColLeft(double[][] vals) {
+        if (vals.length != rows) {
+            throw new IllegalArgumentException("This column is not the same size as the others in this matrix!");
+        }
+
+        cols++;
+        double[][] tempMatrix = new double[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 1; j < cols; j++) {
+                tempMatrix[i][j] = matrix[i][j- 1];
+            }
+        }
+
+        for (int i = 0; i < rows; i++) {
+            tempMatrix[i][0] = vals[i][0];
         }
 
         matrix = tempMatrix;
@@ -312,6 +399,34 @@ public class Matrix {
 
         for (int i = 0; i < rows; i++) {
             tempMatrix[i][cols - 1] = vals[i];
+        }
+
+        matrix = tempMatrix;
+    }
+
+    /**
+     * Adds a column to the right side of the matrix with the values provided. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param vals The 2d array of values to be added to the matrix as a column.
+     * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
+     */
+    public void addColRight(double[][] vals) {
+        if (vals.length != rows) {
+            throw new IllegalArgumentException("This column is not the same size as the others in this matrix!");
+        }
+
+        cols++;
+        double[][] tempMatrix = new double[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols - 1; j++) {
+                tempMatrix[i][j] = matrix[i][j];
+            }
+        }
+
+        for (int i = 0; i < rows; i++) {
+            tempMatrix[i][cols - 1] = vals[i][0];
         }
 
         matrix = tempMatrix;

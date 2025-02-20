@@ -69,6 +69,32 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates an mxn matrix with cells holding the value provided. This method was added after I submitted my
+     * application to your institution.
+     *
+     * @param rows The number of rows that the matrix will have.
+     * @param cols The number of columns that the matrix will have.
+     * @param c constant that matrix will contain.
+     * @return An mxn matrix with cells holding the value provided.
+     * @throws IllegalArgumentException If rows or cols is less than or equal to zero.
+     */
+    public static Matrix constantMatrix(int rows, int cols, double c) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
+        }
+
+        Matrix constant = new Matrix(rows, cols);
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                constant.setValue(i, j, c);
+            }
+        }
+
+        return constant;
+    }
+
+    /**
      * Creates a zero matrix object of the size provided.
      *
      * @param rows The number of rows the matrix will have.
@@ -77,23 +103,12 @@ public class LinearAlgebra {
      * @return A zero matrix of the size provided.
      */
     public static Matrix zeroMatrix (int rows, int cols) {
-        if (rows <= 0 || cols <= 0) {
-            throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
-        }
-
-        Matrix matrix = new Matrix(rows, cols);
-
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= cols; j++) {
-                matrix.setValue(i, j, 0);
-            }
-        }
-
-        return matrix;
+        return constantMatrix(rows, cols, 0.0);
     }
 
     /**
-     * Creates a matrix of the size provided filled with random values. This method was added after I submitted my application to your institution.
+     * Creates a matrix of the size provided filled with random values. This method was added after I submitted my
+     * application to your institution.
      *
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
