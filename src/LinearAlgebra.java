@@ -262,6 +262,31 @@ public class LinearAlgebra {
     }
 
     /**
+     * Multiplies the values of two matrices together. This method was added after I submitted my application to your
+     * institution.
+     *
+     * @param A The first.
+     * @param B The second matrix.
+     * @return A matrix whose values are the product of those in the matrices provided.
+     * @throws IllegalArgumentException If the provided matrices are not the same size.
+     */
+    public static Matrix multiplyValues(Matrix A, Matrix B) {
+        if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must be of the same size!");
+        }
+
+        Matrix mul = new Matrix (A.getRows(), A.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                mul.setValue(i, j, A.getValue(i, j) * B.getValue(i, j));
+            }
+        }
+
+        return mul;
+    }
+
+    /**
      * Right multiplies a provided matrix by another. Matrix product = matrix A  * matrix B.
      *
      * @param A The matrix that will be multiplied by the other on the right.

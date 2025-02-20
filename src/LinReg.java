@@ -11,7 +11,7 @@ public class LinReg {
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 15000;
     final static double LR = 0.001;
-    final static double RAND_BOUND = 50;
+    final static double RAND_BOUND = 25;
 
 
     //Should be able to model something with a polynomial of degree n
@@ -60,6 +60,94 @@ public class LinReg {
         Matrix dw = findDw(x, y, w);
         int i = 0;
 
+        while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
+            dw = findDw(x, y, w);
+            w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
+            i++;
+        }
+
+        //For some reason the bias is half the size it should be so the line below fixes that.
+        w.setValue(1, 1, w.getValue(1, 1) * 2);
+
+        return w;
+    }
+
+    /**
+     * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
+     *
+     * @param x A matrix of data parameters.
+     * @param y A vector of data labels.
+     * @param n The order of the polynomial.
+     * @return A matrix with the weights for a polynomial regression model based on the data set provided.
+     * @throws IllegalArgumentException If the data does not have one sample for each label.
+     * @throws IllegalArgumentException If n is less than one.
+     * @see #polyGradDes(Matrix, Matrix, Matrix, int, double)
+     */
+    public static Matrix polyGradDes(Matrix x, Matrix y, int n) {
+        if (x.getRows() != y.getRows()) {
+            throw new IllegalArgumentException("The data does not have one sample for each label!");
+        }
+
+        if (n < 1) {
+            throw new IllegalArgumentException("The polynomial's order must be equal to or greater than one!");
+        }
+
+        Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
+
+        System.out.println(w);
+
+        return polyGradDes(x, y, w, n, LR);
+    }
+
+    /**
+     * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
+     * This code only works for one input variable.
+     *
+     * @param x A matrix of data parameters.
+     * @param y A vector of data labels.
+     * @param w A vector of initial weight guesses.
+     * @param n The order of the polynomial.
+     * @param a The learning rate of the model.
+     * @return A matrix with the weights for a polynomial regression model based on the data set provided.
+     * @throws IllegalArgumentException If the data does not have one sample for each label.
+     * @throws IllegalArgumentException If there is not one weight for each parameter.
+     * @throws IllegalArgumentException If n is less than 1.
+     */
+    public static Matrix polyGradDes(Matrix x, Matrix y, Matrix w, int n, double a) {
+        //ToDo: maybe treat current data as [x, y, ...] and then extend exponetials after for EACH varaible.
+        //The new x matrix would be something like [x, y, x^2 x^n, y^2, y^n].
+        if (x.getRows() != y.getRows()) {
+            throw new IllegalArgumentException("The data does not have one sample for each label!");
+        }
+
+        if (w.getRows() != n * x.getCols() + 1) {
+            throw new IllegalArgumentException("There must be one weight for each parameter!");
+        }
+
+        if (n < 1) {
+            throw new IllegalArgumentException("The polynomial's order must be equal to or greater than 1!");
+        }
+
+        //Setting up x^n's
+        int numVars = x.getCols();
+        Matrix xn;
+
+        for (int i = 1; i <= numVars; i++) {//For each variable
+            for (int j = 2; j <= n; j++) {//For each polynomial order
+                xn = LinearAlgebra.vectorFromColumn(x, i);
+                for (int k = 1; k < j; k++) {
+                    xn = LinearAlgebra.multiplyValues(xn, xn);
+                }
+                x.addColRight(xn.getMatrix());
+            }
+        }
+
+        //For bias term
+        Matrix ones = LinearAlgebra.constantMatrix(x.getRows(), 1, 1.0);
+        x.addColLeft(ones.getMatrix());
+
+        Matrix dw = findDw(x, y, w);
+        int i = 0;
         while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
             dw = findDw(x, y, w);
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
