@@ -9,13 +9,14 @@ import java.util.Random;
  * @version %I%, %G%
  * @since 1.0
  */
-public class ML {
+public class LinReg {
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 15000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 50;
 
 
+    //Should be able to model something with a polynomial of degree n
     /**
      * Calculates the weights for a linear regression model based on the data set provided using gradient descent.
      *
@@ -166,7 +167,7 @@ public class ML {
             val = 0.0;
             for (int j = 1; j <= x.getRows(); j++) {
                 xj = LinearAlgebra.vectorFromRow(x, j);
-                val += (LinearAlgebra.dotProduct(w, xj) - y.getValue(j, 1) + b) * xj.getValue(i, 1); //Replace one with j
+                val += (LinearAlgebra.dotProduct(w, xj) - y.getValue(j, 1) + b) * xj.getValue(i, 1);
             }
             dw.setValue(i, 1, val / x.getRows());
         }
