@@ -9,68 +9,9 @@
  */
 public class LinReg {
     final static double TOL = 0.01;
-    final static int MAX_ITERATIONS = 15000;
+    final static int MAX_ITERATIONS = 100000;
     final static double LR = 0.001;
-    final static double RAND_BOUND = 25;
-
-
-    //Should be able to model something with a polynomial of degree n
-    /**
-     * Calculates the weights for a linear regression model based on the data set provided using gradient descent.
-     *
-     * @param x A matrix of data parameters.
-     * @param y A vector of data labels.
-     * @return A matrix with the weights for a linear regression model based on the data set provided.
-     * @throws IllegalArgumentException If the data does not have one sample for each label.
-     * @see #gradDes(Matrix, Matrix, Matrix, double)
-     */
-    public static Matrix gradDes(Matrix x, Matrix y) {
-        if (x.getRows() != y.getRows()) {
-            throw new IllegalArgumentException("The data does not have one sample for each label!");
-        }
-
-        Matrix w = LinearAlgebra.randMatrix(x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
-
-        return gradDes(x, y, w, LR);
-    }
-
-    /**
-     * Calculates the weights for a linear regression model based on the data set provided using gradient descent.
-     *
-     * @param x A matrix of data parameters.
-     * @param y A vector of data labels.
-     * @param w A vector of initial weight guesses.
-     * @param a The learning rate of the model.
-     * @return A matrix with the weights for a linear regression model based on the data set provided.
-     * @throws IllegalArgumentException If the data does not have one sample for each label.
-     * @throws IllegalArgumentException If there is not one weight for each parameter.
-     */
-    public static Matrix gradDes(Matrix x, Matrix y, Matrix w, double a) {
-        if (x.getRows() != y.getRows()) {
-            throw new IllegalArgumentException("The data does not have one sample for each label!");
-        }
-
-        if (w.getRows() != x.getCols() + 1) {
-            throw new IllegalArgumentException("There must be one weight for each parameter!");
-        }
-
-        Matrix ones = LinearAlgebra.constantMatrix(x.getRows(), 1, 1.0);
-        x.addColLeft(ones.getMatrix());
-
-        Matrix dw = findDw(x, y, w);
-        int i = 0;
-
-        while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            dw = findDw(x, y, w);
-            w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
-            i++;
-        }
-
-        //For some reason the bias is half the size it should be so the line below fixes that.
-        w.setValue(1, 1, w.getValue(1, 1) * 2);
-
-        return w;
-    }
+    final static double RAND_BOUND = 10;
 
     /**
      * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
@@ -94,7 +35,9 @@ public class LinReg {
 
         Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
 
-        return polyGradDes(x, y, w, n, LR);
+        double a = Math.pow(10, 1 - n);
+
+        return polyGradDes(x, y, w, n, a);
     }
 
     /**
@@ -132,7 +75,7 @@ public class LinReg {
         for (int i = 1; i <= numVars; i++) {//For each variable
             for (int j = 2; j <= n; j++) {//For each polynomial order
                 xn = LinearAlgebra.vectorFromColumn(x, i);
-                xTemp = LinearAlgebra.vectorFromColumn(x, i);
+                xTemp = xn;
                 for (int k = 1; k < j; k++) {
                     xn = LinearAlgebra.multiplyValues(xn, xTemp);
                 }
@@ -144,7 +87,8 @@ public class LinReg {
         Matrix ones = LinearAlgebra.constantMatrix(x.getRows(), 1, 1.0);
         x.addColLeft(ones.getMatrix());
 
-        Matrix dw = findDw(x, y, w);
+        Matrix dw = LinearAlgebra.constantMatrix(w.getRows(), 1, 5.0);
+
         int i = 0;
         while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
             dw = findDw(x, y, w);
@@ -160,20 +104,10 @@ public class LinReg {
 
     //Calculates the derivative of the loss function analytically.
     private static Matrix findDw(Matrix x, Matrix y, Matrix w) {
-        double val;
-        Matrix dw = new Matrix(w.getRows(), 1);
-        Matrix xj;
 
-
-        for (int i = 1; i <= w.getRows(); i++) {
-            val = 0.0;
-            for (int j = 1; j <= x.getRows(); j++) {
-                xj = LinearAlgebra.vectorFromRow(x, j);
-                val += (LinearAlgebra.dotProduct(w, xj) - y.getValue(j, 1)) * xj.getValue(i, 1);
-            }
-
-            dw.setValue(i, 1, val / x.getRows());
-        }
+        Matrix error = LinearAlgebra.addMatrices(LinearAlgebra.multiplyMatrices(x, w), y, -1.0);
+        Matrix dw = LinearAlgebra.multiplyMatrices(LinearAlgebra.transpose(x), error);
+        dw = LinearAlgebra.scaleMatrix(dw, 1.0 / x.getRows());
 
         return dw;
     }
