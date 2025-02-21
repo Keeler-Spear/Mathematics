@@ -34,8 +34,14 @@ public class LinReg {
         }
 
         Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
+        double a;
 
-        double a = Math.pow(10, 1 - n);
+        if (n <= 2) {
+            a = LR;
+        }
+        else {
+            a = Math.pow(10, 1 - n);
+        }
 
         return polyGradDes(x, y, w, n, a);
     }
@@ -96,9 +102,6 @@ public class LinReg {
             i++;
         }
 
-        //For some reason the bias is half the size it should be so the line below fixes that.
-        w.setValue(1, 1, w.getValue(1, 1) * 2);
-
         return w;
     }
 
@@ -112,84 +115,24 @@ public class LinReg {
         return dw;
     }
 
-    //    /**
-//     * Calculates the weights for a linear regression model based on the data set provided using gradient descent.
-//     * While doing so, the path of x and y is recorded.
-//     *
-//     * @param x A matrix of data parameters.
-//     * @param y A vector of data labels.
-//     * @return A matrix with the weights for a linear regression model based on the data set provided and the weights'
-//     * paths.
-//     * @throws IllegalArgumentException If the data does not have one sample for each label.
-//     * @see #gradDes(Matrix, Matrix, Matrix, double, double)
-//     */
-//    public static Matrix[] gradDesTrack(Matrix x, Matrix y) {
-//        if (x.getRows() != y.getRows()) {
-//            throw new IllegalArgumentException("The data does not have one sample for each label!");
-//        }
-//
-//        //Adjust x here too
-//
-//        Matrix w = LinearAlgebra.randMatrix(x.getCols(), 1, -RAND_BOUND, RAND_BOUND);
-//        Random rand = new Random();
-//        double b = rand.nextDouble(RAND_BOUND);
-//
-//        return gradDesTrack(x, y, w, b, LR);
-//    }
+    public static Matrix buildPolyFunction(Matrix xVals, Matrix w) {
+        Matrix y = new Matrix(xVals.getRows(), 1);
+        int n = w.getRows(); //Polynomial order
+        double x;
+        double fnc;
 
-//    /**
-//     * Calculates the weights for a linear regression model based on the data set provided using gradient descent.
-//     * While doing so, the path of x and y is recorded.
-//     *
-//     * @param x A matrix of data parameters.
-//     * @param y A vector of data labels.
-//     * @param w A vector of initial weight guesses.
-//     * @param b A scalar guess for the bias.
-//     * @param a The learning rate of the model.
-//     * @return A matrix with the weights for a linear regression model based on the data set provided and the weights'
-//     * paths.
-//     * @throws IllegalArgumentException If the data does not have one sample for each label.
-//     * @throws IllegalArgumentException If there is not one weight for each parameter.
-//     */
-//    public static Matrix[] gradDesTrack(Matrix x, Matrix y, Matrix w, double b, double a) {
-//        if (x.getRows() != y.getRows()) {
-//            throw new IllegalArgumentException("The data does not have one sample for each label!");
-//        }
-//
-//        if (w.getRows() != x.getCols()) {
-//            throw new IllegalArgumentException("There must be one weight for each parameter!");
-//        }
-//
-//        Matrix dw = findDw(x, y, w, b);
-//        Matrix wPath = new Matrix(1, MAX_ITERATIONS);
-//        Matrix bPath = new Matrix(1, MAX_ITERATIONS);
-//        int i = 0;
-//
-//        while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
-//            b = b - a * findDb(x, y, w, b);
-//            bPath.setValue(1, i + 1, b);
-//            dw = findDw(x, y, w, b);
-//            w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
-//            wPath.setValue(1, i + 1, w.getValue(1, 1));
-//            i++;
-//        }
-//
-//        Matrix weights = new Matrix(w.getRows() + 1, 1);
-//        weights.setValue(1, 1, b);
-//
-//        for (int j = 1; j <= w.getRows(); j++) {
-//            weights.setValue(j + 1, 1, w.getValue(j, 1));
-//        }
-//
-//        Matrix bVals = new Matrix(1, i);
-//        Matrix wVals = new Matrix(1, i);
-//        for (int j = 1; j <= i; j++) {
-//            bVals.setValue(1, j, bPath.getValue(1, j));
-//            wVals.setValue(1, j, wPath.getValue(1, j));
-//        }
-//
-//        Matrix[] temp = {weights, bVals, wVals};
-//        return temp;
-//    }
+        for (int i = 1; i <= xVals.getRows(); i++) {
+            x = xVals.getValue(i, 1);
+            fnc = 0;
+
+            for (int j = 0; j < n; j++) {
+                fnc += w.getValue(j + 1, 1) * Math.pow(x, j);
+            }
+
+            y.setValue(i, 1, fnc);
+        }
+
+        return y;
+    }
 
 }
