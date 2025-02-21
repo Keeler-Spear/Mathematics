@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.function.Function;
 
 /**
  * A static class that performs mathematical operations on one or more matrices via analytic and numerical methods.
@@ -197,7 +198,25 @@ public class LinearAlgebra {
         return new Matrix(vals);
     }
 
-    //ToDo: Functional matrix--Applies a single-variable function to a matrix's values.
+    /**
+     * Creates a matrix whose values are those of the input matrix's after a function has been applied to them. This
+     * method was added after I submitted my application to your institution.
+     *
+     * @param matrixOrg The matrix that the function will be applied to.
+     * @param fnc The function that will be applied to the matrix.
+     * @return A matrix whose values are those of the input matrix's after a function has been applied to them.
+     */
+    public static Matrix applyFunction(Matrix matrixOrg, Function fnc) {
+        Matrix A = new Matrix(matrixOrg.getRows(), matrixOrg.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for(int j = 1; j <= A.getCols(); j++) {
+                A.setValue(i, j, (Double) fnc.apply(matrixOrg.getValue(i, j)));
+            }
+        }
+
+        return A;
+    }
 
     /**
      * Creates a matrix that is the transpose of the one provided.
