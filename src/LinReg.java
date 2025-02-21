@@ -9,12 +9,16 @@
  */
 public class LinReg {
     final static double TOL = 0.01;
-    final static int MAX_ITERATIONS = 20000;
+    final static int MAX_ITERATIONS = 500000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 10;
 
     /**
      * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
+     * <p>
+     * The weights will form the following polynomial function:
+     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * </p>
      *
      * @param x A matrix of data parameters.
      * @param y A vector of data labels.
@@ -48,7 +52,10 @@ public class LinReg {
 
     /**
      * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
-     * This code only works for one input variable.
+     * <p>
+     * The weights will form the following polynomial function:
+     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * </p>
      *
      * @param x A matrix of data parameters.
      * @param y A vector of data labels.
