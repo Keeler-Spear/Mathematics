@@ -94,8 +94,6 @@ public class LinReg {
 
         Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
 
-        System.out.println(w);
-
         return polyGradDes(x, y, w, n, LR);
     }
 
@@ -114,8 +112,6 @@ public class LinReg {
      * @throws IllegalArgumentException If n is less than 1.
      */
     public static Matrix polyGradDes(Matrix x, Matrix y, Matrix w, int n, double a) {
-        //ToDo: maybe treat current data as [x, y, ...] and then extend exponetials after for EACH varaible.
-        //The new x matrix would be something like [x, y, x^2 x^n, y^2, y^n].
         if (x.getRows() != y.getRows()) {
             throw new IllegalArgumentException("The data does not have one sample for each label!");
         }
@@ -131,12 +127,14 @@ public class LinReg {
         //Setting up x^n's
         int numVars = x.getCols();
         Matrix xn;
+        Matrix xTemp;
 
         for (int i = 1; i <= numVars; i++) {//For each variable
             for (int j = 2; j <= n; j++) {//For each polynomial order
                 xn = LinearAlgebra.vectorFromColumn(x, i);
+                xTemp = LinearAlgebra.vectorFromColumn(x, i);
                 for (int k = 1; k < j; k++) {
-                    xn = LinearAlgebra.multiplyValues(xn, xn);
+                    xn = LinearAlgebra.multiplyValues(xn, xTemp);
                 }
                 x.addColRight(xn.getMatrix());
             }
@@ -171,7 +169,7 @@ public class LinReg {
             val = 0.0;
             for (int j = 1; j <= x.getRows(); j++) {
                 xj = LinearAlgebra.vectorFromRow(x, j);
-                val += (LinearAlgebra.dotProduct(w, xj) - y.getValue(j, 1) + w.getValue(1,1)) * xj.getValue(i, 1);
+                val += (LinearAlgebra.dotProduct(w, xj) - y.getValue(j, 1)) * xj.getValue(i, 1);
             }
 
             dw.setValue(i, 1, val / x.getRows());
