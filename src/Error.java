@@ -1,3 +1,5 @@
+import java.util.function.Function;
+
 /**
  * A static class that computes the error between two numerical objects.
  * <p>
@@ -93,7 +95,7 @@ public class Error {
      * @throws IllegalArgumentException If the data sets provided have more than one column.
      * @throws IllegalArgumentException If the data sets provided are not the same length.
      */
-    public static double meanSquared(Matrix x, Matrix exact, Matrix w) {
+    public static double meanSquared(Matrix x, Matrix exact, Matrix w, Function[] fnc) {
         if (exact.getCols() != 1 || x.getCols() != 1) {
             throw new IllegalArgumentException("The data sets must have one column each!");
         }
@@ -102,7 +104,7 @@ public class Error {
             throw new IllegalArgumentException("The data sets must be the same length!");
         }
 
-        Matrix approx = LinReg.buildPolyFunction(x, w);
+        Matrix approx = LinReg.buildFunction(x, w, fnc);
 
         int n = exact.getRows();
         double sum = 0.0;

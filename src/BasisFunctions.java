@@ -49,6 +49,7 @@ public class BasisFunctions {
         double inPI = 1.0 / Math.sqrt(Math.PI);
 
         double p0 = 1.0 / Math.sqrt(2 * Math.PI);
+
         fncs[0] = x -> p0;
         fncs[1] = x -> inPI * Math.sin(x);
         fncs[2] = x -> inPI * Math.cos(x);
@@ -61,7 +62,6 @@ public class BasisFunctions {
             else { //i is even
                 fncs[i] = x -> p0 * Math.cos((I / 2.0) * x);
             }
-            fncs[i] = x -> Math.pow(x, I);
         }
 
         return fncs;

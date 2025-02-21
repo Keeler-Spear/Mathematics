@@ -12,7 +12,7 @@ import java.util.function.Function;
  */
 public class LinReg {
     final static double TOL = 0.01;
-    final static int MAX_ITERATIONS = 100000;
+    final static int MAX_ITERATIONS = 500000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 10;
 
@@ -169,21 +169,21 @@ public class LinReg {
     }
 
     //CURRENTLY ONLY WORKS FOR FUNCTIONS DEPENDENT ON ONE INDEPENDENT VARIABLE.
-    public static Matrix buildPolyFunction(Matrix xVals, Matrix w) {
+    public static Matrix buildFunction(Matrix xVals, Matrix w, Function[] fncs) {
         Matrix y = new Matrix(xVals.getRows(), 1);
-        int n = w.getRows(); //Polynomial order
+        int n = w.getRows(); //Function order
         double x;
-        double fnc;
+        double val;
 
         for (int i = 1; i <= xVals.getRows(); i++) {
             x = xVals.getValue(i, 1);
-            fnc = 0;
+            val = 0;
 
             for (int j = 0; j < n; j++) {
-                fnc += w.getValue(j + 1, 1) * Math.pow(x, j);
+                val += w.getValue(j + 1, 1) * (Double) fncs[j].apply(x);
             }
 
-            y.setValue(i, 1, fnc);
+            y.setValue(i, 1, val);
         }
 
         return y;
