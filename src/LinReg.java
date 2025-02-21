@@ -9,7 +9,7 @@
  */
 public class LinReg {
     final static double TOL = 0.01;
-    final static int MAX_ITERATIONS = 100000;
+    final static int MAX_ITERATIONS = 20000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 10;
 
