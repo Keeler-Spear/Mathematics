@@ -38,6 +38,7 @@ public class Error {
      * @param exact The true data set.
      * @param approx The approximation of the true data set.
      * @return The mean squared error between two data sets.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
      */
     public static double meanSquared(double[] exact, double[] approx) {
         if (exact.length != approx.length) {
@@ -59,6 +60,8 @@ public class Error {
      * @param exact The true data set.
      * @param approx The approximation of the true data set.
      * @return The mean squared error between two data sets.
+     * @throws IllegalArgumentException If the data sets provided have more than one column.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
      */
     public static double meanSquared(Matrix exact, Matrix approx) {
         if (exact.getCols() != 1 || approx.getCols() != 1) {
@@ -68,6 +71,38 @@ public class Error {
         if (exact.getRows() != approx.getRows()) {
             throw new IllegalArgumentException("The data sets must be the same length!");
         }
+
+        int n = exact.getRows();
+        double sum = 0.0;
+
+        for (int i = 1; i <= n; i++) {
+            sum += Math.pow(exact.getValue(i, 1) - approx.getValue(i, 1), 2);
+        }
+
+        return sum / n;
+    }
+
+    /**
+     * Computes the mean squared error between two data sets, where the approximate data set will be created from a
+     * polynomial created by the weights provided.
+     *
+     * @param x The x values of the exact data.
+     * @param exact The true data set.
+     * @param w The weights of the polynomial from which an approximation will be created.
+     * @return The mean squared error between two data sets.
+     * @throws IllegalArgumentException If the data sets provided have more than one column.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
+     */
+    public static double meanSquared(Matrix x, Matrix exact, Matrix w) {
+        if (exact.getCols() != 1 || x.getCols() != 1) {
+            throw new IllegalArgumentException("The data sets must have one column each!");
+        }
+
+        if (exact.getRows() != x.getRows()) {
+            throw new IllegalArgumentException("The data sets must be the same length!");
+        }
+
+        Matrix approx = LinReg.buildPolyFunction(x, w);
 
         int n = exact.getRows();
         double sum = 0.0;

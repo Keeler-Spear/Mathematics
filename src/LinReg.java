@@ -9,7 +9,7 @@
  */
 public class LinReg {
     final static double TOL = 0.01;
-    final static int MAX_ITERATIONS = 500000;
+    final static int MAX_ITERATIONS = 100000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 10;
 
@@ -57,7 +57,7 @@ public class LinReg {
      * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
      * </p>
      *
-     * @param x A matrix of data parameters.
+     * @param xOrg A matrix of data parameters.
      * @param y A vector of data labels.
      * @param w A vector of initial weight guesses.
      * @param n The order of the polynomial.
@@ -67,17 +67,25 @@ public class LinReg {
      * @throws IllegalArgumentException If there is not one weight for each parameter.
      * @throws IllegalArgumentException If n is less than 1.
      */
-    public static Matrix polyGradDes(Matrix x, Matrix y, Matrix w, int n, double a) {
-        if (x.getRows() != y.getRows()) {
+    public static Matrix polyGradDes(Matrix xOrg, Matrix y, Matrix w, int n, double a) {
+        if (xOrg.getRows() != y.getRows()) {
             throw new IllegalArgumentException("The data does not have one sample for each label!");
         }
 
-        if (w.getRows() != n * x.getCols() + 1) {
+        if (w.getRows() != n * xOrg.getCols() + 1) {
             throw new IllegalArgumentException("There must be one weight for each parameter!");
         }
 
         if (n < 1) {
             throw new IllegalArgumentException("The polynomial's order must be equal to or greater than 1!");
+        }
+
+        Matrix x;
+
+        try {
+            x = (Matrix) xOrg.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
 
         //Setting up x^n's
@@ -122,6 +130,7 @@ public class LinReg {
         return dw;
     }
 
+    //CURRENTLY ONLY WORKS FOR FUNCTIONS DEPENDENT ON ONE INDEPENDENT VARIABLE.
     public static Matrix buildPolyFunction(Matrix xVals, Matrix w) {
         Matrix y = new Matrix(xVals.getRows(), 1);
         int n = w.getRows(); //Polynomial order
@@ -141,5 +150,8 @@ public class LinReg {
 
         return y;
     }
+
+    //ToDo: GradDesc but instead of x^n for additional parameters I use a method to apply ANY function to a matrix.
+    //To do this I will need a set of basis functions in the form of an array of functional interfaces
 
 }

@@ -197,6 +197,8 @@ public class LinearAlgebra {
         return new Matrix(vals);
     }
 
+    //ToDo: Functional matrix--Applies a single-variable function to a matrix's values.
+
     /**
      * Creates a matrix that is the transpose of the one provided.
      *
