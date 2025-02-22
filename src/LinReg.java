@@ -41,7 +41,6 @@ public class LinReg {
         }
 
         Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
-        Function[] fncs = BasisFunctions.polynomials(n);
         double a;
 
         if (n <= 2) {
@@ -85,7 +84,37 @@ public class LinReg {
         return gradDes(x, y, w, n, a, fncs);
     }
 
-    //ToDo: Make the model only in the terms of fncs[]
+    /**
+     * Calculates the weights for a trigonometric regression model based on the data set provided using gradient descent.
+     * <p>
+     * The weights will form the following trigonometric function:
+     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * </p>
+     *
+     * @param x A matrix of data parameters.
+     * @param y A vector of data labels.
+     * @param w A vector of initial weight guesses.
+     * @param n The order of the trigonometric function.
+     * @param a The learning rate of the model.
+     * @return A matrix with the weights for a trigonometric regression model based on the data set provided.
+     * @throws IllegalArgumentException If the data does not have one sample for each label.
+     * @throws IllegalArgumentException If n is less than one.
+     * @see #gradDes(Matrix, Matrix, Matrix, int, double, Function[])
+     */
+    public static Matrix trigGradDes(Matrix x, Matrix y, Matrix w, int n, double a) {
+        if (x.getRows() != y.getRows()) {
+            throw new IllegalArgumentException("The data does not have one sample for each label!");
+        }
+
+        if (n < 1) {
+            throw new IllegalArgumentException("The trigonometric function's order must be equal to or greater than one!");
+        }
+
+        Function[] fncs = BasisFunctions.trig(n);
+
+        return gradDes(x, y, w, n, a, fncs);
+    }
+
     /**
      * Calculates the weights for a regression model based on the data set provided and the basis functions provided
      * using gradient descent.
@@ -188,8 +217,4 @@ public class LinReg {
 
         return y;
     }
-
-    //ToDo: GradDesc but instead of x^n for additional parameters I use a method to apply ANY function to a matrix.
-    //To do this I will need a set of basis functions in the form of an array of functional interfaces
-
 }

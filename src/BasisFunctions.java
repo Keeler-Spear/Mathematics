@@ -37,11 +37,11 @@ public class BasisFunctions {
      * Creates a set of trigonometric basis functions of the size specified.
      *
      * @param n The highest polynomial order in the basis function set.
-     * @throws IllegalArgumentException If the set's order is less than two.
+     * @throws IllegalArgumentException If the set's order is negative.
      */
     public static Function[] trig(int n) { //Orthogonal on [-PI, PI]
-        if (n < 2) {
-            throw new IllegalArgumentException("The set's order must be at least two!");
+        if (n < 0) {
+            throw new IllegalArgumentException("The set's order must be at least zero!");
         }
 
         Function<Double, Double>[] fncs = new Function[n + 1];
@@ -51,8 +51,14 @@ public class BasisFunctions {
         double p0 = 1.0 / Math.sqrt(2 * Math.PI);
 
         fncs[0] = x -> p0;
-        fncs[1] = x -> inPI * Math.sin(x);
-        fncs[2] = x -> inPI * Math.cos(x);
+
+        if (n >= 1) {
+            fncs[1] = x -> inPI * Math.sin(x);
+        }
+
+        if (n >= 2) {
+            fncs[2] = x -> inPI * Math.cos(x);
+        }
 
         for (int i = 3; i <= n; i++) {
             double I = i;
