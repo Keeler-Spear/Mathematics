@@ -123,6 +123,12 @@ public class LinReg {
      * The weights will form the following function:
      * w + w1f(x) + wf2(x) + .. + wfn(x) + w1f(y) + wf2(y) + .. + wfn(y) + ...
      * </p>
+     * <p>
+     * In its current state, this method does have a few limitations. First, for very large xOrg data, the algorithm
+     * will diverge if the learning rate is not small enough. Second, it can only handle data with a single label.
+     * In the future, I plan to expand the algorithm to cover this. Third, it cannot handle functions with products,
+     * quotients, compositions, etc. of multiple variables, such as z = x * y or w = y * w^2 * cos(x).
+     * </p>
      *
      * @param xOrg A matrix of data parameters.
      * @param y A vector of data labels.
