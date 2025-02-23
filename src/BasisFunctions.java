@@ -46,27 +46,23 @@ public class BasisFunctions {
 
         Function<Double, Double>[] fncs = new Function[n + 1];
 
-        double inPI = 1.0 / Math.sqrt(Math.PI);
-
-        double p0 = 1.0 / Math.sqrt(2 * Math.PI);
-
-        fncs[0] = x -> p0;
+        fncs[0] = x -> 1.0;
 
         if (n >= 1) {
-            fncs[1] = x -> inPI * Math.sin(x);
+            fncs[1] = x -> Math.sin(x);
         }
 
         if (n >= 2) {
-            fncs[2] = x -> inPI * Math.cos(x);
+            fncs[2] = x -> Math.cos(x);
         }
 
         for (int i = 3; i <= n; i++) {
             double I = i;
             if (i % 2 == 1) { //i is odd
-                fncs[i] = x -> p0 * Math.sin(((I + 1.0) / 2.0) * x);
+                fncs[i] = x -> Math.sin(((I + 1.0) / 2.0) * x);
             }
             else { //i is even
-                fncs[i] = x -> p0 * Math.cos((I / 2.0) * x);
+                fncs[i] = x -> Math.cos((I / 2.0) * x);
             }
         }
 

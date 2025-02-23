@@ -197,22 +197,24 @@ public class LinReg {
         return dw;
     }
 
-    //CURRENTLY ONLY WORKS FOR FUNCTIONS DEPENDENT ON ONE INDEPENDENT VARIABLE.
-    public static Matrix buildFunction(Matrix xVals, Matrix w, Function[] fncs) {
-        Matrix y = new Matrix(xVals.getRows(), 1);
-        int n = w.getRows(); //Function order
-        double x;
-        double val;
+    public static Matrix buildFunction(Matrix x, Matrix w, Function[] fncsOrg) {
+        Matrix y = new Matrix(x.getRows(), 1);
+        Matrix temp = LinearAlgebra.vectorFromColumn(x, 1);
+        y = LinearAlgebra.scaleMatrix(LinearAlgebra.applyFunction(temp, fncsOrg[0]), w.getValue(1, 1));
 
-        for (int i = 1; i <= xVals.getRows(); i++) {
-            x = xVals.getValue(i, 1);
-            val = 0;
+        //Removing the bias from basis functions
+        Function[] fncs = new Function[fncsOrg.length - 1];
+        for (int i = 0; i < fncs.length; i++) {
+            fncs[i] = fncsOrg[i + 1];
+        }
 
-            for (int j = 0; j < n; j++) {
-                val += w.getValue(j + 1, 1) * (Double) fncs[j].apply(x);
+
+        //Issue: Doing constant calculation for y
+        for (int i = 0; i < fncs.length; i++) {
+            for (int j = 1; j <= x.getCols(); j++) {
+                temp = LinearAlgebra.vectorFromColumn(x, j);
+                y = LinearAlgebra.addMatrices(y, LinearAlgebra.applyFunction(temp, fncs[i]), w.getValue((j - 1) * (fncs.length) + i + 2, 1));
             }
-
-            y.setValue(i, 1, val);
         }
 
         return y;

@@ -267,6 +267,37 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates a matrix whose values are [A; B]. This method was added after I submitted my application to your
+     * institution.
+     *
+     * @param A The matrix that will be stacked on top of the other.
+     * @param B The matrix that will be below the other.
+     * @return A matrix whose values are [A; B].
+     * @throws IllegalArgumentException If the matrices' column counts are not the same.
+     */
+    public static Matrix stackMatrices(Matrix A, Matrix B) {
+        if (A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must have the same number of columns!");
+        }
+
+        Matrix C = new Matrix(A.getRows() + B.getRows(), A.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                C.setValue(i, j, A.getValue(i, j));
+            }
+        }
+
+        for (int i = 1; i <= B.getRows(); i++) {
+            for (int j = 1; j <= B.getCols(); j++) {
+                C.setValue(i + A.getRows(), j, B.getValue(i, j));
+            }
+        }
+
+        return C;
+    }
+
+    /**
      * Creates a matrix that is multiplied by the scalar provided.
      *
      * @param matrixOrg The matrix that will be copied and scaled.

@@ -92,12 +92,12 @@ public class Error {
      * @param exact The true data set.
      * @param w The weights of the polynomial from which an approximation will be created.
      * @return The mean squared error between two data sets.
-     * @throws IllegalArgumentException If the data sets provided have more than one column.
+     * @throws IllegalArgumentException If the exact data set provided has more than one column.
      * @throws IllegalArgumentException If the data sets provided are not the same length.
      */
     public static double meanSquared(Matrix x, Matrix exact, Matrix w, Function[] fnc) {
-        if (exact.getCols() != 1 || x.getCols() != 1) {
-            throw new IllegalArgumentException("The data sets must have one column each!");
+        if (exact.getCols() != 1 ) {
+            throw new IllegalArgumentException("The exact data set must have exactly one column!");
         }
 
         if (exact.getRows() != x.getRows()) {
