@@ -57,13 +57,34 @@ public class BasisFunctions {
         }
 
         for (int i = 3; i <= n; i++) {
-            double I = i;
+            int I = i;
             if (i % 2 == 1) { //i is odd
                 fncs[i] = x -> Math.sin(((I + 1.0) / 2.0) * x);
             }
             else { //i is even
                 fncs[i] = x -> Math.cos((I / 2.0) * x);
             }
+        }
+
+        return fncs;
+    }
+
+    public static Function[] legendre(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("The set's order must be at least zero!");
+        }
+
+        Function<Double, Double>[] fncs = new Function[n + 1];
+
+        fncs[0] = x -> 1.0;
+
+        if (n >= 1) {
+            fncs[1] = x -> x;
+        }
+
+        for (int i = 2; i <= n; i++) {
+            int I = i;
+            fncs[i] = x -> x * ((2 * I + 1) / (I + 1)) * fncs[I - 1].apply(x) - (I / (I + 1)) * fncs[I - 2].apply(x);
         }
 
         return fncs;
