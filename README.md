@@ -42,6 +42,10 @@
 
   Outside of the Java libraries used (Math, Swing, JUnit Jupiter, IO, and Util), the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
 
+  # Favorite Algorithm
+
+  Of the algorithms I have coded, gradient descent (gradDes() in LinReg) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under BasisFunctions.
+
 # Note for College/University Admissions Officers and Faculty
 
   Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, and UI.java should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
