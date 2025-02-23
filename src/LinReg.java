@@ -20,7 +20,7 @@ public class LinReg {
      * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
      * <p>
      * The weights will form the following polynomial function:
-     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * w + wx + wx^2 + wx^3 + ... + wx^n + wy + wy^2 + wy^3 + ...
      * </p>
      *
      * @param x A matrix of data parameters.
@@ -57,7 +57,7 @@ public class LinReg {
      * Calculates the weights for a polynomial regression model based on the data set provided using gradient descent.
      * <p>
      * The weights will form the following polynomial function:
-     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * w + wx + wx^2 + wx^3 + ... + wx^n + wy + wy^2 + wy^3 + ...
      * </p>
      *
      * @param x A matrix of data parameters.
@@ -88,7 +88,8 @@ public class LinReg {
      * Calculates the weights for a trigonometric regression model based on the data set provided using gradient descent.
      * <p>
      * The weights will form the following trigonometric function:
-     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * w + wsin(x) + wcos(x) + wsin(2x) + wcos(2x) + ... + wsin(nx) + wcos(nx) + wsin(y) + wcos(y) + wsin(2y)
+     * + wcos(2y) + ... + wsin(ny) + wcos(ny) + ...
      * </p>
      *
      * @param x A matrix of data parameters.
@@ -119,8 +120,8 @@ public class LinReg {
      * Calculates the weights for a regression model based on the data set provided and the basis functions provided
      * using gradient descent.
      * <p>
-     * The weights will form the following polynomial function:
-     * w + wx + wy + wz + ... + wx^2 + wx^3 + wx^n + ... + wy^2 + wy^3 + ... + wy^n + wz^2 + wz^3 + ... + wz^n + ...
+     * The weights will form the following function:
+     * w + w1f(x) + wf2(x) + .. + wfn(x) + w1f(y) + wf2(y) + .. + wfn(y) + ...
      * </p>
      *
      * @param xOrg A matrix of data parameters.
@@ -170,10 +171,6 @@ public class LinReg {
                 x.addColRight(xn.getMatrix());
             }
         }
-
-        //Should I always include a bias term, even when modeling data without polynomials?
-//        Matrix ones = LinearAlgebra.constantMatrix(x.getRows(), 1, 1.0);
-//        x.addColLeft(ones.getMatrix());
 
         Matrix dw = LinearAlgebra.constantMatrix(w.getRows(), 1, 5.0);
 
