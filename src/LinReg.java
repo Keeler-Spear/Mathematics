@@ -197,10 +197,22 @@ public class LinReg {
         return dw;
     }
 
+    /**
+     * Calculates the values for a function at the provided points using the functions and weights provided.
+     *
+     * @param x A matrix of points.
+     * @param w A vector weights.
+     * @param fncsOrg The set of basis functions that comprise the function.
+     * @return A vector of values for a function.
+     * @throws IllegalArgumentException If the weights matrix has more than one weight.
+     */
     public static Matrix buildFunction(Matrix x, Matrix w, Function[] fncsOrg) {
-        Matrix y = new Matrix(x.getRows(), 1);
+        if (w.getCols() != 1) {
+            throw new IllegalArgumentException("The weight matrix must have exactly one column!");
+        }
+
         Matrix temp = LinearAlgebra.vectorFromColumn(x, 1);
-        y = LinearAlgebra.scaleMatrix(LinearAlgebra.applyFunction(temp, fncsOrg[0]), w.getValue(1, 1));
+        Matrix y = LinearAlgebra.scaleMatrix(LinearAlgebra.applyFunction(temp, fncsOrg[0]), w.getValue(1, 1));
 
         //Removing the bias from basis functions
         Function[] fncs = new Function[fncsOrg.length - 1];
@@ -208,8 +220,6 @@ public class LinReg {
             fncs[i] = fncsOrg[i + 1];
         }
 
-
-        //Issue: Doing constant calculation for y
         for (int i = 0; i < fncs.length; i++) {
             for (int j = 1; j <= x.getCols(); j++) {
                 temp = LinearAlgebra.vectorFromColumn(x, j);
