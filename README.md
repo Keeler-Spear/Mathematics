@@ -48,4 +48,4 @@
 
 # Note for College/University Admissions Officers and Faculty
 
-  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, and UI.java should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
+  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, UI.java, and LinReg (although LinReg was made well after I submitted my application, I am really happy about the way it turned out) should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
