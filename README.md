@@ -4,13 +4,18 @@
   
 # File summary
 
+-BasisFunctions.java: Static class that generates basis functions.\
 -Calculus.java: Static class with calculus operations.\
 -Complex.java: Static class with complex arithmetic, WIP.\
 -ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
+-Error.java: Static class with error evaluation operations.\
+-LinReg.Java: Static class with numerical linear regression operations.\
 -LinearAlgebra.java: Static class with linear algebra operations.\
 -Main.java: Main class for user input, WIP.\
 -Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
 -Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.\
+-ODE.java: Static class with numerical ordinary differential equation operations, WIP.\
+-TriFunction.java: Interface that acts as a mathematical function with three independent variables.\
 -UI.java: Main class that provides a user interface for the most important linear algebra methods.
 
 # Main Operations and Method Type
@@ -24,7 +29,8 @@
 -Gram-Schmidt Orthogonalization (Analytically)\
 -Eigenvalue Calculation (Numerically via the QR Method)\
 -Differentiation (Numerically via O(h^2) Methods)\
--Integration (Numerically via O(h^4) Methods)
+-Integration (Numerically via O(h^4) Methods)\
+-Linear Regression (Numerically via gradient descent)
 
 # User Guide
 
