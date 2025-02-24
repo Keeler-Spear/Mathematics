@@ -169,4 +169,81 @@ public class ODE {
         return yVals;
     }
 
+    /**
+     * Numerically solves the first-order ordinary differential equation over the provided interval using the
+     * Runge–Kutta 4 and Adams-Bashforth 4 method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The first-order ordinary differential equation f(t, y) to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static double[] adamsBash (BiFunction ode, double t0, double y0, double t, double h) {
+        double[] rk4 = rk4(ode, t0, y0, t0 + 3 * h, h);
+        double[] f = new double[rk4.length - 1];
+
+        for (int i = 0; i < f.length; i++) {
+            f[i] = (double) ode.apply(t0, rk4[i]);
+            t0 += h;
+        }
+
+        double[] sol = mergeArrays(rk4,adamsBash(ode, t0, rk4[rk4.length - 1],t, h, f[2], f[1], f[0]));
+
+        return sol;
+    }
+
+    /**
+     * Numerically solves the first-order ordinary differential equation over the provided interval using the
+     * Adams-Bashforth 4 method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The first-order ordinary differential equation f(t, y) to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @param fm1 The derivative of the function at t0 - h.
+     * @param fm2 The derivative of the function at t0 - 2h.
+     * @param fm3 The derivative of the function at t0 - 3h.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static double[] adamsBash (BiFunction ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
+        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] f = {0, fm3, fm2, fm1}; //I could use a stack instead but I have concerns regarding its efficiency.
+
+        y[0] = y0;
+        int i = 1;
+
+        while (t0 < t) {
+            //Shifting f matrix to the left
+            for (int j = 0; j < f.length - 1; j++) {
+                f[j] = f[j + 1];
+            }
+            f[3] = (double) ode.apply(t0, y0);
+
+            y0 = y0 + (h / 24.0) * (55 * f[3] - 59 * f[2] + 37 * f[1] - 9 * f[0]);
+
+            y[i] = y0;
+            t0 += h;
+            i++;
+        }
+
+        return y;
+    }
+
+    //Makes a new array [A B] and removes the duplicate left-bound of A
+    private static double[] mergeArrays(double[] A, double[] B) {
+        double[] C = new double[A.length + B.length - 1];
+
+        for (int i = 0; i < A.length - 1; i++) {
+            C[i] = A[i];
+        }
+
+        for (int i = 0; i < B.length; i++) {
+            C[i + A.length - 1] = B[i];
+        }
+
+        return C;
+    }
 }
