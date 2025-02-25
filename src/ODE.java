@@ -171,7 +171,7 @@ public class ODE {
 
     /**
      * Numerically solves the first-order ordinary differential equation over the provided interval using the
-     * Runge–Kutta 4 and Adams-Bashforth 4 method with O(h^4) global error, where h is the step size of t.
+     * Runge–Kutta 4 and Adams-Bashforth 4 methods with O(h^4) global error, where h is the step size of t.
      *
      * @param ode The first-order ordinary differential equation f(t, y) to be solved.
      * @param t0 The left endpoint of the interval.
@@ -216,7 +216,7 @@ public class ODE {
         int i = 1;
 
         while (t0 < t) {
-            //Shifting f matrix to the left
+            //Shifting f array to the left
             for (int j = 0; j < f.length - 1; j++) {
                 f[j] = f[j + 1];
             }
@@ -226,6 +226,75 @@ public class ODE {
 
             y[i] = y0;
             t0 += h;
+            i++;
+        }
+
+        return y;
+    }
+
+    /**
+     * Numerically solves the first-order ordinary differential equation over the provided interval using the
+     * Runge–Kutta 4 and Predictor-Corrctor 4 methods with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The first-order ordinary differential equation f(t, y) to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static double[] pc (BiFunction ode, double t0, double y0, double t, double h) {
+        double[] rk4 = rk4(ode, t0, y0, t0 + 3 * h, h);
+        double[] f = new double[rk4.length - 1];
+
+        for (int i = 0; i < f.length; i++) {
+            f[i] = (double) ode.apply(t0, rk4[i]);
+            t0 += h;
+        }
+
+        double[] sol = mergeArrays(rk4,pc(ode, t0, rk4[rk4.length - 1],t, h, f[2], f[1], f[0]));
+
+        return sol;
+    }
+
+    /**
+     * Numerically solves the first-order ordinary differential equation over the provided interval using the
+     * Predictor-Corrector 4 method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The first-order ordinary differential equation f(t, y) to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @param fm1 The derivative of the function at t0 - h.
+     * @param fm2 The derivative of the function at t0 - 2h.
+     * @param fm3 The derivative of the function at t0 - 3h.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static double[] pc (BiFunction ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
+        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] f = {fm3, fm2, fm1, (double) ode.apply(t0, y0)}; //I could use a stack instead but I have concerns regarding its efficiency.
+
+        y[0] = y0;
+        double ym1;
+        int i = 1;
+
+        while (t0 < t) {
+            f[3] = (double) ode.apply(t0, y0);
+
+            ym1 = y0;
+            y0 = y0 + (h / 24.0) * (55 * f[3] - 59 * f[2] + 37 * f[1] - 9 * f[0]);
+            t0 += h;
+
+            //Shifting the array to the left
+            for (int j = 0; j < f.length - 1; j++) {
+                f[j] = f[j + 1];
+            }
+            f[3] = (double) ode.apply(t0, y0);
+
+            y0 = ym1 + (h / 24.0) * (9 * f[3] + 19 * f[2] - 5 * f[1] + f[0]);
+
+            y[i] = y0;
             i++;
         }
 
