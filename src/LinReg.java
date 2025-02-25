@@ -181,7 +181,7 @@ public class LinReg {
         Matrix dw = LinearAlgebra.constantMatrix(w.getRows(), 1, 5.0);
 
         int i = 0;
-        while (LinearAlgebra.l2Norm(dw) > TOL && i < MAX_ITERATIONS) {
+        while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
             dw = findDw(x, y, w);
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;

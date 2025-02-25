@@ -42,25 +42,23 @@ public class ProjectTest {
     @Test //Section 2.1.4 Example 7
     public void multiplicationTest() {
         double[][] valsA = {
-                {1, 2, 1},
-                {2, 1, 2},
-                {1, 0, 1}
+                {1, 2, 3},
+                {4, 5,6},
         };
         Matrix A = new Matrix(valsA);
 
         double[][] valsB = {
-                {1, -5, 2},
-                {2, -1, 0},
-                {1, 0, 2}
+                {7, 8, 9, 10},
+                {11, 12, 13, 14},
+                {15, 16, 17, 18}
         };
         Matrix B = new Matrix(valsB);
 
         Matrix C = LinearAlgebra.multiplyMatrices(A, B);
 
         double[][] correctVals = {
-                {6, -7, 4},
-                {6, -11, 8},
-                {2, -5, 4}
+                {74, 80, 86, 92},
+                {173, 188, 203, 218},
         };
         Matrix correctMatrix = new Matrix(correctVals);
 

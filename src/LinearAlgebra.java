@@ -385,17 +385,20 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The second matrix must have a number of rows equal to the number of columns of the first! " + A.getRows() + " != " +  B.getRows() + "!");
         }
 
-        Matrix product = new Matrix(A.getRows(), B.getCols());
+        Matrix C = new Matrix(A.getRows(), B.getCols());
+        double sum;
 
-        for (int i = 1; i <= B.getCols(); i++) {
-            Matrix tempVector = vectorFromColumn(B, i);
-            Matrix tempCol = matrixVectorMultiplication(A, tempVector);
-            for (int j = 1; j <= product.getRows(); j++) {
-                product.setValue(j, i, tempCol.getValue(j, 1));
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= B.getCols(); j++) {
+                sum = 0.0;
+                for (int k = 1; k <= A.getCols(); k++) {
+                    sum += A.getValue(i, k) * B.getValue(k, j);
+                }
+                C.setValue(i, j, sum);
             }
         }
 
-        return product;
+        return C;
     }
 
     /**
