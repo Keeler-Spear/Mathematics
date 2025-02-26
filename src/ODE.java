@@ -24,7 +24,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[] euler (BiFunction ode, double t0, double y0, double t, double h) {
-        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] y = new double[generateYLength(t0, t, h)];
         y[0] = y0;
         int i = 1;
 
@@ -51,7 +51,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[] rk4 (BiFunction ode, double t0, double y0, double t, double h) {
-        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] y = new double[generateYLength(t0, t, h)];
         y[0] = y0;
         double k1;
         double k2;
@@ -89,7 +89,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[][] eulerSystem (TriFunction ode1, TriFunction ode2, double t0, double[] y0, double t, double h) {
-        double[][] yVals = new double[2][1 + (int) ((t - t0)/h)];
+        double[][] yVals = new double[2][generateYLength(t0, t, h)];
         Matrix yi = new Matrix(y0);
         Matrix yP = new Matrix(y0);
         int i = 0;
@@ -124,7 +124,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[][] rk4System (TriFunction ode1, TriFunction ode2, double t0, double[] y0, double t, double h) {
-        double[][] yVals = new double[2][1 + (int) ((t - t0)/h)];
+        double[][] yVals = new double[2][generateYLength(t0, t, h)];
         Matrix yi = new Matrix(y0);
         Matrix yP = new Matrix(y0);
         int i = 0;
@@ -209,7 +209,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[] adamsBash (BiFunction ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
-        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] y = new double[generateYLength(t0, t, h)];
         double[] f = {0, fm3, fm2, fm1}; //I could use a stack instead but I have concerns regarding its efficiency.
 
         y[0] = y0;
@@ -272,7 +272,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static double[] pc (BiFunction ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
-        double[] y = new double[1 + (int) ((t - t0)/h)];
+        double[] y = new double[generateYLength(t0, t, h)];
         double[] f = {fm3, fm2, fm1, (double) ode.apply(t0, y0)}; //I could use a stack instead but I have concerns regarding its efficiency.
 
         y[0] = y0;
@@ -314,5 +314,16 @@ public class ODE {
         }
 
         return C;
+    }
+
+    //I need this because the array generation is janky
+    private static int generateYLength(double t0, double t, double h) {
+        int n = 1 + (int) ((t - t0)/h);
+
+        if (h > 0.5) {
+            n += 1;
+        }
+
+        return n;
     }
 }
