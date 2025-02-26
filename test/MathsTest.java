@@ -6,7 +6,7 @@ class MathsTest {
 
     final double h = 0.000001;
 
-    @Test
+    @org.junit.Test
     void powTest() {
         assertEquals(1, Maths.pow(143, 0), h);
         assertEquals(9, Maths.pow(3, 2), h);
