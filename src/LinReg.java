@@ -43,11 +43,17 @@ public class LinReg {
         Matrix w = LinearAlgebra.randMatrix(n * x.getCols() + 1, 1, -RAND_BOUND, RAND_BOUND);
         double a;
 
-        if (n <= 2) {
+        if (n <= 6) {
             a = LR;
         }
+        else if (n <= 12) {
+            a = LR / 10;
+        }
+        else if (n <= 18) {
+            a = LR / 100;
+        }
         else {
-            a = Math.pow(10, 1 - n);
+            a = LR / 1000;
         }
 
         return polyGradDes(x, y, w, n, a);
@@ -81,7 +87,11 @@ public class LinReg {
 
         Function[] fncs = BasisFunctions.polynomials(n);
 
-        return gradDes(x, y, w, n, a, fncs);
+        Matrix xS = standardizeData(x);
+
+        Matrix weights = gradDes(xS, y, w, n, a, fncs);
+
+        return deStandardizeWeights(weights, x, fncs);
     }
 
     /**
@@ -198,6 +208,32 @@ public class LinReg {
         dw = LinearAlgebra.scaleMatrix(dw, 1.0 / x.getRows());
 
         return dw;
+    }
+
+    //Standardizes x data to have a mean of zero and standard deviation of 0.
+    public static Matrix standardizeData(Matrix x) {
+        Matrix sX = new Matrix(Stat.standardize(x.getCol(1)));
+
+        for (int i = 2; i <= x.getCols(); i++) {
+            sX.addColRight(Stat.standardize(x.getCol(i)));
+        }
+
+        return sX;
+    }
+
+    //Standardizes x data to have a mean of zero and standard deviation of 0.
+    //Works for one peram
+    //Will depend on the functions used
+    public static Matrix deStandardizeWeights(Matrix w, Matrix x, Function[] fncs) {
+        double meanX = Stat.mean(x);
+        double stdX = Stat.stDev(x);
+        Matrix nW = new Matrix(w.getRows(), w.getCols());
+
+        for (int i = 0; i < w.getRows(); i++) {
+            nW.setValue(i + 1, 1, w.getValue(i + 1, 1 ) / (double) fncs[i].apply(stdX));
+        }
+
+        return nW;
     }
 
     /**

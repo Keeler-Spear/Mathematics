@@ -27,6 +27,21 @@ public class Stat {
     }
 
     /**
+     * Calculates the mean (average) of the provided data set.
+     *
+     * @param data The data set to be used.
+     * @return The mean of the provided data set.
+     * @throws IllegalArgumentException If the data does not have exact one column.
+     */
+    public static double mean(Matrix data) {
+        if (data.getCols() != 1) {
+            throw new IllegalArgumentException("The data must only have one column!");
+        }
+
+        return mean(data.getCol(1));
+    }
+
+    /**
      * Calculates the sample standard deviation of the provided data set.
      *
      * @param data The data set to be used.
@@ -41,6 +56,21 @@ public class Stat {
         }
 
         return Math.sqrt(stDev / (data.length - 1));
+    }
+
+    /**
+     * Calculates the sample standard deviation of the provided data set.
+     *
+     * @param data The data set to be used.
+     * @return The sample standard deviation of the provided data set.
+     * @throws IllegalArgumentException If the data does not have exact one column.
+     */
+    public static double stDev(Matrix data) {
+        if (data.getCols() != 1) {
+            throw new IllegalArgumentException("The data must only have one column!");
+        }
+
+        return stDev(data.getCol(1));
     }
 
     /**
@@ -67,6 +97,29 @@ public class Stat {
 
         for (int i = 0; i < data.length; i++) {
             sData[i] = (data[i] - mean) / stDev;
+        }
+
+        return sData;
+    }
+
+    /**
+     * Standardizes the data set.
+     *
+     * @param data The data set to be used.
+     * @return The standardized data set.
+     * @throws IllegalArgumentException If the data does not have exact one column.
+     */
+    public static Matrix standardize(Matrix data) {
+        if (data.getCols() != 1) {
+            throw new IllegalArgumentException("The data must only have one column!");
+        }
+
+        Matrix sData = new Matrix(data.getRows(), 1);
+        double mean = mean(data);
+        double stDev = stDev(data);
+
+        for (int i = 1; i <= sData.getRows(); i++) {
+            sData.setValue(i, 1, (data.getValue(i, 1) - mean) / stDev);
         }
 
         return sData;

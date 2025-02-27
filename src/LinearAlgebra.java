@@ -414,13 +414,7 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The row index is of bounds");
         }
 
-        Matrix vector = new Matrix(A.getRows(), 1);
-
-        for (int i = 1; i <= A.getRows(); i++) {
-            vector.setValue(i, 1, A.getValue(i, col));
-        }
-
-        return vector;
+        return new Matrix(A.getCol(col));
     }
 
     /**
