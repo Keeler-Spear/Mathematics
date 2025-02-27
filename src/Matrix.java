@@ -144,7 +144,7 @@ public class Matrix {
     }
 
     /**
-     * Sets the value of the matrix at the specified position using 1-based indexing.
+     * Gets the value of the matrix at the specified position using 1-based indexing.
      *
      * @param row The 1-based row index where the value will be collected.
      * @param col The 1-based column index where the value will be collected.
@@ -175,6 +175,23 @@ public class Matrix {
         }
 
         matrix[row-1][col-1] = value;
+    }
+
+    /**
+     * Get the matrix's row at the specified position using 1-based indexing. This method was added after I
+     * submitted my application to your institution.
+     *
+     * @param row The 1-based row index where the row will be collected.
+     * @return The row at the index provided.
+     * @throws IllegalArgumentException If the specified row index is out of the matrix's bounds
+     * (1 ≤ row ≤ {@code rows}).
+     */
+    public double[] getRow(int row) {
+        if (row <= 0 || row > rows) {
+            throw new IllegalArgumentException("Row: " + row + " is out of bounds!");
+        }
+
+        return matrix[row - 1];
     }
 
     /**
@@ -319,6 +336,29 @@ public class Matrix {
         }
 
         matrix = tempMatrix;
+    }
+
+    /**
+     * Get the matrix's column at the specified position using 1-based indexing. This method was added after I
+     * submitted my application to your institution.
+     *
+     * @param col The 1-based column index where the row will be collected.
+     * @return The row at the index provided.
+     * @throws IllegalArgumentException If the specified column index is out of the matrix's bounds
+     * (1 ≤ col ≤ {@code cols}).
+     */
+    public double[] getCol(int col) {
+        if (col <= 0 || col > cols) {
+            throw new IllegalArgumentException("Column: " + col + " is out of bounds!");
+        }
+
+        double[] vals = new double[rows];
+
+        for (int i = 0; i < rows; i++) {
+            vals[i] = matrix[i][col - 1];
+        }
+
+        return vals;
     }
 
     /**
