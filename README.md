@@ -30,7 +30,7 @@
 -Eigenvalue Calculation (Numerically via the QR Method)\
 -Differentiation (Numerically via O(h^2) Methods)\
 -Integration (Numerically via O(h^4) Methods)\
--Linear Regression (Numerically via gradient descent)
+-Regression (Numerically via gradient descent)
 
 # User Guide
 
@@ -50,8 +50,8 @@
 
   # Favorite Algorithm
 
-  Of the algorithms I have coded, gradient descent (gradDes() in LinReg) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under BasisFunctions.
+  Of the algorithms I have coded, gradient descent (linearReg in Regression.java) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under BasisFunctions.
 
 # Note for College/University Admissions Officers and Faculty
 
-  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, UI.java, and LinReg (although LinReg was made well after I submitted my application, I am really happy with the way it turned out) should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
+  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, UI.java, and Regression.java (although Regression was made well after I submitted my application, I am really happy with the way it turned out) should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
