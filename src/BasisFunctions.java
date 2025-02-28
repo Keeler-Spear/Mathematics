@@ -18,7 +18,7 @@ public class BasisFunctions {
      * @param n The highest polynomial order in the basis function set.
      * @throws IllegalArgumentException If the set's order is negative.
      */
-    public static Function[] polynomials(int n) {
+    public static Function[] poly(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("The set's order must be at least zero!");
         }

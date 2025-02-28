@@ -86,11 +86,12 @@ public class Error {
 
     /**
      * Computes the mean squared error between two data sets, where the approximate data set will be created from a
-     * polynomial created by the weights provided.
+     * function created by the weights provided.
      *
      * @param x The x values of the exact data.
      * @param exact The true data set.
-     * @param w The weights of the polynomial from which an approximation will be created.
+     * @param w The weights of the function from which an approximation will be created.
+     * @param fnc The functions used to model the data.
      * @return The mean squared error between two data sets.
      * @throws IllegalArgumentException If the exact data set provided has more than one column.
      * @throws IllegalArgumentException If the data sets provided are not the same length.
@@ -104,7 +105,7 @@ public class Error {
             throw new IllegalArgumentException("The data sets must be the same length!");
         }
 
-        Matrix approx = LinReg.buildFunction(x, w, fnc);
+        Matrix approx = Regression.buildFunction(x, w, fnc);
 
         int n = exact.getRows();
         double sum = 0.0;
@@ -117,4 +118,138 @@ public class Error {
     }
 
     //ToDo: r^2 or coefficient of determination
+
+    /**
+     * Creates a confusion matrix based on the data sets provided.
+     *
+     * @param exact The true data set.
+     * @param approx The approximation of the true data set.
+     * @return The confusion matrix based on the data sets provided.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
+     */
+    public static Matrix confusionMatrix(int[] exact, int[] approx) {
+        if (exact.length != approx.length) {
+            throw new IllegalArgumentException("The data sets must be the same length!");
+        }
+
+        double[][] CM = new double[2][2];
+
+        for (int i = 0; i < exact.length; i++) {
+            if (exact[i] == 1 && approx[i] == 1) { //True positive
+                CM[0][0] += 1;
+            }
+            else if (exact[i] == 0 && approx[i] == 1) { //False positive
+                CM[0][1] += 1;
+            }
+            else if (exact[i] == 1 && approx[i] == 0) { //False negative
+                CM[1][0] += 1;
+            }
+            else if (exact[i] == 0 && approx[i] == 0) { //True negative
+                CM[1][1] += 1;
+            }
+        }
+
+        return new Matrix(CM);
+    }
+
+    /**
+     * Creates a confusion matrix based on the data sets provided.
+     *
+     * @param exact The true data set.
+     * @param approx The approximation of the true data set.
+     * @return The confusion matrix based on the data sets provided.
+     * @throws IllegalArgumentException If the data sets provided have more than one column.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
+     */
+    public static Matrix confusionMatrix(Matrix exact, Matrix approx) {
+        if (exact.getCols() != 1 ) {
+            throw new IllegalArgumentException("The exact data set must have exactly one column!");
+        }
+
+        if (exact.getRows() != approx.getRows()) {
+            throw new IllegalArgumentException("The data sets must be the same length!");
+        }
+
+        double[][] CM = new double[2][2];
+
+        for (int i = 0; i < exact.getRows(); i++) {
+            if ((int) exact.getValue(i, 1) == 1 && (int) approx.getValue(i, 1) == 1) { //True positive
+                CM[0][0] += 1;
+            }
+            else if ((int) exact.getValue(i, 1) == 0 && (int) approx.getValue(i, 1) == 1) { //False positive
+                CM[0][1] += 1;
+            }
+            else if ((int) exact.getValue(i, 1) == 1 && (int) approx.getValue(i, 1) == 0) { //False negative
+                CM[1][0] += 1;
+            }
+            else if ((int) exact.getValue(i, 1) == 0 && (int) approx.getValue(i, 1) == 0) { //True negative
+                CM[1][1] += 1;
+            }
+        }
+
+        return new Matrix(CM);
+    }
+
+    //Matrix x, Matrix exact, Matrix w, Function[] fnc
+
+    /**
+     * Creates a confusion matrix based from two data sets, where the approximate data set will be created from a
+     * function created by the weights provided.
+     *
+     * @param x The x values of the exact data.
+     * @param exact The true data set.
+     * @param w The weights of the function from which an approximation will be created.
+     * @param fnc The functions used to model the data.
+     * @return The confusion matrix based on the data sets provided.
+     * @throws IllegalArgumentException If the data sets provided have more than one column.
+     * @throws IllegalArgumentException If the data sets provided are not the same length.
+     */
+    public static Matrix confusionMatrix(Matrix x, Matrix exact, Matrix w, Function[] fnc) {
+        if (exact.getCols() != 1 ) {
+            throw new IllegalArgumentException("The exact data set must have exactly one column!");
+        }
+
+        if (exact.getRows() != x.getRows()) {
+            throw new IllegalArgumentException("The data sets must be the same length!");
+        }
+
+        Matrix approx = Regression.buildLogisticFunction(x, w, fnc);
+
+        double[][] CM = new double[2][2];
+
+        for (int i = 1; i <= exact.getRows(); i++) {
+            if (Math.round(exact.getValue(i, 1)) == 1 && Math.round(approx.getValue(i, 1)) == 1) { //True positive
+                CM[0][0] += 1;
+            }
+            else if (Math.round(exact.getValue(i, 1)) == 0 && Math.round(approx.getValue(i, 1)) == 1) { //False positive
+                CM[0][1] += 1;
+            }
+            else if (Math.round(exact.getValue(i, 1)) == 1 && Math.round(approx.getValue(i, 1)) == 0) { //False negative
+                CM[1][0] += 1;
+            }
+            else if (Math.round(exact.getValue(i, 1)) == 0 && Math.round(approx.getValue(i, 1)) == 0) { //True negative
+                CM[1][1] += 1;
+            }
+        }
+
+        return new Matrix(CM);
+    }
+
+    public static double accuracy(Matrix CM) {
+        return (CM.getValue(1, 1) + CM.getValue(2, 2)) / (CM.getValue(1, 1) + CM.getValue(1, 2) + CM.getValue(2, 1) + CM.getValue(2, 2));
+    }
+
+    public static double precision(Matrix CM) {
+        return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(2, 1));
+    }
+
+    public static double recall(Matrix CM) {
+        return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(1, 2));
+    }
+
+    public static double fMeasure(Matrix CM) {
+        double r = recall(CM);
+        double p = precision(CM);
+        return (2 * r * p) / (r + p);
+    }
 }
