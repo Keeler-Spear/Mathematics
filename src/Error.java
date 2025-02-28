@@ -235,21 +235,36 @@ public class Error {
         return new Matrix(CM);
     }
 
+    //The probability that an object is correctly classified.
     public static double accuracy(Matrix CM) {
         return (CM.getValue(1, 1) + CM.getValue(2, 2)) / (CM.getValue(1, 1) + CM.getValue(1, 2) + CM.getValue(2, 1) + CM.getValue(2, 2));
     }
 
+    //The probability that a predicted positive is actually a positive.
     public static double precision(Matrix CM) {
         return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(2, 1));
     }
 
+    //The probability that an actual positive was identified as such.
     public static double recall(Matrix CM) {
         return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(1, 2));
     }
 
+    //
     public static double fMeasure(Matrix CM) {
         double r = recall(CM);
         double p = precision(CM);
         return (2 * r * p) / (r + p);
+    }
+
+    //https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+    public static void printClassificationReport (Matrix CM) {
+        System.out.println("Classification Report\n" + "---------------------");
+        System.out.println("Confusion Matrix:");
+        System.out.println(CM);
+        System.out.println("Accuracy: " + accuracy(CM));
+        System.out.println("Precision: " + precision(CM));
+        System.out.println("Recall: " + recall(CM));
+
     }
 }

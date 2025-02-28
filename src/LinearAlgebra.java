@@ -298,6 +298,25 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates a matrix whose entries will be rounded to the nearest integer. This method was added after I submitted my
+     * application to your institution.
+     *
+     * @param matrixOrg The matrix that will be copied and rounded.
+     * @return A copy of matrix matrixOrg, rounded to the nearest integer.
+     */
+    public static Matrix roundMatrix(Matrix matrixOrg) {
+        Matrix A = new Matrix(matrixOrg.getRows(), matrixOrg.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                A.setValue(i, j, Math.round(matrixOrg.getValue(i, j)));
+            }
+        }
+
+        return A;
+    }
+
+    /**
      * Creates a matrix that is multiplied by the scalar provided.
      *
      * @param matrixOrg The matrix that will be copied and scaled.

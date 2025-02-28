@@ -183,7 +183,7 @@ public class Regression {
 
         int i = 0;
         while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            dw = findDw(x, y, w);
+            dw = findDw(x, y, LinearAlgebra.multiplyMatrices(x, w));
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;
         }
@@ -192,16 +192,16 @@ public class Regression {
     }
 
     //Calculates the derivative of the loss function analytically.
-    private static Matrix findDw(Matrix x, Matrix y, Matrix w) {
+    private static Matrix findDw(Matrix x, Matrix y, Matrix h) {
 
-        Matrix error = LinearAlgebra.addMatrices(LinearAlgebra.multiplyMatrices(x, w), y, -1.0); //h(w) - y = x * w - y
+        Matrix error = LinearAlgebra.addMatrices(h, y, -1.0); //h(w) - y
         Matrix dw = LinearAlgebra.multiplyMatrices(LinearAlgebra.transpose(x), error); //x * [h(w) - y]
         dw = LinearAlgebra.scaleMatrix(dw, 1.0 / x.getRows());
 
         return dw;
     }
 
-    //ToDo: Multi-class classification. I could decompose a multi-class classifier into multiple binary ones
+    //ToDo: Multi-class classification. I could decompose a multi-class classifier into multiple binary ones or use the other method discussed
     /**
      * Calculates the weights for a logistic regression model based on the data set provided and the basis functions provided
      * using gradient descent.
@@ -254,24 +254,16 @@ public class Regression {
 
         Matrix dw = LinearAlgebra.constantMatrix(w.getRows(), 1, 5.0);
 
+        //Gradient descent
         int i = 0;
         while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            dw = findLogDw(x, y, w);
+            //I am rounding h(w). Should I be doing this?
+            dw = findDw(x, y, LinearAlgebra.roundMatrix(LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid)));
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;
         }
 
         return w;
-    }
-
-    //Calculates the derivative of the loss function analytically.
-    private static Matrix findLogDw(Matrix x, Matrix y, Matrix w) {
-        Matrix sig = LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid);
-        Matrix error = LinearAlgebra.addMatrices(sig, y, -1.0); //h(w) - y = sigmoid(x * w) - y
-        Matrix dw = LinearAlgebra.multiplyMatrices(LinearAlgebra.transpose(x), error); //x * [h(w) - y]
-        dw = LinearAlgebra.scaleMatrix(dw, 1.0 / x.getRows());
-
-        return dw;
     }
 
     //Standardizes x data to have a mean of zero and standard deviation of 0.
