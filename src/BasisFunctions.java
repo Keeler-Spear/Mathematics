@@ -79,10 +79,10 @@ public class BasisFunctions {
         for (int i = 1; i <= n; i++) {
             int I = i;
             if (i % 2 == 1) { //i is odd
-                fncs[i] = x -> Math.sin((Math.PI / l) * ((I + 1.0) / 2.0) * x);
+                fncs[i] = x -> Math.cos((Math.PI / l) * ((I + 1.0) / 2.0) * x);;
             }
             else { //i is even
-                fncs[i] = x -> Math.cos((Math.PI / l) * (I / 2.0) * x);
+                fncs[i] = x -> Math.sin((Math.PI / l) * (I / 2.0) * x);
             }
         }
 

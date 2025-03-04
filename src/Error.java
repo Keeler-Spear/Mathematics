@@ -12,6 +12,13 @@ import java.util.function.Function;
 
 public class Error {
 
+    final static int decimalPrecision = 2;
+
+    private static double round(double val) {
+        val = Math.round(val * Math.pow(10, decimalPrecision));
+        return val * Math.pow(10, -decimalPrecision);
+    }
+
     /**
      * Computes the absolute error between two values.
      *
@@ -121,6 +128,9 @@ public class Error {
 
     /**
      * Creates a confusion matrix based on the data sets provided.
+     * <p>
+     *     DOES NOT WORK FOR MULTI-CLASSIFICATION!
+     * </p>
      *
      * @param exact The true data set.
      * @param approx The approximation of the true data set.
@@ -170,22 +180,15 @@ public class Error {
             throw new IllegalArgumentException("The data sets must be the same length!");
         }
 
-        double[][] CM = new double[2][2];
+        int numClass = Regression.countClasses(exact);
 
-        for (int i = 0; i < exact.getRows(); i++) {
-            if ((int) exact.getValue(i, 1) == 1 && (int) approx.getValue(i, 1) == 1) { //True positive
-                CM[0][0] += 1;
-            }
-            else if ((int) exact.getValue(i, 1) == 0 && (int) approx.getValue(i, 1) == 1) { //False positive
-                CM[0][1] += 1;
-            }
-            else if ((int) exact.getValue(i, 1) == 1 && (int) approx.getValue(i, 1) == 0) { //False negative
-                CM[1][0] += 1;
-            }
-            else if ((int) exact.getValue(i, 1) == 0 && (int) approx.getValue(i, 1) == 0) { //True negative
-                CM[1][1] += 1;
-            }
+        double[][] CM = new double[numClass][numClass];
+
+        //ASSUMES THE CLASSES ARE IN NUMERICAL ORDER, WITH 0 AS AN INCLUDED VALUE
+        for (int i = 1; i <= exact.getRows(); i++) {
+            CM[(int) Math.round(exact.getValue(i, 1))][(int) Math.round(approx.getValue(i, 1))] += 1;
         }
+
 
         return new Matrix(CM);
     }
@@ -215,24 +218,7 @@ public class Error {
 
         Matrix approx = Regression.buildLogisticFunction(x, w, fnc);
 
-        double[][] CM = new double[2][2];
-
-        for (int i = 1; i <= exact.getRows(); i++) {
-            if (Math.round(exact.getValue(i, 1)) == 1 && Math.round(approx.getValue(i, 1)) == 1) { //True positive
-                CM[0][0] += 1;
-            }
-            else if (Math.round(exact.getValue(i, 1)) == 0 && Math.round(approx.getValue(i, 1)) == 1) { //False positive
-                CM[0][1] += 1;
-            }
-            else if (Math.round(exact.getValue(i, 1)) == 1 && Math.round(approx.getValue(i, 1)) == 0) { //False negative
-                CM[1][0] += 1;
-            }
-            else if (Math.round(exact.getValue(i, 1)) == 0 && Math.round(approx.getValue(i, 1)) == 0) { //True negative
-                CM[1][1] += 1;
-            }
-        }
-
-        return new Matrix(CM);
+        return confusionMatrix(exact, approx);
     }
 
     //The probability that an object is correctly classified.
@@ -242,12 +228,12 @@ public class Error {
 
     //The probability that a predicted positive is actually a positive.
     public static double precision(Matrix CM) {
-        return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(2, 1));
+        return CM.getValue(2, 2) / (CM.getValue(1, 2) + CM.getValue(2, 2));
     }
 
     //The probability that an actual positive was identified as such.
     public static double recall(Matrix CM) {
-        return CM.getValue(1, 1) / (CM.getValue(1, 1) + CM.getValue(1, 2));
+        return CM.getValue(2, 2) / (CM.getValue(2, 1) + CM.getValue(2, 2));
     }
 
     //

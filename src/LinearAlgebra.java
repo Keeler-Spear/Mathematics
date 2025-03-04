@@ -317,6 +317,27 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates a matrix whose entries will be rounded to the nth decimal place. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param matrixOrg The matrix that will be copied and rounded.
+     * @return A copy of matrix matrixOrg, rounded.
+     */
+    public static Matrix roundMatrix(Matrix matrixOrg, int n) {
+        Matrix A = new Matrix(matrixOrg.getRows(), matrixOrg.getCols());
+        double val;
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                val = Math.round(matrixOrg.getValue(i, j) * Math.pow(10, n));
+                A.setValue(i, j, val * Math.pow(10, -n));
+            }
+        }
+
+        return A;
+    }
+
+    /**
      * Creates a matrix that is multiplied by the scalar provided.
      *
      * @param matrixOrg The matrix that will be copied and scaled.

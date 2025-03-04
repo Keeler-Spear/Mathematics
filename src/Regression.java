@@ -1,3 +1,5 @@
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -15,6 +17,7 @@ public class Regression {
     final static int MAX_ITERATIONS = 500000;
     final static double LR = 0.001;
     final static double RAND_BOUND = 10;
+    final static int MAX_CLASSES = 100;
     public static Function<Double, Double> sigmoid = (z) -> 1 / (1 + Math.exp(-z));
 
     /**
@@ -257,13 +260,29 @@ public class Regression {
         //Gradient descent
         int i = 0;
         while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            //I am rounding h(w). Should I be doing this?
-            dw = findDw(x, y, LinearAlgebra.roundMatrix(LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid)));
+            //Should I be rounding h(w)?
+            dw = findDw(x, y, LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid));
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;
         }
 
         return w;
+    }
+
+    //Counts the number of classes.
+    protected static int countClasses(Matrix y) {
+        int n = 0;
+        y = LinearAlgebra.roundMatrix(y);
+        Set<Integer> classes = new HashSet<>();
+
+        for (int i = 1; i <= y.getRows(); i++) {
+            if (!classes.contains((int) y.getValue(i, 1))) {
+                classes.add((int) y.getValue(i, 1));
+                n++;
+            }
+        }
+
+        return n;
     }
 
     //Standardizes x data to have a mean of zero and standard deviation of 0.
@@ -338,6 +357,7 @@ public class Regression {
 
         Matrix y = buildFunction(x, w, fncsOrg);
 
+        //Only works for binary classification
         return LinearAlgebra.applyFunction(y, sigmoid);
     }
 }
