@@ -259,8 +259,6 @@ public class Regression {
         while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
             //Should I be rounding h(w)? CHECK WITH DIFFERENT DATA SETS
             dw = findDw(x, y, LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid));
-//            dw = findDw(x, y, LinearAlgebra.roundMatrix(LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid)));
-
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;
         }
