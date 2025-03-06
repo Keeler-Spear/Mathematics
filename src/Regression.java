@@ -1,5 +1,3 @@
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -13,6 +11,9 @@ import java.util.function.Function;
  * @since 1.0
  */
 public class Regression {
+
+    //ToDo: Feature Scaling
+
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 500000;
     final static double LR = 0.001;
@@ -91,11 +92,7 @@ public class Regression {
 
         Function[] fncs = BasisFunctions.poly(n);
 
-        Matrix xS = standardizeData(x);
-
-        Matrix weights = linearReg(xS, y, w, a, fncs);
-
-        return deStandardizeWeights(weights, x, fncs);
+        return linearReg(x, y, w, a, fncs);
     }
 
     /**
@@ -260,8 +257,10 @@ public class Regression {
         //Gradient descent
         int i = 0;
         while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            //Should I be rounding h(w)?
+            //Should I be rounding h(w)? CHECK WITH DIFFERENT DATA SETS
             dw = findDw(x, y, LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid));
+//            dw = findDw(x, y, LinearAlgebra.roundMatrix(LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid)));
+
             w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
             i++;
         }
@@ -269,44 +268,6 @@ public class Regression {
         return w;
     }
 
-    //Counts the number of classes.
-    protected static int countClasses(Matrix y) {
-        int n = 0;
-        y = LinearAlgebra.roundMatrix(y);
-        Set<Integer> classes = new HashSet<>();
-
-        for (int i = 1; i <= y.getRows(); i++) {
-            if (!classes.contains((int) y.getValue(i, 1))) {
-                classes.add((int) y.getValue(i, 1));
-                n++;
-            }
-        }
-
-        return n;
-    }
-
-    //Standardizes x data to have a mean of zero and standard deviation of 0.
-    public static Matrix standardizeData(Matrix x) {
-        Matrix sX = new Matrix(Stat.standardize(x.getCol(1)));
-
-        for (int i = 2; i <= x.getCols(); i++) {
-            sX.addColRight(Stat.standardize(x.getCol(i)));
-        }
-
-        return sX;
-    }
-
-    //Works for one peram.
-    public static Matrix deStandardizeWeights(Matrix w, Matrix x, Function[] fncs) {
-        double stdX = Stat.stDev(x);
-        Matrix nW = new Matrix(w.getRows(), w.getCols());
-
-        for (int i = 0; i < w.getRows(); i++) {
-            nW.setValue(i + 1, 1, w.getValue(i + 1, 1 ) / (double) fncs[i].apply(stdX));
-        }
-
-        return nW;
-    }
 
     /**
      * Calculates the values for a function at the provided points using the functions and weights provided.
