@@ -206,12 +206,12 @@ public class LinearAlgebra {
      * @param fnc The function that will be applied to the matrix.
      * @return A matrix whose values are those of the input matrix's after a function has been applied to them.
      */
-    public static Matrix applyFunction(Matrix matrixOrg, Function fnc) {
+    public static Matrix applyFunction(Matrix matrixOrg, Function<Double, Double> fnc) {
         Matrix A = new Matrix(matrixOrg.getRows(), matrixOrg.getCols());
 
         for (int i = 1; i <= A.getRows(); i++) {
             for(int j = 1; j <= A.getCols(); j++) {
-                A.setValue(i, j, (Double) fnc.apply(matrixOrg.getValue(i, j)));
+                A.setValue(i, j, fnc.apply(matrixOrg.getValue(i, j)));
             }
         }
 

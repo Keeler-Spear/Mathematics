@@ -35,8 +35,8 @@ public class Calculus {
      * @param x0 The point the derivative will be evaluated at.
      * @return The function's derivative evaluation at the provided point.
      */
-    public static double differentiate(Function function, double x0) {
-        return centeredDifference((Double) function.apply(x0 + hDEF), (Double) function.apply(x0 - hDEF), hDEF);
+    public static double differentiate(Function<Double, Double> function, double x0) {
+        return centeredDifference(function.apply(x0 + hDEF), function.apply(x0 - hDEF), hDEF);
     }
 
     /**
@@ -107,11 +107,11 @@ public class Calculus {
      * @param b The upper bound of integration.
      * @return The function's integral over the provided interval.
      */
-    public static double integrate(Function function, double a, double b) {
+    public static double integrate(Function<Double, Double> function, double a, double b) {
         double area = 0.0;
         double h = (b - a) / (BASE_NUM_INTERVALS);
         for (double i = a; i < b; i += 2 * h) {
-            area += simpsQuad((Double) function.apply(i), (Double) function.apply(i + h), (Double) function.apply(i + 2 * h), i, i + 2 * h);
+            area += simpsQuad(function.apply(i), function.apply(i + h), function.apply(i + 2 * h), i, i + 2 * h);
         }
         return area;
     }
