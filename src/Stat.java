@@ -85,6 +85,36 @@ public class Stat {
     }
 
     /**
+     * Calculates the median of the provided data set.
+     *
+     * @param data The data set to be used.
+     * @return The median of the provided data set.
+     */
+    public static double median(double[] data) {
+        if (data.length % 2 == 0) {
+            return (data[data.length / 2] + data[data.length / 2 - 1]) / 2;
+        }
+        else {
+            return data[ + data.length / 2];
+        }
+    }
+
+    /**
+     * Calculates the median of the provided data set.
+     *
+     * @param data The data set to be used.
+     * @return The median of the provided data set.
+     * @throws IllegalArgumentException If the data does not have exact one column.
+     */
+    public static double median(Matrix data) {
+        if (data.getCols() != 1) {
+            throw new IllegalArgumentException("The data must only have one column!");
+        }
+
+        return median(data.getCol(1));
+    }
+
+    /**
      * Standardizes the data set.
      *
      * @param data The data set to be used.
