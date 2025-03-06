@@ -1,7 +1,7 @@
 import java.util.function.Function;
 
 /**
- * A static class that performs the operations essential to machine learning.
+ * A static class that performs regression operations via numerical methods.
  * <p>
  *     This class and all functions within were added after I submitted my application to your institution.
  * </p>
@@ -269,6 +269,7 @@ public class Regression {
     }
 
 
+    //ToDo: Have it return a Function
     /**
      * Calculates the values for a function at the provided points using the functions and weights provided.
      *
