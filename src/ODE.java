@@ -1,4 +1,5 @@
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A static class that solves ordinary differential equations via numerical methods.
@@ -12,6 +13,32 @@ import java.util.function.BiFunction;
  */
 public class ODE {
 
+    private static final double BASE_VAL = 9998; //The present value matrices are filled with
+    private static final int MAX_SIZE = 10000;
+
+    public static Matrix solveIVP(BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h) {
+        return pc(ode, t0, y0, t, h);
+    }
+
+    public static Matrix solveIVP(TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double yp0, double t, double h) {
+        TriFunction<Double, Double, Double, Double>[] odes = decomposeODE(ode);
+        return eulerSystem(odes[0], odes[1], t0, y0, yp0, t, h);
+    }
+
+    //Linear shooting method
+    public static Matrix solveBVP (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t1, double y1, double h) {
+        Matrix yp = solveIVP(ode, t0, y0, 0, t1, h);
+
+        TriFunction<Double, Double, Double, Double> homoODE = (x, y, yprime) -> ode.apply(x, y, yprime) - ode.apply(x, 0.0, 0.0);
+
+        Matrix yc = solveIVP(homoODE, t0, 0, 1, t1, h);
+
+        double ypb  = yp.getValue(yp.getRows(), 1);
+        double ycb  = yc.getValue(yc.getRows(), 1);
+
+        return LinearAlgebra.addMatrices(yp, yc, (y1 - ypb) / ycb);
+    }
+
     /**
      * Numerically solves the first-order ordinary differential equation over the provided interval using Euler's method
      * with O(h) global error, where h is the step size of t.
@@ -24,19 +51,19 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix euler (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h) {
-        double[] y = new double[generateYLength(t0, t, h)];
-        y[0] = y0;
-        int i = 1;
+        Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
+        y.setValue(1, 1, y0);
+        int i = 2;
 
         while (t0 < t) {
             y0 = y0 + h * ode.apply(t0, y0);
 
-            y[i] = y0;
+            y.setValue(i, 1, y0);
             t0 += h;
             i++;
         }
 
-        return new Matrix(y);
+        return trim(y);
     }
 
     /**
@@ -51,13 +78,13 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix rk4 (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h) {
-        double[] y = new double[generateYLength(t0, t, h)];
-        y[0] = y0;
+        Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
+        y.setValue(1, 1, y0);
         double k1;
         double k2;
         double k3;
         double k4;
-        int i = 1;
+        int i = 2;
 
         while (t0 < t) {
             k1 = ode.apply(t0, y0);
@@ -67,12 +94,12 @@ public class ODE {
 
             y0 = y0 + h * ((1.0 / 6) * k1 + (1.0 / 3) * k2 + (1.0 / 3) * k3 + (1.0 / 6) * k4);
 
-            y[i] = y0;
+            y.setValue(i, 1, y0);
             t0 += h;
             i++;
         }
 
-        return new Matrix(y);
+        return trim(y);
     }
 
     /**
@@ -88,13 +115,13 @@ public class ODE {
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
-    public static Matrix eulerSystem (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double[] y0, double t, double h) {
-        double[][] yVals = new double[2][generateYLength(t0, t, h) + 1];
-        yVals[0][0] = y0[0];
-        yVals[1][0] = y0[1];
-        Matrix yi = new Matrix(y0);
-        Matrix yP = new Matrix(y0);
-        int i = 1;
+    public static Matrix eulerSystem (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
+        Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 2, BASE_VAL);
+        yVals.setValue(1, 1, y0);
+        yVals.setValue(1, 2, yp0);
+        Matrix yi = new Matrix(new double[] {y0, yp0});
+        Matrix yP = new Matrix(new double[] {y0, yp0});
+        int i = 2;
 
         while (t0 < t) {
             //Finding y'(t)
@@ -103,13 +130,13 @@ public class ODE {
             //finding y(t)
             yi = LinearAlgebra.addMatrices(yi, yP, h);
 
-            yVals[0][i] = yi.getValue(1,1);
-            yVals[1][i] = yi.getValue(2,1);
+            yVals.setValue(i, 1, yi.getValue(1,1));
+            yVals.setValue(i, 2, yi.getValue(2,1));
             t0 += h;
             i++;
         }
 
-        return new Matrix (yVals);
+        return trim(yVals);
     }
 
     /**
@@ -125,12 +152,12 @@ public class ODE {
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
-    public static Matrix rk4System (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double[] y0, double t, double h) {
-        double[][] yVals = new double[2][generateYLength(t0, t, h) + 1];
-        Matrix yi = new Matrix(y0);
-        yVals[0][0] = y0[0];
-        yVals[1][0] = y0[1];
-        int i = 1;
+    public static Matrix rk4System (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
+        Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 2, BASE_VAL);
+        Matrix yi = new Matrix(new double[] {y0, yp0});
+        yVals.setValue(1, 1, y0);
+        yVals.setValue(1, 2, yp0);
+        int i = 2;
         Matrix k1 = new Matrix(2, 1);
         Matrix k2 = new Matrix(2, 1);
         Matrix k3 = new Matrix(2, 1);
@@ -163,13 +190,13 @@ public class ODE {
 
             yi = LinearAlgebra.addMatrices(yi, wkSum, h);
 
-            yVals[0][i] = yi.getValue(1,1);
-            yVals[1][i] = yi.getValue(2,1);
+            yVals.setValue(i, 1, yi.getValue(1,1));
+            yVals.setValue(i, 2, yi.getValue(2,1));
             t0 += h;
             i++;
         }
 
-        return new Matrix(yVals);
+        return trim(yVals);
     }
 
     /**
@@ -212,11 +239,11 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix adamsBash (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
-        double[] y = new double[generateYLength(t0, t, h)];
+        Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
         double[] f = {0, fm3, fm2, fm1}; //I could use a stack instead but I have concerns regarding its efficiency.
 
-        y[0] = ode.apply(t0, y0);
-        int i = 1;
+        y.setValue(1, 1, ode.apply(t0, y0));
+        int i = 2;
 
         while (t0 < t) {
             //Shifting f array to the left
@@ -227,12 +254,12 @@ public class ODE {
 
             y0 = y0 + (h / 24.0) * (55 * f[3] - 59 * f[2] + 37 * f[1] - 9 * f[0]);
 
-            y[i] = y0;
+            y.setValue(i, 1, y0);
             t0 += h;
             i++;
         }
 
-        return new Matrix(y);
+        return trim(y);
     }
 
     /**
@@ -273,12 +300,12 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix pc (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
-        double[] y = new double[generateYLength(t0, t, h)];
+        Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
         double[] f = {fm3, fm2, fm1, ode.apply(t0, y0)}; //I could use a stack instead but I have concerns regarding its efficiency.
 
-        y[0] = y0;
+        y.setValue(1, 1, y0);
         double ym1;
-        int i = 1;
+        int i = 2;
 
         while (t0 < t) {
             f[3] = ode.apply(t0, y0);
@@ -295,11 +322,20 @@ public class ODE {
 
             y0 = ym1 + (h / 24.0) * (9 * f[3] + 19 * f[2] - 5 * f[1] + f[0]);
 
-            y[i] = y0;
+            y.setValue(i, 1, y0);
             i++;
         }
 
-        return new Matrix(y);
+        return trim(y);
+    }
+
+    //Input should be y'' = a(x)y' + b(x)y + c. Params: (x, y0, y1);
+    public static TriFunction[] decomposeODE(TriFunction<Double, Double, Double, Double> ode) {
+        TriFunction<Double, Double, Double, Double>[] fncs = new TriFunction[2];
+        fncs[0] = (x, y, yp) -> yp;
+        fncs[1] = ode;
+
+        return fncs;
     }
 
     //Makes a new array [A B] and removes the duplicate left-bound of A
@@ -326,5 +362,23 @@ public class ODE {
         }
 
         return n;
+    }
+
+    //"Trims" the matrix of the rows not being used
+    private static Matrix trim(Matrix X) {
+        int numRows = 0;
+        while (X.getValue(numRows + 1, 1) != BASE_VAL) {
+            numRows += 1;
+        }
+
+        Matrix A = new Matrix (numRows, X.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                A.setValue(i, j, X.getValue(i, j));
+            }
+        }
+
+        return A;
     }
 }
