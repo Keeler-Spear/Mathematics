@@ -16,22 +16,56 @@ public class ODE {
     private static final double BASE_VAL = 9998; //The present value matrices are filled with
     private static final int MAX_SIZE = 10000;
 
+    /**
+     * Numerically solves the first-order ordinary differential equation over the provided interval using the
+     * Runge–Kutta 4 and Predictor-Corrector 4 methods with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The first-order ordinary differential equation f(t, y) to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
     public static Matrix solveIVP(BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h) {
         return pc(ode, t0, y0, t, h);
     }
 
+    /**
+     * Numerically solves the second-order ordinary differential equation with the IVP provided over the provided interval using the
+     * Runge–Kutta 4 method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The second-order ordinary differential equation f(t, y, y') to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param yp0 The y' value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
     public static Matrix solveIVP(TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double yp0, double t, double h) {
         TriFunction<Double, Double, Double, Double>[] odes = decomposeODE(ode);
-        return eulerSystem(odes[0], odes[1], t0, y0, yp0, t, h);
+        return rk4System(odes[0], odes[1], t0, y0, yp0, t, h);
     }
 
-    //Linear shooting method
-    public static Matrix solveBVP (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t1, double y1, double h) {
-        Matrix yp = solveIVP(ode, t0, y0, 0, t1, h);
+    /**
+     * Numerically solves the second-order ordinary differential equation with the BVP provided over the provided interval using the
+     * Runge–Kutta 4 Linear Shooting method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The second-order ordinary differential equation f(t, y, y') to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param y1 The y value corresponding to t.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static Matrix solveBVP (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t, double y1, double h) {
+        Matrix yp = solveIVP(ode, t0, y0, 0, t, h);
 
         TriFunction<Double, Double, Double, Double> homoODE = (x, y, yprime) -> ode.apply(x, y, yprime) - ode.apply(x, 0.0, 0.0);
 
-        Matrix yc = solveIVP(homoODE, t0, 0, 1, t1, h);
+        Matrix yc = solveIVP(homoODE, t0, 0, 1, t, h);
 
         double ypb  = yp.getValue(yp.getRows(), 1);
         double ycb  = yc.getValue(yc.getRows(), 1);
@@ -110,7 +144,8 @@ public class ODE {
      * @param ode1 The first first-order ordinary differential equation.
      * @param ode2 The second first-order ordinary differential equation.
      * @param t0 The left endpoint of the interval.
-     * @param y0 The y values corresponding to t0.
+     * @param y0 The y value corresponding to t0.
+     * @param yp0 The y' value corresponding to t0.
      * @param t The right endpoint of the interval.
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
@@ -147,7 +182,8 @@ public class ODE {
      * @param ode1 The first first-order ordinary differential equation.
      * @param ode2 The second first-order ordinary differential equation.
      * @param t0 The left endpoint of the interval.
-     * @param y0 The y values corresponding to t0.
+     * @param y0 The y value corresponding to t0.
+     * @param yp0 The y' value corresponding to t0.
      * @param t The right endpoint of the interval.
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
@@ -264,7 +300,7 @@ public class ODE {
 
     /**
      * Numerically solves the first-order ordinary differential equation over the provided interval using the
-     * Runge–Kutta 4 and Predictor-Corrctor 4 methods with O(h^4) global error, where h is the step size of t.
+     * Runge–Kutta 4 and Predictor-Corrector 4 methods with O(h^4) global error, where h is the step size of t.
      *
      * @param ode The first-order ordinary differential equation f(t, y) to be solved.
      * @param t0 The left endpoint of the interval.
@@ -330,7 +366,7 @@ public class ODE {
     }
 
     //Input should be y'' = a(x)y' + b(x)y + c. Params: (x, y0, y1);
-    public static TriFunction[] decomposeODE(TriFunction<Double, Double, Double, Double> ode) {
+    private static TriFunction[] decomposeODE(TriFunction<Double, Double, Double, Double> ode) {
         TriFunction<Double, Double, Double, Double>[] fncs = new TriFunction[2];
         fncs[0] = (x, y, yp) -> yp;
         fncs[1] = ode;
