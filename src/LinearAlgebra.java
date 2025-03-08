@@ -321,6 +321,7 @@ public class LinearAlgebra {
      * my application to your institution.
      *
      * @param matrixOrg The matrix that will be copied and rounded.
+     * @param n The number of decimal places the matrix's values will be rounded to.
      * @return A copy of matrix matrixOrg, rounded.
      */
     public static Matrix roundMatrix(Matrix matrixOrg, int n) {
@@ -335,6 +336,70 @@ public class LinearAlgebra {
         }
 
         return A;
+    }
+
+    /**
+     * Returns the sum of values in the row indicated. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param A The matrix that will be used.
+     * @param row The row index containing the row that will be summed.
+     * @return The sum of values in the row indicated.
+     * @throws IllegalArgumentException If the row index does not exist.
+     */
+    public static double rowSum(Matrix A, int row) {
+        if (row < 1 || row > A.getRows()) {
+            throw new IllegalArgumentException("This row index does not exist!");
+        }
+
+        double sum = 0;
+
+        for (int i = 1; i <= A.getCols(); i++) {
+            sum += A.getValue(row, i);
+        }
+
+        return sum;
+    }
+
+    /**
+     * Returns the sum of values in the column indicated. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param A The matrix that will be used.
+     * @param col The column index containing the column that will be summed.
+     * @return The sum of values in the column indicated.
+     * @throws IllegalArgumentException If the column index does not exist.
+     */
+    public static double colSum(Matrix A, int col) {
+        if (col < 1 || col > A.getCols()) {
+            throw new IllegalArgumentException("This column index does not exist!");
+        }
+
+        double sum = 0;
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            sum += A.getValue(i, col);
+        }
+
+        return sum;
+    }
+
+    /**
+     * Returns the sum of values in the matrix provided. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param A The matrix that will be used.
+     * @return The sum of values in the matrix provided.
+     */
+    public static double matrixSum(Matrix A) {
+
+        double sum = 0;
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            sum += rowSum(A, i);
+        }
+
+        return sum;
     }
 
     /**

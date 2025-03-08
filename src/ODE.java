@@ -61,16 +61,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix solveBVP (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t, double y1, double h) {
-        Matrix yp = solveIVP(ode, t0, y0, 0, t, h);
-
-        TriFunction<Double, Double, Double, Double> homoODE = (x, y, yprime) -> ode.apply(x, y, yprime) - ode.apply(x, 0.0, 0.0);
-
-        Matrix yc = solveIVP(homoODE, t0, 0, 1, t, h);
-
-        double ypb  = yp.getValue(yp.getRows(), 1);
-        double ycb  = yc.getValue(yc.getRows(), 1);
-
-        return LinearAlgebra.addMatrices(yp, yc, (y1 - ypb) / ycb);
+        return linearShooting(ode, t0, y0, t, y1, h);
     }
 
     /**
@@ -157,7 +148,7 @@ public class ODE {
         Matrix yi = new Matrix(new double[] {y0, yp0});
         Matrix yP = new Matrix(new double[] {y0, yp0});
         int i = 2;
-
+        t0 += h;
         while (t0 < t) {
             //Finding y'(t)
             yP.setValue(1, 1, ode1.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
@@ -194,6 +185,7 @@ public class ODE {
         yVals.setValue(1, 1, y0);
         yVals.setValue(1, 2, yp0);
         int i = 2;
+        t0 += h;
         Matrix k1 = new Matrix(2, 1);
         Matrix k2 = new Matrix(2, 1);
         Matrix k3 = new Matrix(2, 1);
@@ -365,6 +357,77 @@ public class ODE {
         return trim(y);
     }
 
+    /**
+     * Numerically solves the second-order ordinary differential equation with the BVP provided over the provided interval using the
+     * Runge–Kutta 4 Linear Shooting method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The second-order ordinary differential equation f(t, y, y') to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param y1 The y value corresponding to t.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static Matrix linearShooting (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t, double y1, double h) {
+        Matrix yp = solveIVP(ode, t0, y0, 0, t, h);
+
+        TriFunction<Double, Double, Double, Double> homoODE = (x, y, yprime) -> ode.apply(x, y, yprime) - ode.apply(x, 0.0, 0.0);
+
+        Matrix yc = solveIVP(homoODE, t0, 0, 1, t, h);
+
+        double ypb  = yp.getValue(yp.getRows(), 1);
+        double ycb  = yc.getValue(yc.getRows(), 1);
+
+        return LinearAlgebra.addMatrices(yp, yc, (y1 - ypb) / ycb);
+    }
+
+    /**
+     * Numerically solves the second-order ordinary differential equation with the BVP provided over the provided interval using the
+     * Finite Differences method with O(h^q) global error, where h is the step size of t.
+     *
+     * @param ode The second-order ordinary differential equation f(t, y, y') to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param y1 The y value corresponding to t.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static Matrix finiteDifferences (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t, double y1, double h) {
+        int n = generateYLength(t0, t, h);
+        Matrix A = new Matrix(n, n);
+        Matrix b = new Matrix(n, 1);
+        double ti = t0;
+
+        Function<Double, Double> rx = (x) -> ode.apply(x, 0.0, 0.0);
+        Function<Double, Double> fx = (x) -> 2.0 + h * h * (ode.apply(x, 1.0, 0.0) - rx.apply(x)); //g(x)
+        Function<Double, Double> gx = (x) -> (h / 2.0) * (ode.apply(x, 0.0, 1.0) - rx.apply(x)); //h(x)
+        Function<Double, Double> bx = (x) -> h * h * rx.apply(x) / fx.apply(x);
+
+        //Building A
+        A.setValue(1, 1, 1.0);
+        for (int i = 2; i < n; i++) {
+            ti += h;
+            A.setValue(i, i - 1, -(gx.apply(ti) + 1) / fx.apply(ti));
+            A.setValue(i, i, 1.0);
+            A.setValue(i, i + 1, (gx.apply(ti) - 1) / fx.apply(ti));
+        }
+
+        A.setValue(n, n, 1.0);
+
+        //Building B
+        ti = t0;
+        b.setValue(1, 1, y0);
+        for (int i = 2; i < n; i++) {
+            ti += h;
+            b.setValue(i, 1, -bx.apply(ti));
+        }
+        b.setValue(n, 1, y1);
+
+        return LinearAlgebra.RREFSolve(LinearAlgebra.augmentMatrix(A, b));
+    }
+
     //Input should be y'' = a(x)y' + b(x)y + c. Params: (x, y0, y1);
     private static TriFunction[] decomposeODE(TriFunction<Double, Double, Double, Double> ode) {
         TriFunction<Double, Double, Double, Double>[] fncs = new TriFunction[2];
@@ -391,11 +454,7 @@ public class ODE {
 
     //I need this because the array generation is janky
     private static int generateYLength(double t0, double t, double h) {
-        int n = 1 + (int) ((t - t0)/h);
-
-        if (h > 0.5) {
-            n += 1;
-        }
+        int n = 1 + (int) ((t - t0) / h);
 
         return n;
     }

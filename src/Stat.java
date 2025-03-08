@@ -41,6 +41,20 @@ public class Stat {
         return mean(data.getCol(1));
     }
 
+    public static double weightedMean(double[] data, double[] support) {
+        double mean = 0.0;
+        double supSum = 0;
+        for (int i = 0; i < support.length; i++) {
+            supSum += support[i];
+        }
+
+        for (int i = 0; i < data.length; i++) {
+            mean += data[i] * support[i] / supSum;
+        }
+
+        return mean;
+    }
+
     /**
      * Calculates the sample standard deviation of the provided data set.
      *
