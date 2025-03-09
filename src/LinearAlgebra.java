@@ -385,6 +385,28 @@ public class LinearAlgebra {
     }
 
     /**
+     * Returns the sum of values on the matrix's diagonal. This method was added after I submitted
+     * my application to your institution.
+     *
+     * @param A The matrix that will be used.
+     * @return The sum of values on the matrix's diagonal.
+     * @throws IllegalArgumentException If the matrix is not square
+     */
+    public static double diagSum(Matrix A) {
+        if (!A.isSquare()) {
+            throw new IllegalArgumentException("This matrix is not square!");
+        }
+
+        double sum = 0;
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            sum += A.getValue(i, i);
+        }
+
+        return sum;
+    }
+
+    /**
      * Returns the sum of values in the matrix provided. This method was added after I submitted
      * my application to your institution.
      *

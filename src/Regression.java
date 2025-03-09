@@ -225,7 +225,7 @@ public class Regression {
      * @throws IllegalArgumentException If the data does not have one sample for each label.
      * @throws IllegalArgumentException If there is not one weight for each parameter.
      */
-    public static Matrix logisticReg(Matrix xOrg, Matrix y, Matrix w, double a, Function[] fncs) {
+    public static Matrix logisticReg(Matrix xOrg, Matrix y, Matrix w, double a, Function[] fncs, boolean rounding) {
         if (xOrg.getRows() != y.getRows()) {
             throw new IllegalArgumentException("The data does not have one sample for each label!");
         }
@@ -256,11 +256,20 @@ public class Regression {
 
         //Gradient descent
         int i = 0;
-        while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
-            //Should I be rounding h(w)? CHECK WITH DIFFERENT DATA SETS
-            dw = findDw(x, y, LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid));
-            w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
-            i++;
+        if (!rounding) {
+            while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
+                dw = findDw(x, y, LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid));
+                w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
+                i++;
+            }
+        }
+
+        else {
+            while (LinearAlgebra.l1Norm(dw) > TOL && i < MAX_ITERATIONS) {
+                dw = findDw(x, y, LinearAlgebra.roundMatrix(LinearAlgebra.applyFunction(LinearAlgebra.multiplyMatrices(x, w), sigmoid)));
+                w = LinearAlgebra.addMatrices(w, dw, -a); //x = x - a * dw
+                i++;
+            }
         }
 
         return w;
