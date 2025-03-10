@@ -49,8 +49,6 @@ public class Interpolation {
             fnc = LinearAlgebra.addMatrices(fnc, tempM, y.getValue(i, 1));
         }
 
-        //Can get coefficients by inputting certain x
-
         return fnc;
     }
 
