@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class ODE {
 
     private static final double BASE_VAL = 9998; //The present value matrices are filled with
-    private static final int MAX_SIZE = 10000;
+    private static final int MAX_ITERATIONS = 10000;
 
     /**
      * Numerically solves the first-order ordinary differential equation over the provided interval using the
@@ -45,7 +45,7 @@ public class ODE {
      */
     public static Matrix solveIVP(TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double yp0, double t, double h) {
         TriFunction<Double, Double, Double, Double>[] odes = decomposeODE(ode);
-        return rk4System(odes[0], odes[1], t0, y0, yp0, t, h);
+        return rk4System2(odes[0], odes[1], t0, y0, yp0, t, h);
     }
 
     /**
@@ -179,7 +179,7 @@ public class ODE {
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
-    public static Matrix rk4System (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
+    public static Matrix rk4System2 (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
         Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 2, BASE_VAL);
         Matrix yi = new Matrix(new double[] {y0, yp0});
         yVals.setValue(1, 1, y0);
@@ -222,6 +222,101 @@ public class ODE {
             yVals.setValue(i, 2, yi.getValue(2,1));
             t0 += h;
             i++;
+        }
+
+        return trim(yVals);
+    }
+
+    /**
+     * Numerically solves the system of first-order ordinary differential equations over the provided interval using the
+     * Runge–Kutta 4 method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param system The system of first-order ordinary differential equations.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y values corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     * @throws IllegalArgumentException If each ODE does not have an initial condition.
+     */
+    public static Matrix rk4System (NFunction<Double>[] system, double t0, double[] y0, double t, double h) {
+        if (system.length != y0.length) {
+            throw new IllegalArgumentException("Each ODE must have an initial condition!");
+        }
+
+        Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, system.length, BASE_VAL);
+
+        Matrix yi = new Matrix(y0.length, 1);
+        for (int i = 0; i < y0.length; i++) {
+            yi.setValue(i + 1, 1, y0[i]);
+            yVals.setValue(1, i + 1, y0[i]);
+        }
+
+        int j = 2;
+        t0 += h;
+
+        Matrix k1 = new Matrix(system.length, 1);
+        Matrix k2 = new Matrix(system.length, 1);
+        Matrix k3 = new Matrix(system.length, 1);
+        Matrix k4 = new Matrix(system.length, 1);
+        Matrix kTemp; //Used as temporary storage for wi + h/2 ki
+        Matrix wkSum;
+        Double[] perams = new Double[y0.length + 1]; //Parameter values to pass to the ODE
+
+        while (t0 < t) {
+            //Finding the k's
+            //k1:
+            for (int i = 1; i <= system.length; i++) {
+                perams[0] = t0;
+                for (int k = 1; k <= y0.length; k++) {
+                    perams[k] = yi.getValue(k, 1);
+                }
+                k1.setValue(i, 1, system[i - 1].apply(perams));
+            }
+            kTemp = LinearAlgebra.addMatrices(yi, k1, 0.5 * h);
+
+            //k2:
+            for (int i = 1; i <= system.length; i++) {
+                perams[0] = t0 + 0.5 * h;
+                for (int k = 1; k <= y0.length; k++) {
+                    perams[k] = kTemp.getValue(k, 1);
+                }
+                k2.setValue(i, 1, system[i - 1].apply(perams));
+            }
+            kTemp = LinearAlgebra.addMatrices(yi, k2, 0.5 * h);
+
+            //k3:
+            for (int i = 1; i <= system.length; i++) {
+                perams[0] = t0 + 0.5 * h;
+                for (int k = 1; k <= y0.length; k++) {
+                    perams[k] = kTemp.getValue(k, 1);
+                }
+                k3.setValue(i, 1, system[i - 1].apply(perams));
+            }
+            kTemp = LinearAlgebra.addMatrices(yi, k3, h);
+
+            //k4:
+            for (int i = 1; i <= system.length; i++) {
+                perams[0] = t0 + h;
+                for (int k = 1; k <= y0.length; k++) {
+                    perams[k] = kTemp.getValue(k, 1);
+                }
+                k4.setValue(i, 1, system[i - 1].apply(perams));
+            }
+
+            //Multiplying k's by their respective weights and adding them
+            wkSum = LinearAlgebra.addMatrices(LinearAlgebra.scaleMatrix(k1, 1.0/6), k2, 1.0/3);
+            wkSum = LinearAlgebra.addMatrices(wkSum, k3, 1.0/3);
+            wkSum = LinearAlgebra.addMatrices(wkSum, k4, 1.0/6);
+
+            yi = LinearAlgebra.addMatrices(yi, wkSum, h);
+
+            for (int i = 1; i <= system.length; i++) {
+                yVals.setValue(j, i, yi.getValue(i,1));
+            }
+
+            t0 += h;
+            j++;
         }
 
         return trim(yVals);
