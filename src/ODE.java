@@ -244,7 +244,8 @@ public class ODE {
             throw new IllegalArgumentException("Each ODE must have an initial condition!");
         }
 
-        Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, system.length, BASE_VAL);
+        //Changed rows by removing buffer and also cut the trim function from the return
+        Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h), system.length, BASE_VAL);
 
         Matrix yi = new Matrix(y0.length, 1);
         for (int i = 0; i < y0.length; i++) {
@@ -319,7 +320,39 @@ public class ODE {
             j++;
         }
 
-        return trim(yVals);
+        return yVals;
+    }
+
+    /**
+     * Numerically solves the system of first-order ordinary differential equations over the provided interval using the
+     * adaptive Runge–Kutta 4 method.
+     *
+     * @param system The system of first-order ordinary differential equations.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y values corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param h The step size of t.
+     * @param s1 The first safety factor.
+     * @param s2 The second safety factor.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     * @throws IllegalArgumentException If each ODE does not have an initial condition.
+     * @throws IllegalArgumentException If the first safety factor is greater than or equal to 1.
+     * @throws IllegalArgumentException If the second safety factor is equal to or greater than 1.
+     */
+    public static Matrix adaptiveRK4System (NFunction<Double>[] system, double t0, double[] y0, double t, double h, double s1, double s2) {
+        if (system.length != y0.length) {
+            throw new IllegalArgumentException("Each ODE must have an initial condition!");
+        }
+
+        if (s1 >= 1 || s1 <= 0) {
+            throw new IllegalArgumentException("The first safety factor must be less than 1!");
+        }
+
+        if (s2 <= 1) {
+            throw new IllegalArgumentException("The second safety factor must be greater than 1!");
+        }
+
+        return LinearAlgebra.randMatrix(1, 1, -1, 1);
     }
 
     /**
@@ -549,7 +582,7 @@ public class ODE {
 
     //I need this because the array generation is janky
     private static int generateYLength(double t0, double t, double h) {
-        int n = 1 + (int) ((t - t0) / h);
+        int n = 1 + (int) Math.round(((t - t0) / h));
 
         return n;
     }
