@@ -425,7 +425,7 @@ public class Matrix {
      */
     public void addColRight(double[] vals) {
         if (vals.length != rows) {
-            throw new IllegalArgumentException("This column is not the same size as the others in this matrix!");
+            throw new IllegalArgumentException("This column has " + vals.length + " rows but the matrix has " + rows + " rows!");
         }
 
         cols++;

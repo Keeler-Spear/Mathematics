@@ -450,6 +450,24 @@ public class LinearAlgebra {
     }
 
     /**
+     * Creates a matrix whose entries are the absolute of the one provided.
+     *
+     * @param matrixOrg The matrix that will be copied and made absolute.
+     * @return A copy of matrix matrixOrg, whose values are turned absolute.
+     */
+    public static Matrix abs(Matrix matrixOrg) {
+        Matrix A = new Matrix(matrixOrg.getRows(), matrixOrg.getCols());
+
+        for (int i = 1; i <= matrixOrg.getRows(); i++) {
+            for (int j = 1; j <= matrixOrg.getCols(); j++) {
+                A.setValue(i, j, Math.abs(matrixOrg.getValue(i, j)));
+            }
+        }
+
+        return A;
+    }
+
+    /**
      * Adds one matrix to another matrix that is multiplied by a scalar. Matrix sum = matrix A + scalar * matrix B.
      *
      * @param A The matrix that will be added to the other.
@@ -554,7 +572,7 @@ public class LinearAlgebra {
      */
     public static Matrix vectorFromRow (Matrix A, int row) {
         if (A.getRows() < row || row <= 0) {
-            throw new IllegalArgumentException("The row index is of bounds");
+            throw new IllegalArgumentException("Row " + row + " does not exist in a matrix of " + A.getRows() + " row(s)!");
         }
 
         Matrix vector = new Matrix(A.getCols(), 1);
