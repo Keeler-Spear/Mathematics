@@ -52,4 +52,28 @@ public class Interpolation {
         return fnc;
     }
 
+    /**
+     * Interpolates n data points with a polynomial of degree n - 1.
+     *
+     * @param x The set of x-values.
+     * @param y The set of y values.
+     * @param xVal The value for the polynomial interpolate to be evaluated at.
+     * @return The matrix containing the evaluation of the polynomial interpolate at each x in xVals.
+     * @throws IllegalArgumentException If the data sets do not have exactly one column each.
+     * @throws IllegalArgumentException If the data sets are not the same length.
+     */
+    public static double polynomial (Matrix x, Matrix y, double xVal) {
+        if (x.getCols() != 1 || y.getCols() != 1) {
+            throw new IllegalArgumentException("Each data set must only have one column!");
+        }
+
+        if (x.getRows() != y.getRows()) {
+            throw new IllegalArgumentException("Each data set must have the same length!");
+        }
+
+        Matrix val = polynomial(x, y, new Matrix(new double[] {xVal}));
+
+        return val.getValue(1, 1);
+    }
+
 }
