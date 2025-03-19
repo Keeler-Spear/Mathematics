@@ -1235,6 +1235,47 @@ public class LinearAlgebra {
     }
 
     /**
+     * Calculates the cross product of two vectors.
+     *
+     * @param a The first vector.
+     * @param b The second vector.
+     * @return The cross product of the two provided vectors.
+     * @throws IllegalArgumentException If the provided matrices are not vectors.
+     * @throws IllegalArgumentException If the provided matrices do not have the same number of rows.
+     * @throws IllegalArgumentException If the provided matrices have less than two rows.
+     */
+    public static Matrix crossProduct (Matrix a, Matrix b) {
+        if (a.getCols() != 1 || b.getCols() != 1) {
+            throw new IllegalArgumentException("The matrices must be vectors!");
+        }
+
+        if (a.getRows() != b.getRows()) {
+            throw new IllegalArgumentException("The vectors do not have the same number of rows!");
+        }
+
+        if (a.getRows() < 2) {
+            throw new IllegalArgumentException("The provided object must be vectors, not scalars!");
+        }
+
+        if (a.getRows() == 2) { //Converting the 2d vectors into 3d ones
+            a.addRowBottom(new double[] {0.0});
+            b.addRowBottom(new double[] {0.0});
+        }
+
+        Matrix cp = new Matrix(a.getRows(), 1);
+        Matrix detMatrix = transpose(a);
+        detMatrix.addRowBottom(b.getMatrix());
+        double det;
+
+        for (int i = 1; i <= a.getRows(); i++) {
+            det = Math.pow(-1.0, i + 1) * determinant(createSubMatrix(detMatrix, i));
+            cp.setValue(i, 1, det);
+        }
+
+        return cp;
+    }
+
+    /**
      * Calculates the projection of y onto u. (Y dot U / U dot U) * U
      *
      * @param y The vector to be projected.

@@ -1,3 +1,5 @@
+import com.sun.security.jgss.GSSUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.BiFunction;
@@ -374,8 +376,11 @@ public class ODE {
         double halfH;
         double oldH;
         double errorRatio = 0.0;
+        int j = 0;
 
-        while (t0 < t) {
+        while (t0 < t && j < MAX_ITERATIONS) {
+
+
             for (int i = 0; i < 100; i++) {
                 //Two small steps
                 tSave = t0;
@@ -430,13 +435,11 @@ public class ODE {
             }
 
             for (int i = 1; i <= ySmallMat.getCols(); i++) {
-                y0[i - 1] = ySmallMat.getValue(2, i);
+                y0[i - 1] = ySmallMat.getValue(ySmallMat.getRows(), i);
             }
-
-//            System.out.println(h);
-
             t0 += h;
             time.add(t0);
+            j++;
         }
 
         //Since the time variable does not increase linearly, time will be returned along with the state vector
