@@ -779,18 +779,6 @@ public class LinearAlgebra {
         return A;
     }
 
-    /**
-     * Right "divides" a provided matrix by another. Matrix quotient = matrix A * matrix B^(-1)
-     *
-     * @param A The matrix that will be "divided" by the other on the right.
-     * @param B The matrix that will be "divided" by the other on the left.
-     * @return The matrix that is the quotient of matrix A being right divided by matrix B.
-     * @throws IllegalArgumentException If matrix A does not have the same number of columns as matrix B has rows.
-     */
-    public static Matrix divideMatrices(Matrix A, Matrix B) {
-        return LinearAlgebra.multiplyMatrices(A, matrixInverse(B));
-    }
-
     //Pivots a matrix using scaled partial pivoting and bubble sort.
     private static void partialPivoting(Matrix A, int row) {
         for ( int i = row - 1; i < A.getRows(); i++ ) {
@@ -1102,6 +1090,17 @@ public class LinearAlgebra {
         }
 
         return A;
+    }
+
+    /**
+     * Right "divides" a provided matrix by another. Matrix quotient = matrix A * matrix B^(-1)
+     *
+     * @param A The matrix that will be "divided" by the other on the right.
+     * @param B The matrix that will be "divided" by the other on the left.
+     * @return The matrix that is the quotient of matrix A being right divided by matrix B.
+     */
+    public static Matrix divideMatrices(Matrix A, Matrix B) {
+        return LinearAlgebra.multiplyMatrices(A, matrixInverse(B));
     }
 
     /**
