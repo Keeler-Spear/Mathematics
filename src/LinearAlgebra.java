@@ -550,7 +550,31 @@ public class LinearAlgebra {
     }
 
     /**
-     * Right multiplies a provided matrix by another. Matrix product = matrix A  * matrix B.
+     * Divides the values of two matrices together. Matrix quotient(i, j) = A(i, j) / B(i, j)
+     *
+     * @param A The first matrix.
+     * @param B The second matrix.
+     * @return A matrix whose values are the quotient of those in the matrices provided.
+     * @throws IllegalArgumentException If the provided matrices are not the same size.
+     */
+    public static Matrix divideValues(Matrix A, Matrix B) {
+        if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must be of the same size!");
+        }
+
+        Matrix quot = new Matrix (A.getRows(), A.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                quot.setValue(i, j, A.getValue(i, j) / B.getValue(i, j));
+            }
+        }
+
+        return quot;
+    }
+
+    /**
+     * Right multiplies a provided matrix by another. Matrix product = matrix A * matrix B.
      *
      * @param A The matrix that will be multiplied by the other on the right.
      * @param B The matrix that will be multiplied by the other on the left.
@@ -753,6 +777,18 @@ public class LinearAlgebra {
         }
 
         return A;
+    }
+
+    /**
+     * Right "divides" a provided matrix by another. Matrix quotient = matrix A * matrix B^(-1)
+     *
+     * @param A The matrix that will be "divided" by the other on the right.
+     * @param B The matrix that will be "divided" by the other on the left.
+     * @return The matrix that is the quotient of matrix A being right divided by matrix B.
+     * @throws IllegalArgumentException If matrix A does not have the same number of columns as matrix B has rows.
+     */
+    public static Matrix divideMatrices(Matrix A, Matrix B) {
+        return LinearAlgebra.multiplyMatrices(A, matrixInverse(B));
     }
 
     //Pivots a matrix using scaled partial pivoting and bubble sort.
