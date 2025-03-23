@@ -12,7 +12,7 @@ import java.util.function.Function;
  */
 public class Regression {
 
-    //ToDo: Feature Scaling
+    //ToDo: Add and interaction term when constructing a matrix (ex: x0, x0^2, x1, x1^2, x0 * x1)
 
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 500000;
