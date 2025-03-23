@@ -528,7 +528,7 @@ public class LinearAlgebra {
      * Multiplies the values of two matrices together. This method was added after I submitted my application to your
      * institution.
      *
-     * @param A The first.
+     * @param A The first matrix.
      * @param B The second matrix.
      * @return A matrix whose values are the product of those in the matrices provided.
      * @throws IllegalArgumentException If the provided matrices are not the same size.
@@ -576,6 +576,68 @@ public class LinearAlgebra {
         }
 
         return C;
+    }
+
+
+    /**
+     * Multiplies a matrix by itself n times.
+     *
+     * @param A The matrix that will be multiplied n times.
+     * @param n The number of time a matrix will be multiplied by itself.
+     * @return The matrix that is the product of matrix A being multiplied by itself n times.
+     * @throws IllegalArgumentException If the matrix provided is not square.
+     * @throws IllegalArgumentException If the power is negative.
+     */
+    public static Matrix matrixPow(Matrix A, int n) {
+        if (!A.isSquare()) {
+            throw new IllegalArgumentException("The matrix provided must be square!");
+        }
+
+        if (n < 0) {
+            throw new IllegalArgumentException("The power must be non-negative!");
+        }
+
+        if (n == 0) {
+            return identityMatrix(A.getRows());
+        }
+
+        if (n == 1) {
+            return A;
+        }
+
+        else {
+            Matrix product = multiplyMatrices(A, A);
+
+            for (int i = 2; i < n; i++) {
+                product = multiplyMatrices(product, A);
+            }
+
+            return product;
+        }
+    }
+
+    /**
+     * Multiplies the values of the matrix by themselves n times.
+     *
+     * @param A The matrix whose values will be multiplied by themselves n times.
+     * @param n The number of times the matrix's values will be multiplied by themselves.
+     * @return A matrix whose values have been multiplied by themselves n times.
+     * @throws IllegalArgumentException If the power is negative.
+     */
+    public static Matrix valuesPow(Matrix A, int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("The power must be non-negative!");
+        }
+
+        Matrix B = new Matrix(A.getRows(), A.getCols());
+
+        for (int i = 1; i <= A.getRows(); i++) {
+            for (int j = 1; j <= A.getCols(); j++) {
+                B.setValue(i, j, Math.pow(A.getValue(i, j), n));
+            }
+        }
+
+        return B;
     }
 
     /**
