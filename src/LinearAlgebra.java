@@ -493,6 +493,38 @@ public class LinearAlgebra {
     }
 
     /**
+     * Adds one matrix to another matrix. Matrix sum = matrix A + matrix B.
+     *
+     * @param A The matrix that will be added to the other.
+     * @param B The matrix that will be added to the other.
+     * @return The matrix that is the sum of matrix A and matrix B.
+     * @throws IllegalArgumentException If the matrices A and B do not have the same dimensions.
+     */
+    public static Matrix addMatrices(Matrix A, Matrix B) {
+        if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must be of the same size!");
+        }
+
+        return addMatrices(A, B, 1.0);
+    }
+
+    /**
+     * Subtracts one matrix to another matrix. Matrix difference = matrix A - matrix B.
+     *
+     * @param A The matrix that will be subtracted from.
+     * @param B The matrix that will be subtracted from the other.
+     * @return The matrix that is the difference of matrix A and matrix B.
+     * @throws IllegalArgumentException If the matrices A and B do not have the same dimensions.
+     */
+    public static Matrix subtractMatrices(Matrix A, Matrix B) {
+        if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
+            throw new IllegalArgumentException("The matrices must be of the same size!");
+        }
+
+        return addMatrices(A, B, -1.0);
+    }
+
+    /**
      * Multiplies the values of two matrices together. This method was added after I submitted my application to your
      * institution.
      *
