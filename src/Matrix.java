@@ -800,7 +800,7 @@ public class Matrix {
                 if (j == 0) {
                     s += "[";
                 }
-                s += String.format("%.4f", matrix[i][j]);
+                s += String.format("%.10f", matrix[i][j]);
                 if (j == cols - 1 && i != rows - 1) {
                     s += "], ";
                 }
