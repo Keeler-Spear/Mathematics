@@ -164,4 +164,114 @@ public class Calculus {
     private static double simpsQuad(double f0, double f1, double f2, double a, double b) {
         return ((b - a) / 6) * (f0 + 4 * f1 + f2);
     }
+
+    /**
+     * Numerically calculates a function's integral over the provided interval with Monte Carlo Integration.
+     *
+     * @param function The function that will be integrated.
+     * @param a The lower bound of integration.
+     * @param b The upper bound of integration.
+     * @param c The minimum of the function.
+     * @param d The maximum of the function.
+     * @param n The number of points to be generated.
+     * @return The function's integral over the provided interval.
+     */
+    public static double mcIntegrate(Function<Double, Double> function, double a, double b, double c, double d, int n) {
+        int numInteriorPoints = 0;
+
+        Matrix randX = LinearAlgebra.randMatrix(n, 1, a, b);
+        Matrix randY = LinearAlgebra.randMatrix(n, 1, c, d);
+        for (int i = 1; i <= n; i++) {
+            if (randY.getValue(i, 1) <= function.apply(randX.getValue(i, 1))) {
+                numInteriorPoints++;
+            }
+        }
+
+        return (d - c) * (b - a) * numInteriorPoints / (double) n;
+    }
+
+    /**
+     * Numerically calculates a function's integral over the provided interval with Monte Carlo Integration.
+     *
+     * @param function The function that will be integrated.
+     * @param lowerBounds An array of the lower bounds of integration and the function.
+     * @param upperBounds An array of the upper bounds of integration and the function.
+     * @param n The number of points to be generated.
+     * @return The function's integral over the provided interval.
+     * @throws IllegalArgumentException If each lower bound does not have an upper bound.
+     */
+    public static double mcIntegrate(NFunction<Double> function, double[] lowerBounds, double[] upperBounds, int n) {
+        if (lowerBounds.length != upperBounds.length) {
+            throw new IllegalArgumentException("Each lower bound must have an upper bound!");
+        }
+
+        int numInteriorPoints = 0;
+        Double[] currentPoints = new Double[lowerBounds.length];
+
+        Matrix[] rands = new Matrix[lowerBounds.length];
+        for (int i = 0; i < lowerBounds.length; i++) {
+            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
+        }
+
+        for (int i = 1; i <= n; i++) {
+            //Building an array of function inputs
+            for (int j = 0; j < currentPoints.length; j++) {
+                currentPoints[j] = rands[j].getValue(i, 1);
+            }
+
+            if (currentPoints[currentPoints.length - 1] <= function.apply(currentPoints)) {
+                numInteriorPoints++;
+            }
+        }
+
+        double box = 1.0;
+        for (int i = 0; i < lowerBounds.length; i++) {
+            box *= (upperBounds[i] - lowerBounds[i]);
+        }
+
+        return box * numInteriorPoints / (double) n;
+    }
+
+    /**
+     * Numerically calculates a shape's integral over the provided interval with Monte Carlo Integration.
+     *
+     * @param function The function that will be integrated. In declaration, the function should be equated to zero.
+     *                 For example, x^2 + y^2 = 1 -> x^2 + y^2 -1 = 0.
+     * @param lowerBounds An array of the lower bounds of integration and the function.
+     * @param upperBounds An array of the upper bounds of integration and the function.
+     * @param n The number of points to be generated.
+     * @return The function's integral over the provided interval.
+     * @throws IllegalArgumentException If each lower bound does not have an upper bound.
+     */
+    public static double mcIntegrateGeometry(NFunction<Double> function, double[] lowerBounds, double[] upperBounds, int n) {
+        if (lowerBounds.length != upperBounds.length) {
+            throw new IllegalArgumentException("Each lower bound must have an upper bound!");
+        }
+
+        int numInteriorPoints = 0;
+        Double[] currentPoints = new Double[lowerBounds.length];
+
+        Matrix[] rands = new Matrix[lowerBounds.length];
+        for (int i = 0; i < lowerBounds.length; i++) {
+            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
+        }
+
+        for (int i = 1; i <= n; i++) {
+            //Building an array of function inputs
+            for (int j = 0; j < currentPoints.length; j++) {
+                currentPoints[j] = rands[j].getValue(i, 1);
+            }
+
+            if (function.apply(currentPoints) <= 0) {
+                numInteriorPoints++;
+            }
+        }
+
+        double box = 1.0;
+        for (int i = 0; i < lowerBounds.length; i++) {
+            box *= (upperBounds[i] - lowerBounds[i]);
+        }
+
+        return box * numInteriorPoints / (double) n;
+    }
 }
