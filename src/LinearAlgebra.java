@@ -124,7 +124,7 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
         }
         if (min >= max) {
-            throw new IllegalArgumentException("The minimum value must be less than the maximum value!");
+            throw new IllegalArgumentException("The minimum value must be less than the maximum value! Min = " + min + ", Max = " + max + "!");
         }
 
         Random rand = new Random();
