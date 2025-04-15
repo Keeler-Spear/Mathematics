@@ -51,7 +51,3 @@
   # Favorite Algorithm
 
   Of the algorithms I have coded, gradient descent (linearReg in Regression.java) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under BasisFunctions.
-
-# Note for College/University Admissions Officers and Faculty
-
-  Of the files in this repository, only Calculus.java, LinearAlgebra.java, Matrix.java, UI.java, and Regression.java (although Regression was made well after I submitted my application, I am really happy with the way it turned out) should be reviewed; the remaining files are unfinished. I have implemented methods and classes after your institution's application deadline which is stated in the relevant documentation: review these at your discretion.
