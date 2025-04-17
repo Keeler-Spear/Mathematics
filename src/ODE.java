@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+//ToDo: A major issue is using doubles within the while loops.
+
 /**
  * A static class that solves ordinary differential equations via numerical methods.
  * <p>
@@ -86,7 +88,7 @@ public class ODE {
         y.setValue(1, 1, y0);
         int i = 2;
 
-        while (t0 < t) {
+        while (t0 <= t) {
             y0 = y0 + h * ode.apply(t0, y0);
 
             y.setValue(i, 1, y0);
@@ -117,7 +119,7 @@ public class ODE {
         double k4;
         int i = 2;
 
-        while (t0 < t) {
+        while (t0 <= t) {
             k1 = ode.apply(t0, y0);
             k2 = ode.apply(t0 + 0.5 * h, y0 + 0.5 * h * k1);
             k3 = ode.apply(t0 + 0.5 * h, y0 + 0.5 * h * k2);
@@ -155,7 +157,7 @@ public class ODE {
         Matrix yP = new Matrix(new double[] {y0, yp0});
         int i = 2;
         t0 += h;
-        while (t0 < t) {
+        while (t0 <= t) {
             //Finding y'(t)
             yP.setValue(1, 1, ode1.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
             yP.setValue(2, 1, ode2.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
@@ -186,6 +188,7 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix rk4System2 (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
+        //ToDo: Issue: Length is 1 shorter than it should be
         Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 2, BASE_VAL);
         Matrix yi = new Matrix(new double[] {y0, yp0});
         yVals.setValue(1, 1, y0);
@@ -199,7 +202,7 @@ public class ODE {
         Matrix kTemp; //Used as temporary storage for wi + h/2 ki
         Matrix wkSum;
 
-        while (t0 < t) {
+        while (t0 <= t + (h / 10)) {
             //Finding the k's
             //k1:
             k1.setValue(1, 1, ode1.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
@@ -270,7 +273,7 @@ public class ODE {
         Matrix wkSum;
         Double[] perams = new Double[y0.length + 1]; //Parameter values to pass to the ODE
 
-        while (t0 < t) {
+        while (t0 <= t + (h / 10)) {
             //Finding the k's
             //k1:
             for (int i = 1; i <= system.length; i++) {
@@ -378,7 +381,7 @@ public class ODE {
         double errorRatio = 0.0;
         int j = 0;
 
-        while (t0 < t && j < MAX_ITERATIONS) {
+        while (t0 <= t + (h / 10) && j < MAX_ITERATIONS) {
 
 
             for (int i = 0; i < 100; i++) {
@@ -501,7 +504,7 @@ public class ODE {
         y.setValue(1, 1, ode.apply(t0, y0));
         int i = 2;
 
-        while (t0 < t) {
+        while (t0 <= t + (h / 10)) {
             //Shifting f array to the left
             for (int j = 0; j < f.length - 1; j++) {
                 f[j] = f[j + 1];
@@ -563,7 +566,7 @@ public class ODE {
         double ym1;
         int i = 2;
 
-        while (t0 < t) {
+        while (t0 <= t + (h / 10)) {
             f[3] = ode.apply(t0, y0);
 
             ym1 = y0;
@@ -606,7 +609,6 @@ public class ODE {
 
         double ypb  = yp.getValue(yp.getRows(), 1);
         double ycb  = yc.getValue(yc.getRows(), 1);
-
         return LinearAlgebra.addMatrices(yp, yc, (y1 - ypb) / ycb);
     }
 
