@@ -188,7 +188,7 @@ public class LinearAlgebra {
             throw new IllegalArgumentException("The minimum value must be less than the maximum value!");
         }
 
-        double[] vals = new double[1 + (int) ((max - min) / inc)];
+        double[] vals = new double[1 + (int) Math.round((max - min) / inc)];
 
         for (int i = 0; i < vals.length; i++) {
             vals[i] = min;
@@ -478,7 +478,7 @@ public class LinearAlgebra {
      */
     public static Matrix addMatrices(Matrix A, Matrix B, double scalar) {
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException("The matrices must be of the same size!");
+            throw new IllegalArgumentException("The matrices must be of the same size! The first is " + A.getRows() + "x" + A.getCols() + " and the second is " + B.getRows() + "x" + B.getCols() + "!");
         }
 
         Matrix sum = new Matrix (A.getRows(), A.getCols());
@@ -502,7 +502,7 @@ public class LinearAlgebra {
      */
     public static Matrix addMatrices(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException("The matrices must be of the same size!");
+            throw new IllegalArgumentException("The matrices must be of the same size! The first is " + A.getRows() + "x" + A.getCols() + " and the second is " + B.getRows() + "x" + B.getCols() + "!");
         }
 
         return addMatrices(A, B, 1.0);
@@ -518,7 +518,7 @@ public class LinearAlgebra {
      */
     public static Matrix subtractMatrices(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException("The matrices must be of the same size!");
+            throw new IllegalArgumentException("The matrices must be of the same size! The first is " + A.getRows() + "x" + A.getCols() + " and the second is " + B.getRows() + "x" + B.getCols() + "!");
         }
 
         return addMatrices(A, B, -1.0);
@@ -535,7 +535,7 @@ public class LinearAlgebra {
      */
     public static Matrix multiplyValues(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException("The matrices must be of the same size!");
+            throw new IllegalArgumentException("The matrices must be of the same size! The first is " + A.getRows() + "x" + A.getCols() + " and the second is " + B.getRows() + "x" + B.getCols() + "!");
         }
 
         Matrix mul = new Matrix (A.getRows(), A.getCols());
@@ -559,7 +559,7 @@ public class LinearAlgebra {
      */
     public static Matrix divideValues(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException("The matrices must be of the same size!");
+            throw new IllegalArgumentException("The matrices must be of the same size! The first is " + A.getRows() + "x" + A.getCols() + " and the second is " + B.getRows() + "x" + B.getCols() + "!");
         }
 
         Matrix quot = new Matrix (A.getRows(), A.getCols());
@@ -795,7 +795,7 @@ public class LinearAlgebra {
         double pivot = A.getValue(row, 1);
         int i = 2;
 
-        while (pivot == 0 && i <= A.getCols()) {
+        while (isZero(pivot) && i <= A.getCols()) {
             pivot = A.getValue(row, i);
             i++;
         }
