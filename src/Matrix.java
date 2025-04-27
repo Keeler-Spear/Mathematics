@@ -821,6 +821,38 @@ public class Matrix {
     }
 
     /**
+     * Returns the matrix as a String in MATLAB formating. This method was added after I submitted my application to your
+     * institution.
+     *
+     * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
+     * to four decimal places.
+     */
+    public String mlString() {
+        String s = "";
+        if (rows > 1) {
+            s += "[";
+        }
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                s += String.format("%.10f", matrix[i][j]);
+                if (j == cols - 1 && i != rows - 1) {
+                    s += "; ";
+                }
+                else {
+                    s += " ";
+                }
+            }
+        }
+
+        if (rows > 1) {
+            s += "]";
+        }
+
+        return s;
+    }
+
+    /**
      * Returns the matrix as a String.
      *
      * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
