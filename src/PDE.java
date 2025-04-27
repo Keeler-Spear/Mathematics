@@ -74,7 +74,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the transport equation.
      */
     public static Matrix solveTrEqFTFS(double c, Function<Double, Double> f, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / h;
@@ -110,7 +110,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the transport equation.
      */
     public static Matrix solveTrEqFTBS(double c, Function<Double, Double> f, Function<Double, Double> g, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / h;
@@ -146,7 +146,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the transport equation.
      */
     public static Matrix solveTrEqFTCS(double c, Function<Double, Double> f, Function<Double, Double> g, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / (2 * h);
@@ -185,7 +185,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the wave equation.
      */
     public static Matrix solveHeEqFTCS(double c, Function<Double, Double> f, Function<Double, Double> g0, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / (h * h);
@@ -214,7 +214,7 @@ public class PDE {
     }
 
     /**
-     * Solves the heat equation (ut = cuxx) with Dirichlet-Neumann boundary conditions numerically with BTCS.\
+     * Solves the heat equation (ut = cuxx) with Dirichlet-Neumann boundary conditions numerically with BTCS.
      * This method assumes the Neumann BC is homogeneous.
      *
      * @param c The coefficient of the uxx term.
@@ -226,7 +226,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the wave equation.
      */
     public static Matrix solveHeEqBTCS(double c, Function<Double, Double> f, Function<Double, Double> g0, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / (h * h);
@@ -267,7 +267,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the wave equation.
      */
     public static Matrix solveHeEqCN(double c, Function<Double, Double> f, Function<Double, Double> g0, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / (h * h);
@@ -319,7 +319,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the wave equation.
      */
     public static Matrix solveHeEqLF(double c, Function<Double, Double> f, Function<Double, Double> g0, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k / (h * h);
@@ -364,7 +364,7 @@ public class PDE {
     }
 
     /**
-     * Solves the heat wave (utt = cuxx) with Dirichlet boundary conditions  numerically with CTCS.
+     * Solves the wave equation (utt = cuxx) with Dirichlet boundary conditions numerically with CTCS.
      *
      * @param c The coefficient of the uxx term.
      * @param f The initial condition for the PDE.
@@ -377,7 +377,7 @@ public class PDE {
      * @param tMax The ending temporal position.
      * @param h The space step to be used.
      * @param k The time step to be used.
-     * @return A function that is a solution to the transport equation.
+     * @return A numerical solution to the wave equation.
      */
     public static Matrix solveWaEqCTCS(double c, Function<Double, Double> f, Function<Double, Double> ft, Function<Double, Double> g0, Function<Double, Double> gl, double x0, double xMax, double t0, double tMax, double h, double k) {
         double lambda = c * k * k / (h * h);
@@ -418,6 +418,62 @@ public class PDE {
         Matrix temp;
 
         return iterateSystem(A, v0, v1, g0, gl, k, iterations);
+    }
+
+    /**
+     * Solves Laplace's Equation (uxx + uyy = 0) with Dirichlet boundary conditions numerically with CTCS.
+     *
+     * @param f1 The initial condition u(x, y0) for the PDE.
+     * @param f2 The initial condition u(x, yMax) for the PDE.
+     * @param g1 The initial condition u(x0, y) for the PDE.
+     * @param g2 The initial condition u(xMax, y) for the PDE.
+     * @param x0 The starting x spacial position.
+     * @param xMax The ending x spacial position.
+     * @param y0 The starting y spacial position.
+     * @param yMax The ending y spacial position.
+     * @param h The x space step to be used.
+     * @param k The y space step to be used.
+     * @return A numerical solution to Laplace's Equation.
+     */
+    public static Matrix solveLaEq(Function<Double, Double> f1, Function<Double, Double> f2, Function<Double, Double> g1, Function<Double, Double> g2, double x0, double xMax, double y0, double yMax, double h, double k) {
+//        double lambda = (k * k) / (h * h);
+//        int iterations = (int) Math.round((tMax - t0) / k);
+//        double vmn;
+//        double vmnm1;
+//        double vmnp1;
+//
+//        //Building v0
+//        Matrix v0 = LinearAlgebra.linSpace(x0, xMax, h);
+//        int size = v0.getRows();
+//        v0 = LinearAlgebra.applyFunction(v0, f);
+//
+//        //Building V1 via a Taylor Series expansion
+//        Matrix v1 = new Matrix(v0.getRows(), 1);
+//        v1.setValue(1, 1, g0.apply(k));
+//        v1.setValue(v1.getRows(), 1, gl.apply(k));
+//        for (int i = 2; i < v1.getRows(); i++) {
+//            vmnm1 = v0.getValue(i - 1, 1);
+//            vmn = v0.getValue(i, 1);
+//            vmnp1 = v0.getValue(i + 1, 1);
+//            v1.setValue(i, 1, (1 - lambda) * vmn + 0.5 * lambda * (vmnp1+ vmnm1) + k * ft.apply(h * i));
+//        }
+//
+//        //Building A
+//        Matrix A = new Matrix(size, size);
+//        for (int i = 2; i < size; i++) {
+//            A.setValue(i, i, 2 * (1 - lambda));
+//            A.setValue(i, i - 1, lambda);
+//            A.setValue(i, i + 1, lambda);
+//        }
+//        A.setValue(1, 1, 1);
+//        A.setValue(size, size, 1);
+//
+//        //Iterating the system in time
+//        Matrix sol = LinearAlgebra.transpose(v0);
+//        sol.addRowBottom(v1.getMatrix());
+//        Matrix temp;
+//
+//        return iterateSystem(A, v0, v1, g0, gl, k, iterations);
     }
 
 
