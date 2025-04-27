@@ -784,6 +784,7 @@ public class LinearAlgebra {
      */
     public static Matrix RREFSolve(Matrix matrixOrg) {
         Matrix A = gaussianElimination(matrixOrg);
+        partialPivoting(A, 1);
         A = backSolve(A);
 
         Matrix x = vectorFromColumn(A, A.getCols());
