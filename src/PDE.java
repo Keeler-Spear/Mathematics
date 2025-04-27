@@ -12,6 +12,18 @@ import java.util.function.Function;
  * @since 1.0
  */
 public class PDE {
+    private static final double TOL = 0.00000001;
+    private static final double BASE_VAL = 9999; //The present value matrices are filled with
+
+    //Computes if the provided value is "zero."
+    private static boolean isZero(double val) {
+        if (Math.abs(val) < TOL) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     //Returns the coefficients of the fourier series on [-L, L] up to order n.
     //f(x) = a0 + a1sin(x) + a2cos(x)
@@ -422,6 +434,7 @@ public class PDE {
 
     /**
      * Solves Laplace's Equation (uxx + uyy = 0) with Dirichlet boundary conditions numerically with CTCS.
+     * This method assumes the boundary conditions are the same at the points where they are both defined.
      *
      * @param f1 The initial condition u(x, y0) for the PDE.
      * @param f2 The initial condition u(x, yMax) for the PDE.
@@ -436,44 +449,48 @@ public class PDE {
      * @return A numerical solution to Laplace's Equation.
      */
     public static Matrix solveLaEq(Function<Double, Double> f1, Function<Double, Double> f2, Function<Double, Double> g1, Function<Double, Double> g2, double x0, double xMax, double y0, double yMax, double h, double k) {
-//        double lambda = (k * k) / (h * h);
-//        int iterations = (int) Math.round((tMax - t0) / k);
-//        double vmn;
-//        double vmnm1;
-//        double vmnp1;
-//
-//        //Building v0
-//        Matrix v0 = LinearAlgebra.linSpace(x0, xMax, h);
-//        int size = v0.getRows();
-//        v0 = LinearAlgebra.applyFunction(v0, f);
-//
-//        //Building V1 via a Taylor Series expansion
-//        Matrix v1 = new Matrix(v0.getRows(), 1);
-//        v1.setValue(1, 1, g0.apply(k));
-//        v1.setValue(v1.getRows(), 1, gl.apply(k));
-//        for (int i = 2; i < v1.getRows(); i++) {
-//            vmnm1 = v0.getValue(i - 1, 1);
-//            vmn = v0.getValue(i, 1);
-//            vmnp1 = v0.getValue(i + 1, 1);
-//            v1.setValue(i, 1, (1 - lambda) * vmn + 0.5 * lambda * (vmnp1+ vmnm1) + k * ft.apply(h * i));
-//        }
-//
-//        //Building A
-//        Matrix A = new Matrix(size, size);
-//        for (int i = 2; i < size; i++) {
-//            A.setValue(i, i, 2 * (1 - lambda));
-//            A.setValue(i, i - 1, lambda);
-//            A.setValue(i, i + 1, lambda);
-//        }
-//        A.setValue(1, 1, 1);
-//        A.setValue(size, size, 1);
-//
-//        //Iterating the system in time
-//        Matrix sol = LinearAlgebra.transpose(v0);
-//        sol.addRowBottom(v1.getMatrix());
-//        Matrix temp;
-//
-//        return iterateSystem(A, v0, v1, g0, gl, k, iterations);
+        double lambda = (k * k) / (h * h);
+        int rows = (int) Math.round((xMax - x0) / h) + 1;
+        int cols = (int) Math.round((yMax - y0) / k) + 1;
+        int buffer = rows + 1;
+
+        Matrix A = LinearAlgebra.identityMatrix(rows * cols);
+        Matrix b = LinearAlgebra.constantMatrix(rows, cols, BASE_VAL);
+
+        //Building b by setting it up as a 2d matrix and then flattening it
+        //f1 and f2
+        for (int i = 1; i <= b.getRows(); i++) {
+            b.setValue(i, 1, f1.apply(h * (i - 1)));
+            b.setValue(i, b.getCols(), f2.apply(h * (i - 1)));
+        }
+        //g1 and g2
+        for (int i = 2; i <= b.getCols() - 1; i++) {
+            b.setValue(1, i, g1.apply(k * (i - 1)));
+            b.setValue(b.getRows(), i, g2.apply(k * (i - 1)));
+
+        }
+        b = LinearAlgebra.reshape(b, rows * cols, 1);
+
+        //Building A
+        for (int i = buffer + 1; i <= A.getRows() - buffer; i++) {
+            if (b.getValue(i, 1) == BASE_VAL) {
+                A.setValue(i, i, 2 * (1 + lambda));
+                A.setValue(i, i + 1, -lambda);
+                A.setValue(i, i - 1, -lambda);
+                A.setValue(i, i + rows, -1);
+                A.setValue(i, i - rows, -1);
+            }
+        }
+
+        //Removing BASE_VAL from B
+        for (int i = 1; i <= b.getRows(); i++) {
+            if (b.getValue(i, 1) == BASE_VAL) {
+                b.setValue(i, 1, 0.0);
+            }
+        }
+
+        b = LinearAlgebra.RREFSolve(LinearAlgebra.augmentMatrix(A, b));
+        return LinearAlgebra.transpose(LinearAlgebra.reshape(b, rows, cols));
     }
 
 
