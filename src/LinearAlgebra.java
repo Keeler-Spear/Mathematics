@@ -339,6 +339,49 @@ public class LinearAlgebra {
     }
 
     /**
+     * Reshapes the provided matrix into a new matrix of the size provided.
+     *
+     * @param A The matrix that will be reshaped.
+     * @param rows The number of rows the new matrix will have.
+     * @param cols The number of columns the new matrix will have.
+     * @return A reshaped matrix of size rows x cols.
+     * @throws IllegalArgumentException If the matrix provided does not have the same number of entries as the new matrix.
+     */
+    public static Matrix reshape(Matrix A, int rows, int cols) {
+        if (A.getRows() * A.getCols() != rows * cols) {
+            throw new IllegalArgumentException("The matrices must have the same number of entries!");
+        }
+
+        Matrix B = new Matrix(rows, cols);
+        Matrix temp = flatten(A);
+        int entry = 1;
+
+        for (int i = 1; i <= cols; i++) {
+            for (int j = 1; j <= rows; j++) {
+                B.setValue(j, i, temp.getValue(entry, 1));
+                entry++;
+            }
+        }
+
+        return B;
+    }
+
+    private static Matrix flatten(Matrix A) {
+        Matrix B = new Matrix (A.getRows() * A.getCols(), 1);
+
+        int entry = 1;
+
+        for (int i = 1; i <= A.getCols(); i++) {
+            for (int j = 1; j <= A.getRows(); j++) {
+                B.setValue(entry, 1, A.getValue(j, i));
+                entry++;
+            }
+        }
+
+        return B;
+    }
+
+    /**
      * Returns the sum of values in the row indicated. This method was added after I submitted
      * my application to your institution.
      *
