@@ -179,6 +179,7 @@ public class PDE {
             A.setValue(i, i - 1, lambda);
             A.setValue(i, i + 1, -lambda);
         }
+        A.setValue(A.getRows(), A.getCols() - 1, 1);
 
         //Iterating the system in time
         return iterateSystem(A, v0, g, k, iterations);
