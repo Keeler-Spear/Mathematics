@@ -274,4 +274,50 @@ public class Calculus {
 
         return box * numInteriorPoints / (double) n;
     }
+
+    /**
+     * Numerically calculates a shape's integral over the provided interval with Monte Carlo Integration.
+     *
+     * @param surface The function that bounds the mass. In declaration, the function should be equated to zero.
+     *                 For example, x^2 + y^2 = 1 -> x^2 + y^2 -1 = 0.
+     * @param density The density function. In declaration, the function should be equated to zero.
+     * @param lowerBounds An array of the lower bounds of integration and the function.
+     * @param upperBounds An array of the upper bounds of integration and the function.
+     * @param n The number of points to be generated.
+     * @return The function's integral over the provided interval.
+     * @throws IllegalArgumentException If each lower bound does not have an upper bound.
+     */
+    public static double mcIntegrateMass(NFunction<Double> surface, NFunction<Double> density, double[] lowerBounds, double[] upperBounds, int n) {
+        if (lowerBounds.length != upperBounds.length) {
+            throw new IllegalArgumentException("Each lower bound must have an upper bound!");
+        }
+
+        int numInteriorPoints = 0;
+        double mass = 0;
+        Double[] currentPoints = new Double[lowerBounds.length];
+
+        Matrix[] rands = new Matrix[lowerBounds.length];
+        for (int i = 0; i < lowerBounds.length; i++) {
+            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
+        }
+
+        for (int i = 1; i <= n; i++) {
+            //Building an array of function inputs
+            for (int j = 0; j < currentPoints.length; j++) {
+                currentPoints[j] = rands[j].getValue(i, 1);
+            }
+
+            if (surface.apply(currentPoints) <= 0) {
+                numInteriorPoints++;
+                mass += density.apply(currentPoints);
+            }
+        }
+
+        double box = 1.0;
+        for (int i = 0; i < lowerBounds.length; i++) {
+            box *= (upperBounds[i] - lowerBounds[i]);
+        }
+
+        return mass * box / (double) n;
+    }
 }
