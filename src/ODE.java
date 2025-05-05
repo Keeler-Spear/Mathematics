@@ -658,6 +658,30 @@ public class ODE {
         return LinearAlgebra.RREFSolve(LinearAlgebra.augmentMatrix(A, b));
     }
 
+    /**
+     * Numerically solves the non-linear second-order ordinary differential equation with the BVP provided over the provided interval using the
+     * Runge–Kutta 4 Non-Linear Shooting method with O(h^4) global error, where h is the step size of t.
+     *
+     * @param ode The second-order ordinary differential equation f(t, y, y') to be solved.
+     * @param t0 The left endpoint of the interval.
+     * @param y0 The y value corresponding to t0.
+     * @param t The right endpoint of the interval.
+     * @param y1 The y value corresponding to t.
+     * @param h The step size of t.
+     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
+     */
+    public static Matrix nonLinearShooting (TriFunction<Double, Double, Double, Double> ode, double t0, double y0, double t, double y1, double h) {
+        Function<Double, Double> phi = (x) -> {
+            Matrix sol = ODE.solveIVP(ode, t0, y0, x, t, h);
+            double val = sol.getValue(sol.getRows(), 1);
+            return val - y1;
+        };
+
+        double s = RootFinding.secantMethod(phi);
+
+        return solveIVP(ode, t0, y0, s, t, h);
+    }
+
     //Input should be y'' = a(x)y' + b(x)y + c. Params: (x, y0, y1);
     private static TriFunction[] decomposeODE(TriFunction<Double, Double, Double, Double> ode) {
         TriFunction<Double, Double, Double, Double>[] fncs = new TriFunction[2];
