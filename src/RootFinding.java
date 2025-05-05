@@ -55,12 +55,16 @@ public class RootFinding {
      */
     public static double secantMethod(Function<Double, Double> f, double x0, double x1) {
         int i = 0;
+        double f0 = f.apply(x0);
+        double f1 = f.apply(x1);
         double temp;
 
-        while (Math.abs(f.apply(x1)) > TOL && i < MAX_ITERATIONS) {
+        while (Math.abs(f1) > TOL && i < MAX_ITERATIONS) {
             temp = x1;
-            x1 = x1 - f.apply(x1) * (x1 - x0) / (f.apply(x1) - f.apply(x0));
+            x1 = x1 - f1 * (x1 - x0) / (f1 - f0);
             x0 = temp;
+            f0 = f1;
+            f1 = f.apply(x1);
             i++;
         }
 
