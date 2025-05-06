@@ -31,6 +31,19 @@ public class Error {
     }
 
     /**
+     * Computes the absolute error between two matrices.
+     *
+     * @param exact The true values.
+     * @param approx The approximations of the true values.
+     * @return The absolute error between two values.
+     */
+    public static double absolute(Matrix exact, Matrix approx) {
+        Matrix sol = LinearAlgebra.subtractMatrices(exact, approx);
+        sol = LinearAlgebra.abs(sol);
+        return LinearAlgebra.matrixSum(sol);
+    }
+
+    /**
      * Computes the relative error between two values.
      *
      * @param exact The true value.
