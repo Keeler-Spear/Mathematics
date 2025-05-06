@@ -14,7 +14,8 @@ public class Calculus {
     private static final double TOL = 0.00000001;
     private static final double hDEF = 0.001;
     private static final int BASE_NUM_INTERVALS = 1000;
-    final static int SEED = 500;
+    final static long SEED_X = 0;
+    final static long SEED_Y = 1;
 
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
@@ -180,8 +181,8 @@ public class Calculus {
     public static double mcIntegrate(Function<Double, Double> function, double a, double b, double c, double d, int n) {
         int numInteriorPoints = 0;
 
-        Matrix randX = LinearAlgebra.randMatrix(n, 1, a, b, SEED);
-        Matrix randY = LinearAlgebra.randMatrix(n, 1, c, d, SEED);
+        Matrix randX = LinearAlgebra.randMatrix(n, 1, a, b, SEED_X);
+        Matrix randY = LinearAlgebra.randMatrix(n, 1, c, d, SEED_Y);
         for (int i = 1; i <= n; i++) {
             if (randY.getValue(i, 1) <= function.apply(randX.getValue(i, 1))) {
                 numInteriorPoints++;
@@ -211,7 +212,7 @@ public class Calculus {
 
         Matrix[] rands = new Matrix[lowerBounds.length];
         for (int i = 0; i < lowerBounds.length; i++) {
-            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i], SEED);
+            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
         }
 
         for (int i = 1; i <= n; i++) {
@@ -254,7 +255,7 @@ public class Calculus {
 
         Matrix[] rands = new Matrix[lowerBounds.length];
         for (int i = 0; i < lowerBounds.length; i++) {
-            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i], SEED);
+            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
         }
 
         for (int i = 1; i <= n; i++) {
