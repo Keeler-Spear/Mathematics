@@ -193,6 +193,32 @@ public class Calculus {
     }
 
     /**
+     * Numerically calculates a function's integral over the provided interval with Monte Carlo Integration. The
+     * Mersenne Twister algorithm is used to generate random numbers.
+     *
+     * @param function The function that will be integrated.
+     * @param a The lower bound of integration.
+     * @param b The upper bound of integration.
+     * @param c The minimum of the function.
+     * @param d The maximum of the function.
+     * @param n The number of points to be generated.
+     * @return The function's integral over the provided interval.
+     */
+    public static double mcIntegrateMT(Function<Double, Double> function, double a, double b, double c, double d, int n) {
+        int numInteriorPoints = 0;
+
+        Matrix randX = LinearAlgebra.randMatrixMT(n, 1, a, b, SEED_X);
+        Matrix randY = LinearAlgebra.randMatrixMT(n, 1, c, d, SEED_Y);
+        for (int i = 1; i <= n; i++) {
+            if (randY.getValue(i, 1) <= function.apply(randX.getValue(i, 1))) {
+                numInteriorPoints++;
+            }
+        }
+
+        return (d - c) * (b - a) * numInteriorPoints / (double) n;
+    }
+
+    /**
      * Numerically calculates a function's integral over the provided interval with Monte Carlo Integration.
      *
      * @param function The function that will be integrated.
@@ -255,7 +281,7 @@ public class Calculus {
 
         Matrix[] rands = new Matrix[lowerBounds.length];
         for (int i = 0; i < lowerBounds.length; i++) {
-            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
+            rands[i] = LinearAlgebra.randMatrixMT(n, 1, lowerBounds[i], upperBounds[i]);
         }
 
         for (int i = 1; i <= n; i++) {
@@ -300,7 +326,7 @@ public class Calculus {
 
         Matrix[] rands = new Matrix[lowerBounds.length];
         for (int i = 0; i < lowerBounds.length; i++) {
-            rands[i] = LinearAlgebra.randMatrix(n, 1, lowerBounds[i], upperBounds[i]);
+            rands[i] = LinearAlgebra.randMatrixMT(n, 1, lowerBounds[i], upperBounds[i]);
         }
 
         for (int i = 1; i <= n; i++) {

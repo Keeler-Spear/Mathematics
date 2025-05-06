@@ -119,7 +119,7 @@ public class LinearAlgebra {
      * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
      * @return a matrix of the size provided filled with random values
      */
-    public static Matrix randMatrix (int rows, int cols, double min, double max) {
+    public static Matrix randMatrix(int rows, int cols, double min, double max) {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
         }
@@ -152,7 +152,7 @@ public class LinearAlgebra {
      * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
      * @return a matrix of the size provided filled with random values
      */
-    public static Matrix randMatrix (int rows, int cols, double min, double max, long seed) {
+    public static Matrix randMatrix(int rows, int cols, double min, double max, long seed) {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
         }
@@ -161,6 +161,70 @@ public class LinearAlgebra {
         }
 
         Random rand = new Random();
+        rand.setSeed(seed);
+        Matrix matrix = new Matrix(rows, cols);
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                matrix.setValue(i, j, min + (max - min) * rand.nextDouble());
+            }
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Creates a matrix of the size provided filled with random values generated via the Mersenne Twister algorithm.
+     *
+     * @param rows The number of rows the matrix will have.
+     * @param cols The number of columns the matrix will have.
+     * @param min The lower bound of random number generation.
+     * @param max The upper bound of random number generation.
+     * @throws IllegalArgumentException If the matrix's size is less than 1.
+     * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
+     * @return a matrix of the size provided filled with random values
+     */
+    public static Matrix randMatrixMT(int rows, int cols, double min, double max) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
+        }
+        if (min >= max) {
+            throw new IllegalArgumentException("The minimum value must be less than the maximum value! Min = " + min + ", Max = " + max + "!");
+        }
+
+        MersenneTwister rand = new MersenneTwister();
+        Matrix matrix = new Matrix(rows, cols);
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                matrix.setValue(i, j, min + (max - min) * rand.nextDouble());
+            }
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Creates a matrix of the size provided filled with random values generated via the Mersenne Twister algorithm.
+     *
+     * @param rows The number of rows the matrix will have.
+     * @param cols The number of columns the matrix will have.
+     * @param min The lower bound of random number generation.
+     * @param max The upper bound of random number generation.
+     * @param seed The seed use for random number generation.
+     * @throws IllegalArgumentException If the matrix's size is less than 1.
+     * @throws IllegalArgumentException If the minimum value is greater than or equal to the maximum value.
+     * @return a matrix of the size provided filled with random values
+     */
+    public static Matrix randMatrixMT(int rows, int cols, double min, double max, long seed) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("The matrix's size must be at least 1x1!");
+        }
+        if (min >= max) {
+            throw new IllegalArgumentException("The minimum value must be less than the maximum value!");
+        }
+
+        MersenneTwister rand = new MersenneTwister();
         rand.setSeed(seed);
         Matrix matrix = new Matrix(rows, cols);
 
