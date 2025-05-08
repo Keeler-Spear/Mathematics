@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-//ToDo: A major issue is using doubles within the while loops.
-
 /**
  * A static class that solves ordinary differential equations via numerical methods.
  * <p>
@@ -88,7 +86,7 @@ public class ODE {
         y.setValue(1, 1, y0);
         int i = 2;
 
-        while (t0 <= t) {
+        while (t0 <= t + (h/10)) {
             y0 = y0 + h * ode.apply(t0, y0);
 
             y.setValue(i, 1, y0);
@@ -119,7 +117,7 @@ public class ODE {
         double k4;
         int i = 2;
 
-        while (t0 <= t) {
+        while (t0 <= t + (h/10)) {
             k1 = ode.apply(t0, y0);
             k2 = ode.apply(t0 + 0.5 * h, y0 + 0.5 * h * k1);
             k3 = ode.apply(t0 + 0.5 * h, y0 + 0.5 * h * k2);
@@ -157,7 +155,7 @@ public class ODE {
         Matrix yP = new Matrix(new double[] {y0, yp0});
         int i = 2;
         t0 += h;
-        while (t0 <= t) {
+        while (t0 <= t + (h/10)) {
             //Finding y'(t)
             yP.setValue(1, 1, ode1.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
             yP.setValue(2, 1, ode2.apply(t0, yi.getValue(1,1), yi.getValue(2, 1)));
