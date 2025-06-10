@@ -1,3 +1,7 @@
+import Mathematics.LinearAlgebra;
+import Mathematics.Matrix;
+import Mathematics.ODE;
+import Mathematics.TriFunction;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;

@@ -1,3 +1,5 @@
+package Mathematics;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -67,7 +69,7 @@ public class PDE {
      * Solves the transport equation (ut + cux = 0) analytically.
      *
      * @param c The coefficient of the ux term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @return A function that is a solution to the transport equation.
      */
     public static BiFunction<Double, Double, Double> solveTrEq(double c, Function<Double, Double> f) {
@@ -79,7 +81,7 @@ public class PDE {
      * Solves the transport equation (ut + cux = 0) numerically with FTFS.
      *
      * @param c The coefficient of the ux term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
      * @param t0 The starting temporal position
@@ -114,7 +116,7 @@ public class PDE {
      * Solves the transport equation (ut + cux = 0) numerically with FTBS.
      *
      * @param c The coefficient of the ux term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param g The left boundary condition.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
@@ -151,7 +153,7 @@ public class PDE {
      * Solves the transport equation (ut + cux = 0) numerically with FTCS.
      *
      * @param c The coefficient of the ux term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
      * @param t0 The starting temporal position
@@ -190,7 +192,7 @@ public class PDE {
      * This method assumes the Neumann BC is homogeneous.
      *
      * @param c The coefficient of the uxx term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param g0 The left boundary condition.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
@@ -231,7 +233,7 @@ public class PDE {
      * This method assumes the Neumann BC is homogeneous.
      *
      * @param c The coefficient of the uxx term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param g0 The left boundary condition.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
@@ -272,7 +274,7 @@ public class PDE {
      * This method assumes the Neumann BC is homogeneous.
      *
      * @param c The coefficient of the uxx term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param g0 The left boundary condition.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
@@ -324,7 +326,7 @@ public class PDE {
      * This method assumes the Neumann BC is homogeneous.
      *
      * @param c The coefficient of the uxx term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param g0 The left boundary condition.
      * @param x0 The starting spacial position.
      * @param xMax The ending spacial position.
@@ -380,7 +382,7 @@ public class PDE {
      * Solves the wave equation (utt = cuxx) with Dirichlet boundary conditions numerically with CTCS.
      *
      * @param c The coefficient of the uxx term.
-     * @param f The initial condition for the PDE.
+     * @param f The initial condition for the Mathematics.PDE.
      * @param ft The initial condition's time derivative.
      * @param g0 The left boundary condition.
      * @param gl The right boundary condition.
@@ -437,10 +439,10 @@ public class PDE {
      * Solves Laplace's Equation (uxx + uyy = 0) with Dirichlet boundary conditions numerically with CTCS.
      * This method assumes the boundary conditions are the same at the points where they are both defined.
      *
-     * @param f1 The initial condition u(x, y0) for the PDE.
-     * @param f2 The initial condition u(x, yMax) for the PDE.
-     * @param g1 The initial condition u(x0, y) for the PDE.
-     * @param g2 The initial condition u(xMax, y) for the PDE.
+     * @param f1 The initial condition u(x, y0) for the Mathematics.PDE.
+     * @param f2 The initial condition u(x, yMax) for the Mathematics.PDE.
+     * @param g1 The initial condition u(x0, y) for the Mathematics.PDE.
+     * @param g2 The initial condition u(xMax, y) for the Mathematics.PDE.
      * @param x0 The starting x spacial position.
      * @param xMax The ending x spacial position.
      * @param y0 The starting y spacial position.

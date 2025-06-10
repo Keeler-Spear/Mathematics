@@ -4,33 +4,33 @@
   
 # File summary
 
--BasisFunctions.java: Static class that generates basis functions.\
--Calculus.java: Static class with calculus operations.\
--Complex.java: Static class with complex arithmetic, WIP.\
--ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
--Error.java: Static class with error evaluation operations.\
+-Mathematics.BasisFunctions.java: Static class that generates basis functions.\
+-Mathematics.Calculus.java: Static class with calculus operations.\
+-Mathematics.Complex.java: Static class with complex arithmetic, WIP.\
+-Mathematics.ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
+-Mathematics.Error.java: Static class with error evaluation operations.\
 -LinReg.Java: Static class with numerical linear regression operations.\
--LinearAlgebra.java: Static class with linear algebra operations.\
+-Mathematics.LinearAlgebra.java: Static class with linear algebra operations.\
 -Main.java: Main class for user input, WIP.\
--Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
--Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.\
--ODE.java: Static class with numerical ordinary differential equation operations, WIP.\
--TriFunction.java: Interface that acts as a mathematical function with three independent variables.\
+-Mathematics.Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
+-Mathematics.Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.\
+-Mathematics.ODE.java: Static class with numerical ordinary differential equation operations, WIP.\
+-Mathematics.TriFunction.java: Interface that acts as a mathematical function with three independent variables.\
 -UI.java: Main class that provides a user interface for the most important linear algebra methods.
 
 # Main Operations and Method Type
 
--Matrix Addition (Analytically)\
--Matrix Multiplication (Analytically)\
--Matrix Row Reduction (Analytically)\
+-Mathematics.Matrix Addition (Analytically)\
+-Mathematics.Matrix Multiplication (Analytically)\
+-Mathematics.Matrix Row Reduction (Analytically)\
 -LU Decomposition (Analytically)\
--Matrix Inversion (Analytically)\
+-Mathematics.Matrix Inversion (Analytically)\
 -Determinant Calculation (Analytically)\
 -Gram-Schmidt Orthogonalization (Analytically)\
 -Eigenvalue Calculation (Numerically via the QR Method)\
 -Differentiation (Numerically via O(h^2) Methods)\
 -Integration (Numerically via O(h^4) Methods)\
--Regression (Numerically via gradient descent)
+-Mathematics.Regression (Numerically via gradient descent)
 
 # User Guide
 
@@ -46,8 +46,8 @@
   
 # Contributions
 
-  Outside of the Java libraries used (Math, Swing, JUnit Jupiter, IO, and Util), the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
+  Outside of the Java libraries used (Math, Swing, JUnit Jupiter, IO, and Util), the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Mathematics.Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
 
   # Favorite Algorithm
 
-  Of the algorithms I have coded, gradient descent (linearReg in Regression.java) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under BasisFunctions.
+  Of the algorithms I have coded, gradient descent (linearReg in Mathematics.Regression.java) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under Mathematics.BasisFunctions.

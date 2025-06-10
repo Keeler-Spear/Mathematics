@@ -1,4 +1,4 @@
-import java.util.function.Function;
+package Mathematics;
 
 /**
  * A static class that computes the error between two numerical objects.

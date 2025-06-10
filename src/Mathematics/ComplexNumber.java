@@ -1,3 +1,5 @@
+package Mathematics;
+
 //WORK IN PROGRESS
 //WORK IN PROGRESS
 //WORK IN PROGRESS

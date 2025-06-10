@@ -1,3 +1,5 @@
+package Mathematics;
+
 /**
  * Represents a mathematical matrix, providing support for internal matrix operations.
  * <p>

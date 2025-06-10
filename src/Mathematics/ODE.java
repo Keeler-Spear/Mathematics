@@ -1,3 +1,5 @@
+package Mathematics;
+
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -241,11 +243,11 @@ public class ODE {
      * @param t The right endpoint of the interval.
      * @param h The step size of t.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
-     * @throws IllegalArgumentException If each ODE does not have an initial condition.
+     * @throws IllegalArgumentException If each Mathematics.ODE does not have an initial condition.
      */
     public static Matrix rk4System (NFunction<Double>[] system, double t0, double[] y0, double t, double h) {
         if (system.length != y0.length) {
-            throw new IllegalArgumentException("Each ODE must have an initial condition!");
+            throw new IllegalArgumentException("Each Mathematics.ODE must have an initial condition!");
         }
 
         //Changed rows by removing buffer and also cut the trim function from the return
@@ -266,7 +268,7 @@ public class ODE {
         Matrix k4 = new Matrix(system.length, 1);
         Matrix kTemp; //Used as temporary storage for wi + h/2 ki
         Matrix wkSum;
-        Double[] perams = new Double[y0.length + 1]; //Parameter values to pass to the ODE
+        Double[] perams = new Double[y0.length + 1]; //Parameter values to pass to the Mathematics.ODE
 
         while (t0 <= t + (h / 10)) {
             //Finding the k's
@@ -342,13 +344,13 @@ public class ODE {
      * @param s1 The first safety factor.
      * @param s2 The second safety factor.
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
-     * @throws IllegalArgumentException If each ODE does not have an initial condition.
+     * @throws IllegalArgumentException If each Mathematics.ODE does not have an initial condition.
      * @throws IllegalArgumentException If the first safety factor is greater than or equal to 1.
      * @throws IllegalArgumentException If the second safety factor is equal to or greater than 1.
      */
     public static Matrix adaptiveRK4System (NFunction<Double>[] system, double t0, double[] y0, double t, double h, double s1, double s2) {
         if (system.length != y0.length) {
-            throw new IllegalArgumentException("Each ODE must have an initial condition!");
+            throw new IllegalArgumentException("Each Mathematics.ODE must have an initial condition!");
         }
 
         if (s1 >= 1 || s1 <= 0) {

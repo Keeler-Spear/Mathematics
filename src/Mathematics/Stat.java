@@ -1,3 +1,5 @@
+package Mathematics;
+
 /**
  * A static class that performs rudimentary statistics operations.
  * <p>

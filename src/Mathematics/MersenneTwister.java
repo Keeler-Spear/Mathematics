@@ -1,4 +1,4 @@
-// From https://github.com/datquocnguyen/jLDADMM/blob/master/src/utility/MersenneTwister.java
+package Mathematics;// From https://github.com/datquocnguyen/jLDADMM/blob/master/src/utility/MersenneTwister.java
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * <h3>MersenneTwister and MersenneTwisterFast</h3>
+ * <h3>Mathematics.MersenneTwister and MersenneTwisterFast</h3>
  * <p>
  * <b>Version 20</b>, based on version MT199937(99/10/29) of the Mersenne Twister algorithm found at
  * <a href="http://www.math.keio.ac.jp/matumoto/emt.html"> The Mersenne Twister Home Page</a>, with
@@ -16,17 +16,17 @@ import java.io.Serializable;
  * October 2004.
  *
  * <p>
- * <b>MersenneTwister</b> is a drop-in subclass replacement for java.util.Random. It is properly
+ * <b>Mathematics.MersenneTwister</b> is a drop-in subclass replacement for java.util.Random. It is properly
  * synchronized and can be used in a multithreaded environment. On modern VMs such as HotSpot, it is
  * approximately 1/3 slower than java.util.Random.
  *
  * <p>
  * <b>MersenneTwisterFast</b> is not a subclass of java.util.Random. It has the same public methods
- * as Random does, however, and it is algorithmically identical to MersenneTwister.
+ * as Random does, however, and it is algorithmically identical to Mathematics.MersenneTwister.
  * MersenneTwisterFast has hard-code inlined all of its methods directly, and made all of them final
  * (well, the ones of consequence anyway). Further, these methods are <i>not</i> synchronized, so
  * the same MersenneTwisterFast instance cannot be shared by multiple threads. But all this helps
- * MersenneTwisterFast achieve well over twice the speed of MersenneTwister. java.util.Random is
+ * MersenneTwisterFast achieve well over twice the speed of Mathematics.MersenneTwister. java.util.Random is
  * about 1/3 slower than MersenneTwisterFast.
  *
  * <h3>About the Mersenne Twister</h3>
@@ -76,8 +76,8 @@ import java.io.Serializable;
  *
  * <p>
  * <b>Changes Since V11:</b> stateEquals(...) method added. MersenneTwisterFast is equal to other
- * MersenneTwisterFasts with identical state; likewise MersenneTwister is equal to other
- * MersenneTwister with identical state. This isn't equals(...) because that requires a contract of
+ * MersenneTwisterFasts with identical state; likewise Mathematics.MersenneTwister is equal to other
+ * Mathematics.MersenneTwister with identical state. This isn't equals(...) because that requires a contract of
  * immutability to compare by value.
  *
  * <p>
@@ -93,16 +93,16 @@ import java.io.Serializable;
  * have been 32 bits. For small-number seeds the behavior is identical.
  *
  * <p>
- * <b>Changes Since V7:</b> A documentation error in MersenneTwisterFast (but not MersenneTwister)
+ * <b>Changes Since V7:</b> A documentation error in MersenneTwisterFast (but not Mathematics.MersenneTwister)
  * stated that nextDouble selects uniformly from the full-open interval [0,1]. It does not.
- * nextDouble's contract is identical across MersenneTwisterFast, MersenneTwister, and
+ * nextDouble's contract is identical across MersenneTwisterFast, Mathematics.MersenneTwister, and
  * java.util.Random, namely, selection in the half-open interval [0,1). That is, 1.0 should not be
  * returned. A similar contract exists in nextFloat.
  *
  * <p>
  * <b>Changes Since V6:</b> License has changed from LGPL to BSD. New timing information to compare
  * against java.util.Random. Recent versions of HotSpot have helped Random increase in speed to the
- * point where it is faster than MersenneTwister but slower than MersenneTwisterFast (which should
+ * point where it is faster than Mathematics.MersenneTwister but slower than MersenneTwisterFast (which should
  * be the case, as it's a less complex algorithm but is synchronized).
  *
  * <p>
@@ -115,7 +115,7 @@ import java.io.Serializable;
  * http://www.math.keio.ac.jp/matumoto/MT2002/emt19937ar.html</a>)
  *
  * <p>
- * The MersenneTwister code is based on standard MT19937 C/C++ code by Takuji Nishimura, with
+ * The Mathematics.MersenneTwister code is based on standard MT19937 C/C++ code by Takuji Nishimura, with
  * suggestions from Topher Cooper and Marc Rieffel, July 1997. The code was originally translated
  * into Java by Michael Lecuyer, January 1999, and the original code is Copyright (c) 1999 by
  * Michael Lecuyer.
@@ -136,8 +136,8 @@ import java.io.Serializable;
  * if your seed does not exceed the int range.
  *
  * <p>
- * MersenneTwister can be used reliably on JDK version 1.1.5 or above. Earlier Java versions have
- * serious bugs in java.util.Random; only MersenneTwisterFast (and not MersenneTwister nor
+ * Mathematics.MersenneTwister can be used reliably on JDK version 1.1.5 or above. Earlier Java versions have
+ * serious bugs in java.util.Random; only MersenneTwisterFast (and not Mathematics.MersenneTwister nor
  * java.util.Random) should be used with them.
  *
  * <h3>License</h3>
@@ -238,7 +238,7 @@ public class MersenneTwister
         return true;
     }
 
-    /** Reads the entire state of the MersenneTwister RNG from the stream */
+    /** Reads the entire state of the Mathematics.MersenneTwister RNG from the stream */
     public void readState(DataInputStream stream)
             throws IOException
     {
@@ -255,7 +255,7 @@ public class MersenneTwister
         __haveNextNextGaussian = stream.readBoolean();
     }
 
-    /** Writes the entire state of the MersenneTwister RNG to the stream */
+    /** Writes the entire state of the Mathematics.MersenneTwister RNG to the stream */
     public void writeState(DataOutputStream stream)
             throws IOException
     {
@@ -335,7 +335,7 @@ public class MersenneTwister
     }
 
     /**
-     * Sets the seed of the MersenneTwister using an array of integers. Your array must have a
+     * Sets the seed of the Mathematics.MersenneTwister using an array of integers. Your array must have a
      * non-zero length. Only the first 624 integers in the array are used; if the array is shorter
      * than this then integers are repeatedly used in a wrap-around fashion.
      */
@@ -683,7 +683,7 @@ public class MersenneTwister
         // COMPARE WITH http://www.math.keio.ac.jp/matumoto/CODES/MT2002/mt19937ar.out
 
         r = new MersenneTwister(new int[] { 0x123, 0x234, 0x345, 0x456 });
-        System.out.println("Output of MersenneTwister with new (2002/1/26) seeding mechanism");
+        System.out.println("Output of Mathematics.MersenneTwister with new (2002/1/26) seeding mechanism");
         for (j = 0; j < 1000; j++) {
             // first, convert the int from signed to "unsigned"
             long l = (long) r.nextInt();
@@ -716,13 +716,13 @@ public class MersenneTwister
         System.out
                 .println("To compare this with java.util.Random, run this same test on MersenneTwisterFast.");
         System.out
-                .println("The comparison with Random is removed from MersenneTwister because it is a proper");
+                .println("The comparison with Random is removed from Mathematics.MersenneTwister because it is a proper");
         System.out
                 .println("subclass of Random and this unfairly makes some of Random's methods un-inlinable,");
         System.out.println("so it would make Random look worse than it is.");
 
         // TEST TO COMPARE TYPE CONVERSION BETWEEN
-        // MersenneTwisterFast.java AND MersenneTwister.java
+        // MersenneTwisterFast.java AND Mathematics.MersenneTwister.java
 
         System.out.println("\nGrab the first 1000 booleans");
         r = new MersenneTwister(SEED);

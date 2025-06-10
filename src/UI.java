@@ -1,10 +1,13 @@
+import Mathematics.LinearAlgebra;
+import Mathematics.Matrix;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * A main class that functions as an interface between a user and the LinearAlgebra and Matrix classes.
+ * A main class that functions as an interface between a user and the Mathematics.LinearAlgebra and Mathematics.Matrix classes.
  * <p>
  *     This class supports matrix operations such as addition, multiplication, RREF, and more.
  * </p>
@@ -15,8 +18,8 @@ import java.util.Scanner;
  */
 public class UI {
     private static final String[] NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-    private static final String[] OPTIONS = {"Create Matrix", "Perform Matrix Operations", "View Saved Matrices", "Load Data", "Save Data", "Reset Data", "Exit"};
-    private static final String[] OPOPTIONS = {"Determinant", "Eigenvalues", "LU Decomposition", "Matrix Inverse", "Matrix Multiplication", "QR Decomposition", "RREF"};
+    private static final String[] OPTIONS = {"Create Mathematics.Matrix", "Perform Mathematics.Matrix Operations", "View Saved Matrices", "Load Data", "Save Data", "Reset Data", "Exit"};
+    private static final String[] OPOPTIONS = {"Determinant", "Eigenvalues", "LU Decomposition", "Mathematics.Matrix Inverse", "Mathematics.Matrix Multiplication", "QR Decomposition", "RREF"};
     private static final String SAVE_FILE = "SavedVars.csv";
 
     private static Matrix[] matrices = new Matrix[26];
@@ -84,7 +87,7 @@ public class UI {
         Matrix A = selectMatrix();
         String matrix = A.toString();
 
-        JOptionPane.showMessageDialog(null, "Matrix:\n" + matrix);
+        JOptionPane.showMessageDialog(null, "Mathematics.Matrix:\n" + matrix);
     }
 
     //Lets the user perform matrix operations on a saved matrix.
@@ -112,9 +115,9 @@ public class UI {
             String L = LU[0].toString();
             String U = LU[1].toString();
             String P = LU[2].toString();
-            JOptionPane.showMessageDialog(null, "Matrix L:\n" + L);
-            JOptionPane.showMessageDialog(null, "Matrix U:\n" + U);
-            JOptionPane.showMessageDialog(null, "Matrix P:\n" + P);
+            JOptionPane.showMessageDialog(null, "Mathematics.Matrix L:\n" + L);
+            JOptionPane.showMessageDialog(null, "Mathematics.Matrix U:\n" + U);
+            JOptionPane.showMessageDialog(null, "Mathematics.Matrix P:\n" + P);
 
         }
         else if (choice == 3) { //Inv
@@ -130,8 +133,8 @@ public class UI {
             Matrix[] QR = LinearAlgebra.QRFactorization(A);
             String Q = QR[0].toString();
             String R = QR[1].toString();
-            JOptionPane.showMessageDialog(null, "Matrix Q:\n" + Q);
-            JOptionPane.showMessageDialog(null, "Matrix R:\n" + R);
+            JOptionPane.showMessageDialog(null, "Mathematics.Matrix Q:\n" + Q);
+            JOptionPane.showMessageDialog(null, "Mathematics.Matrix R:\n" + R);
         }
         else if (choice == 6) { //RREF
             String RREF = LinearAlgebra.RREF(A).toString();
@@ -183,7 +186,7 @@ public class UI {
             }
         }
         catch (IOException ex) {
-            System.out.println("Error: " + ex);
+            System.out.println("Mathematics.Error: " + ex);
         }
     }
 
@@ -200,7 +203,7 @@ public class UI {
             out.close();
             JOptionPane.showMessageDialog(null, "Data Saved!");
         } catch (FileNotFoundException ex) {
-            System.out.println("Error: " + ex);
+            System.out.println("Mathematics.Error: " + ex);
         }
     }
 
@@ -218,8 +221,8 @@ public class UI {
      * An interactive interface that allows the user to create matrices and perform linear algebra operations.
      * The following interface operations are supported:
      *         <ul>
-     *             <li> Create Matrix</li>
-     *             <li> Perform Matrix Operations</li>
+     *             <li> Create Mathematics.Matrix</li>
+     *             <li> Perform Mathematics.Matrix Operations</li>
      *             <li> View Saved Matrices</li>
      *             <li> Load Data</li>
      *             <li> Save Data</li>
@@ -231,8 +234,8 @@ public class UI {
      *             <li> Determinant</li>
      *             <li> Eigenvalues</li>
      *             <li> LU Decomposition</li>
-     *             <li> Matrix Inverse</li>
-     *             <li> Matrix Multiplication</li>
+     *             <li> Mathematics.Matrix Inverse</li>
+     *             <li> Mathematics.Matrix Multiplication</li>
      *             <li> QR Decomposition</li>
      *             <li> RREF</li>
      *         </ul>

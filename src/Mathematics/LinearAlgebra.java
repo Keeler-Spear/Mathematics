@@ -1,3 +1,5 @@
+package Mathematics;
+
 import java.util.Random;
 import java.util.function.Function;
 
@@ -305,7 +307,7 @@ public class LinearAlgebra {
      *
      * @param A The matrix that will be augmented.
      * @param B The matrix that will be augmented onto A's right side.
-     * @return A copy of the matrix A, augmented with Matrix B.
+     * @return A copy of the matrix A, augmented with Mathematics.Matrix B.
      * @throws IllegalArgumentException If the matrices' row counts are not the same.
      */
     public static Matrix augmentMatrix(Matrix A, Matrix B) {
@@ -575,7 +577,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Adds one matrix to another matrix that is multiplied by a scalar. Matrix sum = matrix A + scalar * matrix B.
+     * Adds one matrix to another matrix that is multiplied by a scalar. Mathematics.Matrix sum = matrix A + scalar * matrix B.
      *
      * @param A The matrix that will be added to the other.
      * @param B The matrix that will be multiplied by a scalar and added to the other.
@@ -600,7 +602,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Adds one matrix to another matrix. Matrix sum = matrix A + matrix B.
+     * Adds one matrix to another matrix. Mathematics.Matrix sum = matrix A + matrix B.
      *
      * @param A The matrix that will be added to the other.
      * @param B The matrix that will be added to the other.
@@ -616,7 +618,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Subtracts one matrix to another matrix. Matrix difference = matrix A - matrix B.
+     * Subtracts one matrix to another matrix. Mathematics.Matrix difference = matrix A - matrix B.
      *
      * @param A The matrix that will be subtracted from.
      * @param B The matrix that will be subtracted from the other.
@@ -657,7 +659,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Divides the values of two matrices together. Matrix quotient(i, j) = A(i, j) / B(i, j)
+     * Divides the values of two matrices together. Mathematics.Matrix quotient(i, j) = A(i, j) / B(i, j)
      *
      * @param A The first matrix.
      * @param B The second matrix.
@@ -681,7 +683,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Right multiplies a provided matrix by another. Matrix product = matrix A * matrix B.
+     * Right multiplies a provided matrix by another. Mathematics.Matrix product = matrix A * matrix B.
      *
      * @param A The matrix that will be multiplied by the other on the right.
      * @param B The matrix that will be multiplied by the other on the left.
@@ -1038,7 +1040,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Factors a matrix into permutation, lower-triangular, and upper-triangular matrices. Matrix P * matrixOrg =
+     * Factors a matrix into permutation, lower-triangular, and upper-triangular matrices. Mathematics.Matrix P * matrixOrg =
      * matrix L * matrix U.
      *
      * @param matrixOrg The matrix that will be factored.
@@ -1201,7 +1203,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Right "divides" a provided matrix by another. Matrix quotient = matrix A * matrix B^(-1)
+     * Right "divides" a provided matrix by another. Mathematics.Matrix quotient = matrix A * matrix B^(-1)
      *
      * @param A The matrix that will be "divided" by the other on the right.
      * @param B The matrix that will be "divided" by the other on the left.
@@ -1220,7 +1222,7 @@ public class LinearAlgebra {
      */
     public static double determinant(Matrix A) {
         if (!A.isSquare()) {
-            throw new IllegalArgumentException("Matrix is not square");
+            throw new IllegalArgumentException("Mathematics.Matrix is not square");
         }
 
         return determinantRec(A);
@@ -1634,7 +1636,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Factors a matrix into the product of an orthogonal and upper-triangular matrix. Matrix A = matrix Q * matrix R.
+     * Factors a matrix into the product of an orthogonal and upper-triangular matrix. Mathematics.Matrix A = matrix Q * matrix R.
      *
      * @param A The matrix that will be factored.
      * @return An array of matrices containing:
