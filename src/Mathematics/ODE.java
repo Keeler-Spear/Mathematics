@@ -8,7 +8,7 @@ import java.util.function.Function;
  * A static class that solves ordinary differential equations via numerical methods.
  * <p>
  *     This class and all functions within were added after I submitted my application to your institution. All code
- *     within this project will be submitted and graded for MTH-49cr Numerical Differential Equations Modeling.
+ *     within this project was submitted and graded for MTH-49cr Numerical Differential Equations Modeling.
  * </p>
  * @author Keeler Spear
  * @version %I%, %G%
@@ -327,132 +327,6 @@ public class ODE {
         }
 
         return trim(yVals);
-    }
-
-    /**
-     * Numerically solves the system of first-order ordinary differential equations over the provided interval using the
-     * adaptive Runge–Kutta 4 method.
-     * <p>
-     *     This code was copied and translated from https://github.com/AlejGarcia/NM4P/blob/master/Python/nm4p/rka.py.
-     * </p>
-     *
-     * @param system The system of first-order ordinary differential equations.
-     * @param t0 The left endpoint of the interval.
-     * @param y0 The y values corresponding to t0.
-     * @param t The right endpoint of the interval.
-     * @param h The step size of t.
-     * @param s1 The first safety factor.
-     * @param s2 The second safety factor.
-     * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
-     * @throws IllegalArgumentException If each Mathematics.ODE does not have an initial condition.
-     * @throws IllegalArgumentException If the first safety factor is greater than or equal to 1.
-     * @throws IllegalArgumentException If the second safety factor is equal to or greater than 1.
-     */
-    public static Matrix adaptiveRK4System (NFunction<Double>[] system, double t0, double[] y0, double t, double h, double s1, double s2) {
-        if (system.length != y0.length) {
-            throw new IllegalArgumentException("Each Mathematics.ODE must have an initial condition!");
-        }
-
-        if (s1 >= 1 || s1 <= 0) {
-            throw new IllegalArgumentException("The first safety factor must be less than 1!");
-        }
-
-        if (s2 <= 1) {
-            throw new IllegalArgumentException("The second safety factor must be greater than 1!");
-        }
-
-        Matrix vals = new Matrix(y0);
-        ArrayList<Double> time = new ArrayList<>();
-        time.add(t0);
-
-        double tSave;
-        double[] ySave;
-        Matrix ySmallMat = new Matrix(2, 1);
-        double ySmall;
-        Matrix yBigMat = new Matrix(2, 1);
-        double yBig;
-        double yDiff;
-        double scale;
-        double halfH;
-        double oldH;
-        double errorRatio = 0.0;
-        int j = 0;
-
-        while (t0 <= t + (h / 10) && j < MAX_ITERATIONS) {
-
-
-            for (int i = 0; i < 100; i++) {
-                //Two small steps
-                tSave = t0;
-                ySave = y0.clone();
-                halfH = 0.5 * h;
-                ySmallMat = rk4System(system, tSave, y0, tSave + h, halfH); //Will take 2 half steps
-                ySmall = Math.sqrt(Math.pow(ySmallMat.getValue(ySmallMat.getRows(), 1), 2) + Math.pow(ySmallMat.getValue(ySmallMat.getRows(), 2), 2));
-                t0 = tSave + halfH;
-
-                //One big step
-                yBigMat = rk4System(system, tSave, ySave, tSave + h, h); //Will take one big step
-                yBig = Math.sqrt(Math.pow(yBigMat.getValue(yBigMat.getRows(), 1), 2) + Math.pow(yBigMat.getValue(yBigMat.getRows(), 2), 2));
-
-                // Calculate the truncation error
-                scale = TOL * (Math.abs(ySmall) + Math.abs(yBig)) / 2;
-                yDiff = ySmall - yBig;
-                errorRatio = Math.abs(yDiff) / (scale + EPSILON);
-
-                // Adjust the step size
-                oldH = h;
-                if (errorRatio > 1) {
-                    // Reduce step size and retry
-                    h = s1 * h * Math.pow(errorRatio, -0.20);
-                    h = Math.max(h, oldH / s2);
-                }
-                else {
-                    // Accept the step and increase step size for the next iteration
-                    t0 = tSave + h;
-                    time.add(t0);
-
-                    vals = LinearAlgebra.augmentMatrix(vals, LinearAlgebra.vectorFromRow(yBigMat, yBigMat.getRows()));
-
-                    for (i = 0; i < y0.length; i++) {
-                        y0[i] = yBigMat.getValue(yBigMat.getRows(), i + 1);
-                    }
-
-                    h = s1 * h * Math.pow(errorRatio, -0.20);
-                    h = Math.min(h, oldH * s2);
-                    break;
-                }
-
-            }
-
-            //After the for loop, we have our h.
-            if (errorRatio < 1) {
-                vals = LinearAlgebra.augmentMatrix(vals, LinearAlgebra.vectorFromRow(yBigMat, yBigMat.getRows()));
-            }
-
-            else {
-                vals = LinearAlgebra.augmentMatrix(vals, LinearAlgebra.vectorFromRow(ySmallMat, ySmallMat.getRows()));
-
-            }
-
-            for (int i = 1; i <= ySmallMat.getCols(); i++) {
-                y0[i - 1] = ySmallMat.getValue(ySmallMat.getRows(), i);
-            }
-            t0 += h;
-            time.add(t0);
-            j++;
-        }
-
-        //Since the time variable does not increase linearly, time will be returned along with the state vector
-        double[] times = new double[time.size()];
-        for (int i = 0; i < time.size(); i++) {
-            times[i] = time.get(i);
-        }
-
-        vals = LinearAlgebra.transpose(vals);
-        vals.addColRight(times);
-
-
-        return vals;
     }
 
     /**
