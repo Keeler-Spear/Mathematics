@@ -72,8 +72,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates an mxn matrix with cells holding the value provided. This method was added after I submitted my
-     * application to your institution.
+     * Creates an mxn matrix with cells holding the value provided.
      *
      * @param rows The number of rows that the matrix will have.
      * @param cols The number of columns that the matrix will have.
@@ -110,8 +109,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix of the size provided filled with random values. This method was added after I submitted my
-     * application to your institution.
+     * Creates a matrix of the size provided filled with random values.
      *
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
@@ -142,8 +140,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix of the size provided filled with random values. This method was added after I submitted my
-     * application to your institution.
+     * Creates a matrix of the size provided filled with random values.
      *
      * @param rows The number of rows the matrix will have.
      * @param cols The number of columns the matrix will have.
@@ -240,8 +237,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a vector filled with the values between min and max, inclusive. This method was added after I submitted
-     * my application to your institution.
+     * Creates a vector filled with the values between min and max, inclusive.
      *
      * @param min The minimum or initial value of the matrix.
      * @param max The maximum or final value of the matrix.
@@ -265,8 +261,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix whose values are those of the input matrix's after a function has been applied to them. This
-     * method was added after I submitted my application to your institution.
+     * Creates a matrix whose values are those of the input matrix's after a function has been applied to them.
      *
      * @param matrixOrg The matrix that the function will be applied to.
      * @param fnc The function that will be applied to the matrix.
@@ -333,8 +328,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix whose values are [A; B]. This method was added after I submitted my application to your
-     * institution.
+     * Creates a matrix whose values are [A; B].
      *
      * @param A The matrix that will be stacked on top of the other.
      * @param B The matrix that will be below the other.
@@ -364,8 +358,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix whose entries will be rounded to the nearest integer. This method was added after I submitted my
-     * application to your institution.
+     * Creates a matrix whose entries will be rounded to the nearest integer.
      *
      * @param matrixOrg The matrix that will be copied and rounded.
      * @return A copy of matrix matrixOrg, rounded to the nearest integer.
@@ -383,8 +376,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Creates a matrix whose entries will be rounded to the nth decimal place. This method was added after I submitted
-     * my application to your institution.
+     * Creates a matrix whose entries will be rounded to the nth decimal place.
      *
      * @param matrixOrg The matrix that will be copied and rounded.
      * @param n The number of decimal places the matrix's values will be rounded to.
@@ -448,8 +440,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Returns the sum of values in the row indicated. This method was added after I submitted
-     * my application to your institution.
+     * Returns the sum of values in the row indicated.
      *
      * @param A The matrix that will be used.
      * @param row The row index containing the row that will be summed.
@@ -471,8 +462,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Returns the sum of values in the column indicated. This method was added after I submitted
-     * my application to your institution.
+     * Returns the sum of values in the column indicated.
      *
      * @param A The matrix that will be used.
      * @param col The column index containing the column that will be summed.
@@ -494,8 +484,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Returns the sum of values on the matrix's diagonal. This method was added after I submitted
-     * my application to your institution.
+     * Returns the sum of values on the matrix's diagonal.
      *
      * @param A The matrix that will be used.
      * @return The sum of values on the matrix's diagonal.
@@ -516,8 +505,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Returns the sum of values in the matrix provided. This method was added after I submitted
-     * my application to your institution.
+     * Returns the sum of values in the matrix provided.
      *
      * @param A The matrix that will be used.
      * @return The sum of values in the matrix provided.
@@ -634,8 +622,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Multiplies the values of two matrices together. This method was added after I submitted my application to your
-     * institution.
+     * Multiplies the values of two matrices together.
      *
      * @param A The first matrix.
      * @param B The second matrix.
@@ -790,7 +777,7 @@ public class LinearAlgebra {
     }
 
     /**
-     * Constructs an nx1 matrix from the column specified. This method was added after I submitted my application to your institution.
+     * Constructs an nx1 matrix from the column specified.
      *
      * @param A The matrix that the vector will be created from.
      * @param row The row index that the vector will be created from.
