@@ -2,9 +2,7 @@ package Mathematics;
 
 /**
  * A static class that computes the error between two numerical objects.
- * <p>
- *     This class and all functions within were added after I submitted my application to your institution.
- * </p>
+ *
  * @author Keeler Spear
  * @version %I%, %G%
  * @since 1.0
