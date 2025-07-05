@@ -51,8 +51,7 @@ public class Matrix {
     }
 
     /**
-     * Creates a matrix object from the data provided in the form of a vector. This method was added after I submitted
-     * my application to your institution.
+     * Creates a matrix object from the data provided in the form of a vector.
      *
      * @param vals A 1d array of doubles representing the matrix entries.
      * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
@@ -74,8 +73,7 @@ public class Matrix {
     }
 
     /**
-     * Creates a matrix object from the data provided in the form of a vector. This method was added after I submitted
-     * my application to your institution.
+     * Creates a matrix object from the data provided in the form of a vector.
      *
      * @param vals The collection of doubles representing the matrix entries.
      * @throws IllegalArgumentException If the matrix does not meet the minimum required dimensions
@@ -203,8 +201,7 @@ public class Matrix {
     }
 
     /**
-     * Get the matrix's row at the specified position using 1-based indexing. This method was added after I
-     * submitted my application to your institution.
+     * Get the matrix's row at the specified position using 1-based indexing.
      *
      * @param row The 1-based row index where the row will be collected.
      * @return The row at the index provided.
@@ -220,8 +217,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a row to the top of the matrix with the values provided. This method was added after I submitted my
-     * application to your institution.
+     * Adds a row to the top of the matrix with the values provided.
      *
      * @param vals The 1d array of values to be added to the matrix as a row.
      * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
@@ -249,8 +245,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a row to the top of the matrix with the values provided. This method was added after I submitted my
-     * application to your institution.
+     * Adds a row to the top of the matrix with the values provided.
      *
      * @param vals The 2d array of values to be added to the matrix as a row.
      * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
@@ -306,8 +301,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a row to the bottom of the matrix with the values provided. This method was added after I submitted my
-     * application to your institution.
+     * Adds a row to the bottom of the matrix with the values provided.
      *
      * @param vals The 2d array of values to be added to the matrix as a row.
      * @throws IllegalArgumentException If the input row's length does not match the number of columns in the matrix.
@@ -364,8 +358,7 @@ public class Matrix {
     }
 
     /**
-     * Get the matrix's column at the specified position using 1-based indexing. This method was added after I
-     * submitted my application to your institution.
+     * Get the matrix's column at the specified position using 1-based indexing.
      *
      * @param col The 1-based column index where the row will be collected.
      * @return The row at the index provided.
@@ -387,8 +380,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a column to the left side of the matrix with the values provided. This method was added after I submitted my
-     * application to your institution.
+     * Adds a column to the left side of the matrix with the values provided.
      *
      * @param vals The 1d array of values to be added to the matrix as a column.
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
@@ -415,8 +407,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a column to the left side of the matrix with the values provided. This method was added after I submitted my
-     * application to your institution.
+     * Adds a column to the left side of the matrix with the values provided.
      *
      * @param vals The 2d array of values to be added to the matrix as a column.
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
@@ -470,8 +461,7 @@ public class Matrix {
     }
 
     /**
-     * Adds a column to the right side of the matrix with the values provided. This method was added after I submitted
-     * my application to your institution.
+     * Adds a column to the right side of the matrix with the values provided.
      *
      * @param vals The 2d array of values to be added to the matrix as a column.
      * @throws IllegalArgumentException If the input column's length does not match the number of rows in the matrix.
@@ -785,8 +775,7 @@ public class Matrix {
     }
 
     /**
-     * Returns the matrix as a String in NumPy formating. This method was added after I submitted my application to your
-     * institution.
+     * Returns the matrix as a String in NumPy formating.
      *
      * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
      * to four decimal places.
@@ -823,8 +812,7 @@ public class Matrix {
     }
 
     /**
-     * Returns the matrix as a String in MATLAB formating. This method was added after I submitted my application to your
-     * institution.
+     * Returns the matrix as a String in MATLAB formating.
      *
      * @return The matrix as a multi-line String, with each print line containing a row. The matrix's entries are printed
      * to four decimal places.
