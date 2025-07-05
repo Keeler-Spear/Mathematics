@@ -250,7 +250,6 @@ public class ODE {
             throw new IllegalArgumentException("Each Mathematics.ODE must have an initial condition!");
         }
 
-        //Changed rows by removing buffer and also cut the trim function from the return
         Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h)  + 5, system.length, BASE_VAL);
 
         Matrix yi = new Matrix(y0.length, 1);
@@ -268,7 +267,7 @@ public class ODE {
         Matrix k4 = new Matrix(system.length, 1);
         Matrix kTemp; //Used as temporary storage for wi + h/2 ki
         Matrix wkSum;
-        Double[] perams = new Double[y0.length + 1]; //Parameter values to pass to the Mathematics.ODE
+        Double[] perams = new Double[y0.length + 1];
 
         while (t0 <= t + (h / 10)) {
             //Finding the k's
@@ -370,7 +369,7 @@ public class ODE {
      */
     public static Matrix adamsBash (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
         Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
-        double[] f = {0, fm3, fm2, fm1}; //I could use a stack instead but I have concerns regarding its efficiency.
+        double[] f = {0, fm3, fm2, fm1};
 
         y.setValue(1, 1, ode.apply(t0, y0));
         int i = 2;
@@ -431,7 +430,7 @@ public class ODE {
      */
     public static Matrix pc (BiFunction<Double, Double, Double> ode, double t0, double y0, double t, double h, double fm1, double fm2, double fm3) {
         Matrix y = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 1, BASE_VAL);
-        double[] f = {fm3, fm2, fm1, ode.apply(t0, y0)}; //I could use a stack instead but I have concerns regarding its efficiency.
+        double[] f = {fm3, fm2, fm1, ode.apply(t0, y0)};
 
         y.setValue(1, 1, y0);
         double ym1;
