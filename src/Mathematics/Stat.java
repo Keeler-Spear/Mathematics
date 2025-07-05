@@ -2,9 +2,6 @@ package Mathematics;
 
 /**
  * A static class that performs rudimentary statistics operations.
- * <p>
- *     This class and all functions within were added after I submitted my application to your institution.
- * </p>
  *
  * @author Keeler Spear
  * @version %I%, %G%
