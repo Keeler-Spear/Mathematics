@@ -7,7 +7,6 @@ package Mathematics;
  * @version %I%, %G%
  * @since 1.0
  */
-
 public class Error {
 
     final static int decimalPrecision = 2;
