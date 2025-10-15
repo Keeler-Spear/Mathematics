@@ -15,7 +15,7 @@ import java.util.function.Function;
  */
 public class PDE {
     private static final double TOL = 0.00000001;
-    private static final double BASE_VAL = 9999; //The present value matrices are filled with
+    private static final double BASE_VAL = 9999; //The default value matrices are filled with
 
     //Computes if the provided value is "zero."
     private static boolean isZero(double val) {
