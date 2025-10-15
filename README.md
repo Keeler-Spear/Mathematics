@@ -6,31 +6,35 @@
 
 -Mathematics.BasisFunctions.java: Static class that generates basis functions.\
 -Mathematics.Calculus.java: Static class with calculus operations.\
--Mathematics.Complex.java: Static class with complex arithmetic, WIP.\
--Mathematics.ComplexNumber.java: Non-static class with the properties of a complex number, WIP.\
 -Mathematics.Error.java: Static class with error evaluation operations.\
--LinReg.Java: Static class with numerical linear regression operations.\
+-Mathematics.Interpolation.java: Static class with polynomial interpolation.\
 -Mathematics.LinearAlgebra.java: Static class with linear algebra operations.\
--Main.java: Main class for user input, WIP.\
--Mathematics.Maths.java: Static class that can perform some of the operations found in the Java Math library, WIP.\
 -Mathematics.Matrix.java: Non-static class with the properties of a mathematical matrix and one’s based indexing.\
--Mathematics.ODE.java: Static class with numerical ordinary differential equation operations, WIP.\
+-Mathematics.MersenneTwister.java: Non-static class that acts as a pseudo-random number generator .\
+-Mathematics.NFunction.java: Interface that acts as a mathematical function with independent variables.\
+-Mathematics.ODE.java: Static class with numerical ordinary differential equation operations.\
+-Mathematics.PDE.java: Static class with numerical partial differential equation operations for basic PDEs.\
+-Mathematics.Regression.Java: Static class with numerical regression operations.\
+-Mathematics.RootFinding.Java: Static class with numerical root-finding operations.\
+-Mathematics.Stat.Java: Static class with basic statistics operations.\
 -Mathematics.TriFunction.java: Interface that acts as a mathematical function with three independent variables.\
--UI.java: Main class that provides a user interface for the most important linear algebra methods.
+-UI.java: Main class that provides a user interface for the most important linear algebra methods.\
+-Main.java: Main class for user input, WIP.
 
 # Main Operations and Method Type
 
--Mathematics.Matrix Addition (Analytically)\
--Mathematics.Matrix Multiplication (Analytically)\
--Mathematics.Matrix Row Reduction (Analytically)\
+-Matrix Addition (Analytically)\
+-Matrix Multiplication (Analytically)\
+-Matrix Row Reduction (Analytically)\
 -LU Decomposition (Analytically)\
--Mathematics.Matrix Inversion (Analytically)\
+-Matrix Inversion (Analytically)\
 -Determinant Calculation (Analytically)\
 -Gram-Schmidt Orthogonalization (Analytically)\
 -Eigenvalue Calculation (Numerically via the QR Method)\
 -Differentiation (Numerically via O(h^2) Methods)\
 -Integration (Numerically via O(h^4) Methods)\
--Mathematics.Regression (Numerically via gradient descent)
+-Regression (Numerically via Gradient Descent)\
+-ODE Solving (Numerically via O(h^4) Methods)
 
 # User Guide
 
@@ -44,12 +48,16 @@
   
 # Constraints
 
-  The only notable constraint for this project was time. As I used it as an educational opportunity, my work corresponded to my learning of certain numerical methods in class, resulting in a work period of roughly one week per method(s). Due to this, much of my code is unoptimized (while it is insanely fast for the problems I usually solve, it is inefficient for larger problems), and not every method I wanted to code was implemented, such as stationary matrix methods.
+  The only notable constraint for this project was time. As I used it as an educational opportunity, my work corresponded to my learning of certain numerical methods in class, resulting in a work period of roughly one week per method(s). Due to this, much of my code is unoptimized (while it is insanely fast for the problems I usually solve, it is inefficient for larger problems).
   
 # Contributions
 
   Outside of the Java libraries used and the MeersenneTwister class, the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Mathematics.Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
 
-  # Favorite Algorithm
+  # Favorite Algorithms
 
   Of the algorithms I have coded, generalized gradient descent (linearReg in Mathematics.Regression.java) is my favorite. It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under Mathematics.BasisFunctions.
+
+  Besided gradient descent, my other favorite algorithm is my Predictor-Corrector 4 method (pc in Mathematics.ODE.java). It's extremely accurate, efficient, and stable, a perfect method for modeling dynamic systems.
+
+  
