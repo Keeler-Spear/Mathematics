@@ -16,7 +16,7 @@ import java.util.function.Function;
  */
 public class ODE {
 
-    private static final double BASE_VAL = 9999; //The present value matrices are filled with
+    private static final double BASE_VAL = 9999; //The default value matrices are filled with
     private static final int MAX_ITERATIONS = 10000;
     private static final double EPSILON = 1.e-15;
     private static final double TOL = 0.1;
@@ -185,7 +185,6 @@ public class ODE {
      * @return The numerical approximation of the ordinary differential equation over the interval [t0, t].
      */
     public static Matrix rk4System2 (TriFunction<Double, Double, Double, Double> ode1, TriFunction<Double, Double, Double, Double> ode2, double t0, double y0, double yp0, double t, double h) {
-        //ToDo: Issue: Length is 1 shorter than it should be
         Matrix yVals = LinearAlgebra.constantMatrix(generateYLength(t0, t, h) + 50, 2, BASE_VAL);
         Matrix yi = new Matrix(new double[] {y0, yp0});
         yVals.setValue(1, 1, y0);
