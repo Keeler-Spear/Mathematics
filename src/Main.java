@@ -9,11 +9,5 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Matrix A = randMatrix(3, 3, -10.0, 10.0);
-        Matrix B = randMatrix(3, 3, -10.0, 10.0);
-
-        System.out.println(addMatrices(A, B));
-
-
     }
 }
