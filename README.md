@@ -1,6 +1,6 @@
 # Project Summary
 
-  This project is a coding project I worked on in the latter half of 2024. It can perform the fundamental operations of linear algebra and single-variable calculus via analytical and/or numerical methods. All code is in Java, as it is the language I feel the most comfortable with.
+  This project is a coding project I worked on in 2024 and 2025. It can perform the fundamental operations of linear algebra, calculus, and differential equations via analytical and/or numerical methods. All code is in Java.
   
 # File summary
 
@@ -38,7 +38,9 @@
   
 # Motivations
 
-  My desire to create this project was driven by three factors. First, I did so to deepen my knowledge of numerical analysis and to apply the theory I learned. In parallel with my work on this project, I took Numerical Analysis I, in which I learned to derive numerical methods and evaluate their accuracy/error, efficiency/convergence, and stability; however, it did not heavily emphasize the coding implementation of the methods taught. Therefore, I explored this aspect of numerical analysis on my own time by creating this project. Second, I made this project as a tool. Whenever I mess around with circuits and attempt to analyze them, linear algebra operations consume much of my time. By using my code, I can analyze circuits instantly (once they have been translated into a math problem). While other software exists, such as MATLAB, it is often expensive, cumbersome, and slow (at least on my machine), therefore I created my own tool. Third, I made this project for fun. I find engineering and design enjoyable, so making this project provided me the opportunity to learn while having a blast. For these three reasons, I made this project.
+  My desire to create this project was driven by three factors. First, I did so to deepen my knowledge of numerical analysis and to apply the theory I learned. In parallel with my work on this project, I took Numerical Analysis I, in which I learned to derive numerical methods and evaluate their accuracy/error, efficiency/convergence, and stability; however, it did not heavily emphasize the coding implementation of the methods taught. Therefore, I explored this aspect of numerical analysis on my own time by creating this project. Second, I made this project as a tool. Whenever I mess around with dynamic systems and attempt to analyze them, computations consume much of my time. By using my code, I can analyze these systems instantly (once they have been translated into a math problem). While other software exists, such as MATLAB, it is often expensive, cumbersome, and slow (at least on my machine); therefore, I created my own tool. Third, I made this project for fun. I find engineering and design enjoyable, so making this project provided me the opportunity to learn while having a blast. For these three reasons, I made this project.
+
+  In 2025, once most of the foundation for this project was completed, I took a numerical differential equations course in addition to a computational physics course. I used this library as a base for these classes, implementing many of the relevant numerical methods here.
   
 # Constraints
 
@@ -46,8 +48,8 @@
   
 # Contributions
 
-  Outside of the Java libraries used (Math, Swing, JUnit Jupiter, IO, and Util) and the MeersenneTwister class, the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Mathematics.Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
+  Outside of the Java libraries used and the MeersenneTwister class, the code is entirely my own. The theory and formulas behind the methods implemented were taught to me by my Numerical Analysis I professor and my Linear Algebra professor. However, Mathematics.Calculus.java’s leftSidedThreePoint (double f0, double f1, double f2, double h) and rightSidedThreePoint (double f0, double fm1, double fm2, double h) formulas were derived on my own.
 
   # Favorite Algorithm
 
-  Of the algorithms I have coded, gradient descent (linearReg in Mathematics.Regression.java) is my favorite (made in mid-February). It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under Mathematics.BasisFunctions.
+  Of the algorithms I have coded, generalized gradient descent (linearReg in Mathematics.Regression.java) is my favorite. It can calculate the least squares fit of any data set, including those of multiple variables, and model it with the functions provided. For simplicity, I have created a couple of function sets under Mathematics.BasisFunctions.
