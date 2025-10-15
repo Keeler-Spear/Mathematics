@@ -11,8 +11,6 @@ import java.util.function.Function;
  */
 public class Regression {
 
-    //ToDo: Add and interaction term when constructing a matrix (ex: x0, x0^2, x1, x1^2, x0 * x1)
-
     final static double TOL = 0.01;
     final static int MAX_ITERATIONS = 500000;
     final static double LR = 0.001;
@@ -200,8 +198,6 @@ public class Regression {
         return dw;
     }
 
-    //ToDo: Multi-class classification. I could decompose a multi-class classifier into multiple binary ones or use the other method discussed
-    //ToDo: Let the user pass an activation function as a parameter
     /**
      * Calculates the weights for a logistic regression model based on the data set provided and the basis functions provided
      * using gradient descent.
@@ -350,7 +346,6 @@ public class Regression {
     }
 
 
-    //ToDo: Have it return a Function
     /**
      * Calculates the values for a function at the provided points using the functions and weights provided.
      *
