@@ -1,4 +1,6 @@
-package Mathematics;// From https://github.com/datquocnguyen/jLDADMM/blob/master/src/utility/MersenneTwister.java
+//From https://github.com/datquocnguyen/jLDADMM/blob/master/src/utility/MersenneTwister.java
+
+package Mathematics;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
